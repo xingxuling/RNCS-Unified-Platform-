@@ -4,6 +4,8 @@ export const ENTITY_KERNEL_FORMAT='rncs.entity-kernel.v0.1';
 export const FRAGMENT_SCHEMA_FORMAT='rncs.fragment-schema.v0.1';
 export const ENTITY_COMPOSITION_FORMAT='rncs.entity-composition.v0.1';
 export const ENTITY_STATE_BATCH_FORMAT='rncs.entity-state-batch.v0.1';
+export const ENTITY_COMMAND_BATCH_FORMAT='rncs.entity-command-batch.v0.1';
+export const ENTITY_COMMAND_BATCH_VERSION='0.1.0';
 export const DEFERRED_MUTATION_FORMAT='rncs.deferred-mutation.v0.1';
 export const ENTITY_KERNEL_SNAPSHOT_FORMAT='rncs.entity-kernel.snapshot.v0.1';
 
@@ -16,6 +18,81 @@ const fail=(condition,code,detail='')=>{if(!condition)throw new ContractError(`$
 const strings=value=>[...new Set((Array.isArray(value)?value:[]).map(String))].sort(keySort);
 const hex64=value=>typeof value==='string'&&/^[0-9a-f]{64}$/.test(value);
 const own=(value,key)=>Object.prototype.hasOwnProperty.call(value,key);
+
+const COMMAND_BATCH_MAX=4096;
+const COMMAND_BATCH_AUTHORITY=Object.freeze({candidate_only:true,canonical_write_authorized:false,commit_requires_explicit_rncs_authority:true});
+
+function commandBatchText(value,code){
+  fail(typeof value==='string'&&value.length>0&&value===value.trim(),code);
+  return value;
+}
+
+function normalizeCommandBatchSource(value){
+  const source=value??{};
+  fail(source&&typeof source==='object'&&!Array.isArray(source),'COMMAND_BATCH_SOURCE_INVALID');
+  const normalized={
+    format:commandBatchText(source.format,'COMMAND_BATCH_SOURCE_FORMAT_INVALID'),
+    version:commandBatchText(source.version,'COMMAND_BATCH_SOURCE_VERSION_INVALID'),
+    plan_id:commandBatchText(source.plan_id,'COMMAND_BATCH_SOURCE_PLAN_ID_INVALID'),
+    state_root:commandBatchText(source.state_root,'COMMAND_BATCH_SOURCE_STATE_ROOT_INVALID'),
+    command_plan_root:commandBatchText(source.command_plan_root,'COMMAND_BATCH_SOURCE_COMMAND_ROOT_INVALID'),
+  };
+  fail(hex64(normalized.state_root),'COMMAND_BATCH_SOURCE_STATE_ROOT_INVALID');
+  fail(hex64(normalized.command_plan_root),'COMMAND_BATCH_SOURCE_COMMAND_ROOT_INVALID');
+  return normalized;
+}
+
+function normalizeCommandBatchProfile(value){
+  const profile=value??{};
+  fail(profile&&typeof profile==='object'&&!Array.isArray(profile),'COMMAND_BATCH_PROFILE_INVALID');
+  const normalized={
+    format:commandBatchText(profile.format,'COMMAND_BATCH_PROFILE_FORMAT_INVALID'),
+    version:commandBatchText(profile.version,'COMMAND_BATCH_PROFILE_VERSION_INVALID'),
+    domain:commandBatchText(profile.domain,'COMMAND_BATCH_PROFILE_DOMAIN_INVALID'),
+    root:commandBatchText(profile.root,'COMMAND_BATCH_PROFILE_ROOT_INVALID'),
+  };
+  fail(hex64(normalized.root),'COMMAND_BATCH_PROFILE_ROOT_INVALID');
+  return normalized;
+}
+
+function normalizedCommandBatch(input,{requireRoot=false}={}){
+  const batch=input??{};
+  fail(batch&&typeof batch==='object'&&!Array.isArray(batch),'COMMAND_BATCH_OBJECT_REQUIRED');
+  fail(batch.format===ENTITY_COMMAND_BATCH_FORMAT,'COMMAND_BATCH_FORMAT_INVALID');
+  fail(batch.version===ENTITY_COMMAND_BATCH_VERSION,'COMMAND_BATCH_VERSION_INVALID');
+  const worldId=commandBatchText(batch.world_id,'COMMAND_BATCH_WORLD_ID_INVALID');
+  fail(Number.isSafeInteger(batch.generation)&&batch.generation>=0,'COMMAND_BATCH_GENERATION_INVALID');
+  fail(hex64(batch.generation_root),'COMMAND_BATCH_GENERATION_ROOT_INVALID');
+  fail(Number.isSafeInteger(batch.tick)&&batch.tick>=0,'COMMAND_BATCH_TICK_INVALID');
+  const source=normalizeCommandBatchSource(batch.source);
+  const profile=normalizeCommandBatchProfile(batch.profile);
+  fail(Array.isArray(batch.commands)&&batch.commands.length>0&&batch.commands.length<=COMMAND_BATCH_MAX,'COMMAND_BATCH_COMMANDS_INVALID');
+  const commands=clone(batch.commands);
+  const commandRoot=rootHash(commands);
+  fail(batch.command_root===commandRoot,'COMMAND_BATCH_COMMAND_ROOT_MISMATCH');
+  const authority=batch.authority;
+  fail(authority&&typeof authority==='object'&&!Array.isArray(authority),'COMMAND_BATCH_AUTHORITY_INVALID');
+  fail(authority.candidate_only===COMMAND_BATCH_AUTHORITY.candidate_only,'COMMAND_BATCH_CANDIDATE_BOUNDARY_INVALID');
+  fail(authority.canonical_write_authorized===COMMAND_BATCH_AUTHORITY.canonical_write_authorized,'COMMAND_BATCH_CANONICAL_BOUNDARY_INVALID');
+  fail(authority.commit_requires_explicit_rncs_authority===COMMAND_BATCH_AUTHORITY.commit_requires_explicit_rncs_authority,'COMMAND_BATCH_COMMIT_BOUNDARY_INVALID');
+  const payload={format:ENTITY_COMMAND_BATCH_FORMAT,version:ENTITY_COMMAND_BATCH_VERSION,world_id:worldId,generation:batch.generation,generation_root:batch.generation_root,tick:batch.tick,source,profile,command_root:commandRoot,commands,authority:{...COMMAND_BATCH_AUTHORITY}};
+  if(requireRoot)fail(batch.batch_root===rootHash(payload),'COMMAND_BATCH_ROOT_MISMATCH');
+  return payload;
+}
+
+export function createEntityCommandBatch({world_id,worldId,generation=0,generation_root,generationRoot='0'.repeat(64),tick=0,source,profile,commands}={}){
+  const payload=normalizedCommandBatch({format:ENTITY_COMMAND_BATCH_FORMAT,version:ENTITY_COMMAND_BATCH_VERSION,world_id:world_id??worldId,generation,generation_root:generation_root??generationRoot,tick,source,profile,command_root:rootHash(commands??[]),commands,authority:COMMAND_BATCH_AUTHORITY});
+  return {...payload,batch_root:rootHash(payload)};
+}
+
+export function assertEntityCommandBatch(batch){
+  normalizedCommandBatch(batch,{requireRoot:true});
+  return batch;
+}
+
+export function verifyEntityCommandBatch(batch){
+  try{assertEntityCommandBatch(batch);return true;}catch{return false;}
+}
 
 function validateValue(value,spec,path){
   const type=spec.type;

@@ -13,7 +13,9 @@ import {
   compileRuntimeBundle,
   replayRuntimeBundle,
   createEmbeddedRuntimeBundle,
+  RCL_PHYSICAL_COMMAND_PROFILE_ROOT,
   rclSpatialCommandPlanRoot,
+  verifyRclPhysicalCommandProfile,
   verifyRclSpatialCommandPlan,
 } from '../src/index.mjs';
 
@@ -358,10 +360,35 @@ test('RCL native spatial command facets lower into a rooted RSR command plan', a
   });
   assert.equal(result.spatialCommandPlan.root, rclSpatialCommandPlanRoot(result.spatialCommandPlan.commands));
   assert.equal(verifyRclSpatialCommandPlan(result.spatialCommandPlan), true);
+  assert.equal(result.physicalCommandProfile.root, RCL_PHYSICAL_COMMAND_PROFILE_ROOT);
+  assert.equal(verifyRclPhysicalCommandProfile(result.physicalCommandProfile), true);
   assert.equal(result.plan.source.rcl_spatial_command_plan_root, result.spatialCommandPlan.root);
+  assert.equal(result.plan.source.rcl_physical_command_profile_root, result.physicalCommandProfile.root);
   assert.equal(result.plan.simulation_requirements.find(item => item.runtime === 'rncs.rsr').spatial_command_plan_root, result.spatialCommandPlan.root);
   assert.ok(result.plan.authority_requirements.some(item => item.action === 'simulate_spatial_candidate' && item.scope === 'rncs.rsr.simulate'));
   assert.ok(result.plan.evidence_requirements.some(item => item.kind === 'rcl-spatial-command-plan' && item.root === result.spatialCommandPlan.root));
+});
+
+test('RCL physical command profile covers correction and replay velocity commands', async () => {
+  const result = await compileRclAuthorityPlan(`reality RclPhysicalCorrection {
+    facet rncs.world.world_id : Text = "world:rcl-correction"
+    facet rncs.spatial.command.correct.type : Text = "set-velocity"
+    facet rncs.spatial.command.correct.id : Text = "command:rcl-correction"
+    facet rncs.spatial.command.correct.tick : Number = 3
+    facet rncs.spatial.command.correct.body_id : Text = "avatar"
+    facet rncs.spatial.command.correct.velocity_x : Number = 120
+    facet rncs.spatial.command.correct.velocity_y : Number = 0
+    facet rncs.spatial.command.correct.velocity_z : Number = -40
+  }`);
+  assert.deepEqual(result.spatialCommandPlan.commands, [{
+    id: 'command:rcl-correction',
+    tick: 3,
+    type: 'set-velocity',
+    bodyId: 'avatar',
+    velocity: { x: 120, y: 0, z: -40 },
+  }]);
+  assert.deepEqual(result.physicalCommandProfile.command_families.find(family => family.id === 'correction-replay')?.command_types, ['set-velocity']);
+  assert.equal(result.plan.simulation_requirements.find(item => item.runtime === 'rncs.rsr').physical_command_profile_root, result.physicalCommandProfile.root);
 });
 
 test('RCL spatial command lowering fails closed on mismatched sample vectors', async () => {

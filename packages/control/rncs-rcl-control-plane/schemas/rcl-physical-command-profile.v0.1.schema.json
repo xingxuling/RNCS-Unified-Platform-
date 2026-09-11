@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/rcl.physical-command-profile.v0.1.schema.json",
+  "title": "RCL Physical Command Profile v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "profile_id",
+    "domain",
+    "candidate_only",
+    "temporal_encoding",
+    "spatial_encoding",
+    "command_families",
+    "command_types",
+    "limits",
+    "root"
+  ],
+  "properties": {
+    "format": { "const": "rcl.physical-command-profile.v0.1" },
+    "version": { "const": "0.1.0" },
+    "profile_id": { "type": "string", "minLength": 1 },
+    "domain": { "const": "spatial" },
+    "candidate_only": { "const": true },
+    "temporal_encoding": { "const": "integer-tick" },
+    "spatial_encoding": { "const": "integer-fixed-point" },
+    "command_families": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "command_types"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "command_types": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "command_types": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "root_bound", "candidate_only", "required_fields"],
+        "properties": {
+          "type": { "type": "string", "minLength": 1 },
+          "root_bound": { "const": true },
+          "candidate_only": { "const": true },
+          "required_fields": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_commands", "max_samples"],
+      "properties": {
+        "max_commands": { "type": "integer", "minimum": 1 },
+        "max_samples": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "root": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

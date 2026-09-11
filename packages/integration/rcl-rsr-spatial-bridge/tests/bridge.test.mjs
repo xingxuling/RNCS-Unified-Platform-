@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { verifyEntityCommandBatch } from '@taowind/rncs-core-contract';
 import { compileRclAuthorityPlan } from '@taowind/rncs-rcl-control-plane';
 import {
   createRclSpatialEngineProposalInput,
@@ -65,6 +66,11 @@ test('RCL authority plan lowers into the existing RSR/VSR session and replays', 
   });
   assert.equal(verifyRclRsrSpatialLowering(lowering), true);
   assert.equal(lowering.source_state_root, plan.stateRoot);
+  assert.equal(lowering.kernel_command_batch.format, 'rncs.entity-command-batch.v0.1');
+  assert.equal(lowering.kernel_command_batch.world_id, 'world:rcl-rsr-spatial-bridge');
+  assert.equal(lowering.kernel_command_batch.source.command_plan_root, lowering.source_command_plan_root);
+  assert.equal(lowering.kernel_command_batch.command_root, lowering.target_command_root);
+  assert.equal(verifyEntityCommandBatch(lowering.kernel_command_batch), true);
 
   const before = session.spatialSnapshot();
   const proposal = createRclSpatialEngineProposalInput({
@@ -103,4 +109,31 @@ test('RCL to RSR lowering rejects tampered command payloads before session execu
   const tampered = structuredClone(lowering);
   tampered.commands[0].samples[0].height = 601;
   assert.equal(verifyRclRsrSpatialLowering(tampered), false);
+});
+
+test('Kernel command batch carries the RCL correction profile into RSR execution', async () => {
+  const plan = await compileRclAuthorityPlan(`reality RclRsrCorrectionCandidate {
+    facet rncs.world.world_id : Text = "world:rcl-rsr-spatial-bridge"
+    facet rncs.spatial.command.correct.type : Text = "set-velocity"
+    facet rncs.spatial.command.correct.id : Text = "command:rcl-rsr-correct"
+    facet rncs.spatial.command.correct.tick : Number = 1
+    facet rncs.spatial.command.correct.body_id : Text = "avatar"
+    facet rncs.spatial.command.correct.velocity_x : Number = 800
+    facet rncs.spatial.command.correct.velocity_y : Number = 0
+    facet rncs.spatial.command.correct.velocity_z : Number = -120
+  }`);
+  const { session, lowering } = createRclSpatialRealityEngineSession({
+    authorityPlan: plan,
+    spatialConfig: spatialConfig(),
+  });
+  assert.equal(lowering.kernel_command_batch.commands[0].type, 'set-velocity');
+  assert.equal(verifyRclRsrSpatialLowering(lowering), true);
+  session.propose(createRclSpatialEngineProposalInput({
+    authorityPlan: plan,
+    snapshot: session.spatialSnapshot(),
+    baseGenerationRoot: GENERATION_ROOT,
+  }));
+  const simulation = session.simulate();
+  assert.equal(simulation.spatial.plan.commands[0].type, 'set-velocity');
+  assert.notEqual(simulation.spatial.rsrAfterStateRoot, simulation.spatial.rsrBeforeStateRoot);
 });

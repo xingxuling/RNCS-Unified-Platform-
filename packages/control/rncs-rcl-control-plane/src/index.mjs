@@ -278,6 +278,60 @@ function rclJsonRoot(value) {
   return sha256(Buffer.from(JSON.stringify(value), 'utf8'));
 }
 
+export const RCL_PHYSICAL_COMMAND_PROFILE_FORMAT = 'rcl.physical-command-profile.v0.1';
+export const RCL_PHYSICAL_COMMAND_PROFILE_VERSION = '0.1.0';
+
+const RCL_PHYSICAL_COMMAND_PROFILE_PAYLOAD = {
+  format: RCL_PHYSICAL_COMMAND_PROFILE_FORMAT,
+  version: RCL_PHYSICAL_COMMAND_PROFILE_VERSION,
+  profile_id: 'rcl.physical.spatial.v0.1',
+  domain: 'spatial',
+  candidate_only: true,
+  temporal_encoding: 'integer-tick',
+  spatial_encoding: 'integer-fixed-point',
+  command_families: [
+    { id: 'world-editing', command_types: ['patch-heightfield'] },
+    { id: 'destructible-surface', command_types: ['patch-heightfield'] },
+    { id: 'correction-replay', command_types: ['set-velocity'] },
+  ],
+  command_types: [
+    { type: 'patch-heightfield', root_bound: true, candidate_only: true, required_fields: ['id', 'tick', 'body_id', 'fixture_id', 'indices', 'heights'] },
+    { type: 'set-velocity', root_bound: true, candidate_only: true, required_fields: ['id', 'tick', 'body_id', 'velocity_x', 'velocity_y', 'velocity_z'] },
+  ],
+  limits: { max_commands: RCL_SPATIAL_COMMAND_MAX, max_samples: RCL_SPATIAL_PATCH_SAMPLE_MAX },
+};
+
+export const RCL_PHYSICAL_COMMAND_PROFILE = Object.freeze({
+  ...RCL_PHYSICAL_COMMAND_PROFILE_PAYLOAD,
+  root: rclJsonRoot(RCL_PHYSICAL_COMMAND_PROFILE_PAYLOAD),
+});
+export const RCL_PHYSICAL_COMMAND_PROFILE_ROOT = RCL_PHYSICAL_COMMAND_PROFILE.root;
+
+export function rclPhysicalCommandProfileRoot(profile = RCL_PHYSICAL_COMMAND_PROFILE) {
+  const payload = { ...profile };
+  delete payload.root;
+  return rclJsonRoot(payload);
+}
+
+export function assertRclPhysicalCommandProfile(profile) {
+  if (!profile || profile.format !== RCL_PHYSICAL_COMMAND_PROFILE_FORMAT || profile.version !== RCL_PHYSICAL_COMMAND_PROFILE_VERSION) throw new Error('RCL_PHYSICAL_COMMAND_PROFILE_FORMAT_INVALID');
+  if (profile.root !== rclPhysicalCommandProfileRoot(profile)) throw new Error('RCL_PHYSICAL_COMMAND_PROFILE_ROOT_MISMATCH');
+  if (profile.profile_id !== RCL_PHYSICAL_COMMAND_PROFILE.profile_id || profile.domain !== 'spatial' || profile.candidate_only !== true) throw new Error('RCL_PHYSICAL_COMMAND_PROFILE_IDENTITY_INVALID');
+  if (JSON.stringify(profile.command_families) !== JSON.stringify(RCL_PHYSICAL_COMMAND_PROFILE.command_families)) throw new Error('RCL_PHYSICAL_COMMAND_PROFILE_FAMILIES_INVALID');
+  if (JSON.stringify(profile.command_types) !== JSON.stringify(RCL_PHYSICAL_COMMAND_PROFILE.command_types)) throw new Error('RCL_PHYSICAL_COMMAND_PROFILE_COMMAND_TYPES_INVALID');
+  if (JSON.stringify(profile.limits) !== JSON.stringify(RCL_PHYSICAL_COMMAND_PROFILE.limits)) throw new Error('RCL_PHYSICAL_COMMAND_PROFILE_LIMITS_INVALID');
+  return profile;
+}
+
+export function verifyRclPhysicalCommandProfile(profile) {
+  try {
+    assertRclPhysicalCommandProfile(profile);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function spatialCommandPlanPayload(commands) {
   return {
     format: RCL_SPATIAL_COMMAND_PLAN_FORMAT,
@@ -302,27 +356,39 @@ function requireSpatialSafeInteger(value, code, minimum = null) {
 
 function normalizeRclSpatialCommandDeclaration(command, alias) {
   if (!command || typeof command !== 'object' || Array.isArray(command)) throw new Error(`RCL_RNCS_SPATIAL_COMMAND_INVALID:${alias}`);
-  const allowed = new Set(['id', 'type', 'tick', 'body_id', 'fixture_id', 'indices', 'heights', 'expected_heightfield_root']);
-  for (const key of Object.keys(command)) if (!allowed.has(key)) throw new Error(`RCL_RNCS_SPATIAL_COMMAND_FIELD_UNSUPPORTED:${alias}:${key}`);
   const id = requireSpatialText(command.id, `RCL_RNCS_SPATIAL_COMMAND_ID_REQUIRED:${alias}`);
   const type = requireSpatialText(command.type, `RCL_RNCS_SPATIAL_COMMAND_TYPE_REQUIRED:${alias}`);
-  if (type !== 'patch-heightfield') throw new Error(`RCL_RNCS_SPATIAL_COMMAND_TYPE_UNSUPPORTED:${type}`);
   const tick = requireSpatialSafeInteger(command.tick, `RCL_RNCS_SPATIAL_COMMAND_TICK_INVALID:${alias}`, 1);
   const bodyId = requireSpatialText(command.body_id, `RCL_RNCS_SPATIAL_COMMAND_BODY_REQUIRED:${alias}`);
-  const fixtureId = requireSpatialText(command.fixture_id, `RCL_RNCS_SPATIAL_COMMAND_FIXTURE_REQUIRED:${alias}`);
-  if (!Array.isArray(command.indices) || !Array.isArray(command.heights) || command.indices.length === 0 || command.indices.length !== command.heights.length || command.indices.length > RCL_SPATIAL_PATCH_SAMPLE_MAX) {
-    throw new Error(`RCL_RNCS_SPATIAL_COMMAND_SAMPLES_INVALID:${alias}`);
+  if (type === 'patch-heightfield') {
+    const allowed = new Set(['id', 'type', 'tick', 'body_id', 'fixture_id', 'indices', 'heights', 'expected_heightfield_root']);
+    for (const key of Object.keys(command)) if (!allowed.has(key)) throw new Error(`RCL_RNCS_SPATIAL_COMMAND_FIELD_UNSUPPORTED:${alias}:${key}`);
+    const fixtureId = requireSpatialText(command.fixture_id, `RCL_RNCS_SPATIAL_COMMAND_FIXTURE_REQUIRED:${alias}`);
+    if (!Array.isArray(command.indices) || !Array.isArray(command.heights) || command.indices.length === 0 || command.indices.length !== command.heights.length || command.indices.length > RCL_SPATIAL_PATCH_SAMPLE_MAX) {
+      throw new Error(`RCL_RNCS_SPATIAL_COMMAND_SAMPLES_INVALID:${alias}`);
+    }
+    const samples = command.indices.map((index, sampleIndex) => ({
+      index: requireSpatialSafeInteger(index, `RCL_RNCS_SPATIAL_COMMAND_INDEX_INVALID:${alias}:${sampleIndex}`, 0),
+      height: requireSpatialSafeInteger(command.heights[sampleIndex], `RCL_RNCS_SPATIAL_COMMAND_HEIGHT_INVALID:${alias}:${sampleIndex}`),
+    })).sort((left, right) => left.index - right.index);
+    for (let index = 1; index < samples.length; index += 1) {
+      if (samples[index].index === samples[index - 1].index) throw new Error(`RCL_RNCS_SPATIAL_COMMAND_INDEX_DUPLICATE:${alias}:${samples[index].index}`);
+    }
+    const normalized = { id, tick, type, bodyId, fixtureId, samples };
+    if (command.expected_heightfield_root !== undefined) normalized.expectedHeightfieldRoot = requireSpatialText(command.expected_heightfield_root, `RCL_RNCS_SPATIAL_COMMAND_EXPECTED_ROOT_INVALID:${alias}`);
+    return normalized;
   }
-  const samples = command.indices.map((index, sampleIndex) => ({
-    index: requireSpatialSafeInteger(index, `RCL_RNCS_SPATIAL_COMMAND_INDEX_INVALID:${alias}:${sampleIndex}`, 0),
-    height: requireSpatialSafeInteger(command.heights[sampleIndex], `RCL_RNCS_SPATIAL_COMMAND_HEIGHT_INVALID:${alias}:${sampleIndex}`),
-  })).sort((left, right) => left.index - right.index);
-  for (let index = 1; index < samples.length; index += 1) {
-    if (samples[index].index === samples[index - 1].index) throw new Error(`RCL_RNCS_SPATIAL_COMMAND_INDEX_DUPLICATE:${alias}:${samples[index].index}`);
+  if (type === 'set-velocity') {
+    const allowed = new Set(['id', 'type', 'tick', 'body_id', 'velocity_x', 'velocity_y', 'velocity_z']);
+    for (const key of Object.keys(command)) if (!allowed.has(key)) throw new Error(`RCL_RNCS_SPATIAL_COMMAND_FIELD_UNSUPPORTED:${alias}:${key}`);
+    const velocity = {
+      x: requireSpatialSafeInteger(command.velocity_x, `RCL_RNCS_SPATIAL_COMMAND_VELOCITY_X_INVALID:${alias}`),
+      y: requireSpatialSafeInteger(command.velocity_y, `RCL_RNCS_SPATIAL_COMMAND_VELOCITY_Y_INVALID:${alias}`),
+      z: requireSpatialSafeInteger(command.velocity_z, `RCL_RNCS_SPATIAL_COMMAND_VELOCITY_Z_INVALID:${alias}`),
+    };
+    return { id, tick, type, bodyId, velocity };
   }
-  const normalized = { id, tick, type, bodyId, fixtureId, samples };
-  if (command.expected_heightfield_root !== undefined) normalized.expectedHeightfieldRoot = requireSpatialText(command.expected_heightfield_root, `RCL_RNCS_SPATIAL_COMMAND_EXPECTED_ROOT_INVALID:${alias}`);
-  return normalized;
+  throw new Error(`RCL_RNCS_SPATIAL_COMMAND_TYPE_UNSUPPORTED:${type}`);
 }
 
 function validateRclSpatialCommand(command) {
@@ -331,17 +397,27 @@ function validateRclSpatialCommand(command) {
   const type = requireSpatialText(command.type, 'RCL_SPATIAL_COMMAND_PLAN_TYPE_REQUIRED');
   const tick = requireSpatialSafeInteger(command.tick, 'RCL_SPATIAL_COMMAND_PLAN_TICK_INVALID', 1);
   const bodyId = requireSpatialText(command.bodyId, 'RCL_SPATIAL_COMMAND_PLAN_BODY_REQUIRED');
-  const fixtureId = requireSpatialText(command.fixtureId, 'RCL_SPATIAL_COMMAND_PLAN_FIXTURE_REQUIRED');
-  if (type !== 'patch-heightfield') throw new Error(`RCL_SPATIAL_COMMAND_PLAN_TYPE_UNSUPPORTED:${type}`);
-  if (!Array.isArray(command.samples) || command.samples.length === 0 || command.samples.length > RCL_SPATIAL_PATCH_SAMPLE_MAX) throw new Error('RCL_SPATIAL_COMMAND_PLAN_SAMPLES_INVALID');
-  let previous = -1;
-  const samples = command.samples.map(sample => {
-    if (!sample || !Number.isSafeInteger(sample.index) || sample.index < 0 || sample.index <= previous || !Number.isSafeInteger(sample.height)) throw new Error('RCL_SPATIAL_COMMAND_PLAN_SAMPLE_INVALID');
-    previous = sample.index;
-    return { index: sample.index, height: sample.height };
-  });
-  const normalized = { id, tick, type, bodyId, fixtureId, samples };
-  if (command.expectedHeightfieldRoot !== undefined) normalized.expectedHeightfieldRoot = requireSpatialText(command.expectedHeightfieldRoot, 'RCL_SPATIAL_COMMAND_PLAN_EXPECTED_ROOT_INVALID');
+  let normalized;
+  if (type === 'patch-heightfield') {
+    const fixtureId = requireSpatialText(command.fixtureId, 'RCL_SPATIAL_COMMAND_PLAN_FIXTURE_REQUIRED');
+    if (!Array.isArray(command.samples) || command.samples.length === 0 || command.samples.length > RCL_SPATIAL_PATCH_SAMPLE_MAX) throw new Error('RCL_SPATIAL_COMMAND_PLAN_SAMPLES_INVALID');
+    let previous = -1;
+    const samples = command.samples.map(sample => {
+      if (!sample || !Number.isSafeInteger(sample.index) || sample.index < 0 || sample.index <= previous || !Number.isSafeInteger(sample.height)) throw new Error('RCL_SPATIAL_COMMAND_PLAN_SAMPLE_INVALID');
+      previous = sample.index;
+      return { index: sample.index, height: sample.height };
+    });
+    normalized = { id, tick, type, bodyId, fixtureId, samples };
+    if (command.expectedHeightfieldRoot !== undefined) normalized.expectedHeightfieldRoot = requireSpatialText(command.expectedHeightfieldRoot, 'RCL_SPATIAL_COMMAND_PLAN_EXPECTED_ROOT_INVALID');
+  } else if (type === 'set-velocity') {
+    const allowed = new Set(['id', 'tick', 'type', 'bodyId', 'velocity']);
+    for (const key of Object.keys(command)) if (!allowed.has(key)) throw new Error(`RCL_SPATIAL_COMMAND_PLAN_FIELD_UNSUPPORTED:${key}`);
+    const velocity = command.velocity;
+    if (!velocity || typeof velocity !== 'object' || Array.isArray(velocity) || !Number.isSafeInteger(velocity.x) || !Number.isSafeInteger(velocity.y) || !Number.isSafeInteger(velocity.z)) throw new Error('RCL_SPATIAL_COMMAND_PLAN_VELOCITY_INVALID');
+    normalized = { id, tick, type, bodyId, velocity: { x: velocity.x, y: velocity.y, z: velocity.z } };
+  } else {
+    throw new Error(`RCL_SPATIAL_COMMAND_PLAN_TYPE_UNSUPPORTED:${type}`);
+  }
   if (JSON.stringify(normalized) !== JSON.stringify(command)) throw new Error('RCL_SPATIAL_COMMAND_PLAN_NON_CANONICAL');
   return normalized;
 }
@@ -535,6 +611,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
   }
   const worldModel = rclWorldChanges(execution.native?.state);
   const spatialCommandPlan = collectRclSpatialCommandPlan(execution.native?.state);
+  const physicalCommandProfile = spatialCommandPlan ? RCL_PHYSICAL_COMMAND_PROFILE : null;
   const changes = worldModel.changes;
   if (!changes.length && !spatialCommandPlan) throw new Error('RCL_RNCS_WORLD_CHANGE_REQUIRED');
   const sourceRoot = execution.bytecodeHash;
@@ -573,6 +650,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
       rcl_knowledge_graph_root: knowledgeGraph?.root ?? null,
       rcl_authority_evidence_root: authorityEvidence?.root ?? null,
       rcl_spatial_command_plan_root: spatialCommandPlan?.root ?? null,
+      rcl_physical_command_profile_root: physicalCommandProfile?.root ?? null,
     },
     rcl_authority_evidence: authorityEvidence,
     rcl_knowledge_graph: knowledgeGraph,
@@ -608,7 +686,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     world_state_changes: changes,
     simulation_requirements: [
       { runtime: 'rcl.native', mode: 'native-bytecode-parity' },
-      { runtime: 'rncs.rsr', mode: 'candidate-isolated', fixed_step_hz: 60, ...(spatialCommandPlan ? { spatial_command_plan_root: spatialCommandPlan.root } : {}) },
+      { runtime: 'rncs.rsr', mode: 'candidate-isolated', fixed_step_hz: 60, ...(spatialCommandPlan ? { spatial_command_plan_root: spatialCommandPlan.root, physical_command_profile_root: physicalCommandProfile.root } : {}) },
       { runtime: 'rncs.vsr', mode: 'presentation-only' },
     ],
     projection_targets: ['aetherworld', 'rncs.rsr', 'rncs.vsr'],
@@ -636,6 +714,12 @@ export async function compileRclAuthorityPlan(source, options = {}) {
         command_count: spatialCommandPlan.commands.length,
         command_types: [...new Set(spatialCommandPlan.commands.map(command => command.type))].sort(),
       }] : []),
+      ...(physicalCommandProfile ? [{
+        kind: 'rcl-physical-command-profile',
+        root: physicalCommandProfile.root,
+        profile_id: physicalCommandProfile.profile_id,
+        command_families: physicalCommandProfile.command_families.map(family => family.id),
+      }] : []),
       { kind: 'rbf-simulation-receipt' },
       { kind: 'aaf-decision' },
       { kind: 'rfe-commit-receipt' },
@@ -649,7 +733,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
       { rule: 'all-mutating-actions-authorized' },
       { rule: 'state-precondition-must-match' },
       ...(knowledgeGraph ? [{ rule: 'rcl-knowledge-evidence-bound' }, { rule: 'rcl-knowledge-dependencies-explicit' }] : []),
-      ...(spatialCommandPlan ? [{ rule: 'rcl-spatial-command-lowering-bound' }, { rule: 'rsr-command-root-bound' }] : []),
+      ...(spatialCommandPlan ? [{ rule: 'rcl-spatial-command-lowering-bound' }, { rule: 'rcl-physical-command-profile-bound' }, { rule: 'rsr-command-root-bound' }] : []),
       { rule: 'rfe-receipt-required' },
     ],
   };
@@ -662,6 +746,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     behaviors: worldModel.behaviors,
     operations: worldModel.operations,
     spatialCommandPlan,
+    physicalCommandProfile,
     domainState: worldModel.domainState,
     knowledgeGraph,
     authorityEvidence,

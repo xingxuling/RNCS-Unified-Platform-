@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {EntityKernel,verifyEntityStateBatch} from '../src/index.mjs';
+import {EntityKernel,createEntityCommandBatch,verifyEntityCommandBatch,verifyEntityStateBatch} from '../src/index.mjs';
 
 const root='0'.repeat(64);
 
@@ -68,4 +68,16 @@ test('state batch verification rejects tampered rows',()=>{
   assert.equal(verifyEntityStateBatch(batch),true);
   const tampered=structuredClone(batch);tampered.rows[0].tags.push('tampered');
   assert.equal(verifyEntityStateBatch(tampered),false);
+});
+
+test('candidate command batches bind source, profile and target command roots',()=>{
+  const sourceRoot='1'.repeat(64),profileRoot='2'.repeat(64),generationRoot='3'.repeat(64);
+  const input={worldId:'world:command-batch',generation:4,generationRoot:generationRoot,tick:9,source:{format:'rncs.rcl-spatial-command-plan.v0.1',version:'0.1.0',plan_id:'plan:rcl:command-batch',state_root:sourceRoot,command_plan_root:sourceRoot},profile:{format:'rcl.physical-command-profile.v0.1',version:'0.1.0',domain:'spatial',root:profileRoot},commands:[{id:'command:one',tick:10,type:'set-velocity',bodyId:'avatar',velocity:{x:100,y:0,z:0}}]};
+  const first=createEntityCommandBatch(input),second=createEntityCommandBatch(input);
+  assert.equal(verifyEntityCommandBatch(first),true);
+  assert.deepEqual(first,second);
+  const tampered=structuredClone(first);tampered.commands[0].velocity.x=101;
+  assert.equal(verifyEntityCommandBatch(tampered),false);
+  const authorityTampered=structuredClone(first);authorityTampered.authority.canonical_write_authorized=true;authorityTampered.batch_root=first.batch_root;
+  assert.equal(verifyEntityCommandBatch(authorityTampered),false);
 });
