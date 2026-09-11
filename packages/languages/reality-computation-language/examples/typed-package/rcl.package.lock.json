@@ -12,29 +12,29 @@
     {
       "path": "rcl.package.json",
       "role": "manifest",
-      "bytes": 270,
-      "sha256": "0907db458c94be1cd66c2b717acfe824dee43a66bff7729616c7322e94afa6e1"
+      "bytes": 285,
+      "sha256": "a58db44bd152dad8bc40ea445d502c0ea745aac4ca1b3ee4f193829f8315341c"
     },
     {
       "path": "src/app.rcl",
       "role": "entry",
-      "bytes": 163,
-      "sha256": "81c44d311978bfd3ae040c7561ffe40533c9080cbbf36d3cd302eef4fbfaf303"
+      "bytes": 167,
+      "sha256": "8e2b0f4dc47c1710c893bb9e1b102ab067c186f9325acc3d10d88edba2479293"
     },
     {
       "path": "types/core.rcltype",
       "role": "type",
-      "bytes": 113,
-      "sha256": "1b6178bd2608cda826f93d4190f4babaacac3bf531c7c2d914a3870cc5c61883"
+      "bytes": 122,
+      "sha256": "715fb25a41546000acc43e6cdb76904236797b48d3f9fdc9ea79bb726a652151"
     }
   ],
   "roots": {
     "typeModuleRoot": "db946a8588cd523c468ec972e134c466fec0872e3b7753db1c84e90a6bf29a00",
     "typeCompileRoot": "47f5b164062d059ea9ce6e343635b019bf33e94db0ea1f38e6005de14750fd3d",
-    "semanticMapRoot": "000943a1300af0ac638265219570ff30583fd07b67052caf45b601c18d27ad1f",
+    "semanticMapRoot": "0cb0db9062a65e2abfc39806ec56bece8c196daee4a5caeb13c24fc432ccf783",
     "typeBindingsRoot": "81297a1c96c1640ba46825f143dc97e6476b11b991aed64ba13856ae4445d484",
     "sourceMapRoot": "3eb948090477938847c2c37f12e506b018fe933149ac965e1e4a6d76e71838ce",
-    "programRoot": "ffce9d020f231775f0becd62717688931c4c2313ea2d56f70f2d3fd57fee4c00"
+    "programRoot": "d042acfbb3484fa16c11551190bcab1e994a913f270aba17299c59654cb52bbf"
   },
   "typeModules": [
     {
@@ -75,5 +75,5 @@
     "constructorCount": 2
   },
   "boundary": "P3 package slice: typed manifest and lockfile pin entry source, .rcltype graph roots, semantic maps and program root for reproducible typed builds. Full remote dependency resolution remains staged.",
-  "lockRoot": "37a8d0489d06b95279405780142a82b40532d9c5b3bec6da61e06011f996e0ae"
+  "lockRoot": "9a387d627d74425cfdcc4d923befb308a25342c6b6868f1c1d9441a4ffe64ec2"
 }
