@@ -1,4 +1,6 @@
 import { createHash } from 'node:crypto';
+import path from 'node:path';
+import { compileTypedPackage, verifyTypedPackageLock } from './typed-package-kernel.mjs';
 import { tryCompileReality } from './compiler.mjs';
 import { compileRealityToBytecode, decodeBytecode, OPCODES } from './bytecode.mjs';
 import { runNativeBytecode } from './native-vm.mjs';
@@ -78,7 +80,7 @@ function typedInstructionCount(decoded) {
   return (decoded.instructions ?? []).filter(instruction => TYPED_OPCODE_SET.has(instruction.op)).length;
 }
 
-function packageBinding(options, typeModuleRoot, programRoot) {
+function packageBinding(options, typeModuleRoot, programRoot, sourceRoot) {
   const lock = options.packageLock ?? null;
   const lockRoot = options.packageLockRoot ?? lock?.lockRoot ?? null;
   if (lock && lock.roots?.typeModuleRoot !== typeModuleRoot) {
@@ -86,6 +88,12 @@ function packageBinding(options, typeModuleRoot, programRoot) {
   }
   if (lock && lock.roots?.programRoot !== programRoot) {
     throw new RCLTypedNativeLinkError('Typed package lock does not bind the compiled program root', [diagnostic('RCL_TYPED_LINK_PACKAGE_PROGRAM_ROOT_MISMATCH', 'Typed package lock does not bind the compiled program root', { expected: programRoot, actual: lock.roots?.programRoot ?? null })]);
+  }
+  if (lock && Array.isArray(lock.files)) {
+    const entry = lock.files.find(item => item.role === 'entry' && item.path === lock.package?.entry);
+    if (!entry || entry.sha256 !== sourceRoot) {
+      throw new RCLTypedNativeLinkError('Typed package lock does not bind the compiled entry source', [diagnostic('RCL_TYPED_LINK_PACKAGE_ENTRY_ROOT_MISMATCH', 'Typed package lock does not bind the compiled entry source', { expected: sourceRoot, actual: entry?.sha256 ?? null })]);
+    }
   }
   return {
     lock_root: lockRoot,
@@ -126,7 +134,8 @@ export async function compileTypedNativeLink(source, options = {}) {
     const referenceSemanticStateRoot = realityRoot(referenceState);
     const nativeSemanticStateRoot = realityRoot(nativeState);
     const semanticStateParity = referenceSemanticStateRoot === nativeSemanticStateRoot;
-    const packageInfo = packageBinding(options, typeModuleReport.irRoot, linked.program.programRoot);
+    const sourceRoot = sha256Text(source);
+    const packageInfo = packageBinding(options, typeModuleReport.irRoot, linked.program.programRoot, sourceRoot);
     const base = {
       format: RCL_TYPED_NATIVE_LINK_FORMAT,
       version: RCL_TYPED_NATIVE_LINK_VERSION,
@@ -135,7 +144,7 @@ export async function compileTypedNativeLink(source, options = {}) {
         : 'CANDIDATE_EXECUTION_BLOCKED',
       source: {
         language: 'RCL',
-        source_root: sha256Text(source),
+        source_root: sourceRoot,
         source_bytes: Buffer.byteLength(source, 'utf8'),
       },
       package: packageInfo,
@@ -195,6 +204,55 @@ export async function compileTypedNativeLink(source, options = {}) {
   }
 }
 
+export async function compileTypedNativeLinkFromPackage(packageDir, options = {}) {
+  try {
+    if (typeof packageDir !== 'string' || packageDir.trim().length === 0) {
+      throw new RCLTypedNativeLinkError('Typed native package link requires a package directory', [diagnostic('RCL_TYPED_LINK_PACKAGE_DIR_REQUIRED', 'Typed native package link requires a package directory')]);
+    }
+    const root = path.resolve(packageDir);
+    const manifestPath = options.manifestPath;
+    const lockPath = options.lockPath;
+    const packageVerification = verifyTypedPackageLock(root, { manifestPath, lockPath });
+    if (!packageVerification.ok) {
+      return {
+        ok: false,
+        diagnostics: packageVerification.diagnostics ?? [diagnostic('RCL_TYPED_LINK_PACKAGE_LOCK_INVALID', 'Typed package lock verification failed')],
+        receipt: null,
+        packageVerification,
+      };
+    }
+    const packageBuild = compileTypedPackage(root, { manifestPath, lockPath, writeLock: false });
+    if (!packageBuild.ok) {
+      return {
+        ok: false,
+        diagnostics: packageBuild.diagnostics ?? [diagnostic('RCL_TYPED_LINK_PACKAGE_BUILD_FAILED', 'Typed package build failed')],
+        receipt: null,
+        packageVerification,
+        packageBuild,
+      };
+    }
+    if (packageBuild.lock.lockRoot !== packageVerification.expectedLockRoot) {
+      return {
+        ok: false,
+        diagnostics: [diagnostic('RCL_TYPED_LINK_PACKAGE_LOCK_CHANGED', 'Typed package lock changed between verification and link compilation', { expected: packageVerification.expectedLockRoot, actual: packageBuild.lock.lockRoot })],
+        receipt: null,
+        packageVerification,
+        packageBuild,
+      };
+    }
+    const typed = await compileTypedNativeLink(packageBuild.source, {
+      ...options,
+      typeModuleSources: packageBuild.typeModuleSources,
+      typeModuleReport: packageBuild.typeModuleReport,
+      packageLock: packageBuild.lock,
+      packageLockRoot: options.packageLockRoot ?? packageVerification.expectedLockRoot,
+    });
+    return { ...typed, packageVerification, packageBuild };
+  } catch (error) {
+    return { ...failure(error), packageDir: typeof packageDir === 'string' ? path.resolve(packageDir) : null };
+  }
+}
+
 export function verifyTypedNativeLink(receipt, options = {}) {
   const errors = [];
   if (!receipt || typeof receipt !== 'object') return { ok: false, errors: ['RCL_TYPED_LINK_RECEIPT_REQUIRED'] };
@@ -211,5 +269,9 @@ export function verifyTypedNativeLink(receipt, options = {}) {
   if (options.typeModuleReport && receipt.type_modules?.ir_root !== options.typeModuleReport.irRoot) errors.push('RCL_TYPED_LINK_TYPE_MODULE_ROOT_MISMATCH');
   const lockRoot = options.packageLockRoot ?? options.packageLock?.lockRoot;
   if (lockRoot !== undefined && receipt.package?.lock_root !== lockRoot) errors.push('RCL_TYPED_LINK_PACKAGE_ROOT_MISMATCH');
+  if (options.packageLock && Array.isArray(options.packageLock.files)) {
+    const entry = options.packageLock.files.find(item => item.role === 'entry' && item.path === options.packageLock.package?.entry);
+    if (!entry || entry.sha256 !== receipt.source?.source_root) errors.push('RCL_TYPED_LINK_PACKAGE_ENTRY_ROOT_MISMATCH');
+  }
   return { ok: errors.length === 0, errors };
 }

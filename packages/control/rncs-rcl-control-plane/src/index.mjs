@@ -19,6 +19,7 @@ import {
   FOUNDATION_MANIFEST_ROOT,
   foundationContractSummary,
   compileTypedNativeLink,
+  compileTypedNativeLinkFromPackage,
   verifyTypedNativeLink,
 } from '@taowind/reality-computation-language';
 import { discoverRuntimeManifests } from '@taowind/reality-one-gateway';
@@ -140,33 +141,34 @@ export async function compileRclSource(source, options = {}) {
   return execution;
 }
 
-export async function compileRclTypedCandidate(source, options = {}) {
-  const typed = await compileTypedNativeLink(source, options);
-  if (!typed.ok) {
-    const first = typed.diagnostics?.[0] ?? { code: 'RCL_TYPED_CANDIDATE_COMPILATION_FAILURE', message: 'Typed candidate compilation failed' };
-    throw Object.assign(new Error(first.message), { code: first.code, details: { diagnostics: typed.diagnostics ?? [] } });
+function createRclTypedCandidate(link) {
+  const packageLockRoot = link.package?.lock_root ?? null;
+  const source = {
+    language: 'RCL',
+    source_root: link.source.source_root,
+    type_module_root: link.type_modules.ir_root,
+    program_root: link.program.program_root,
+  };
+  const roots = {
+    typed_link_root: link.link_root,
+    type_module_root: link.type_modules.ir_root,
+    program_root: link.program.program_root,
+    bytecode_root: link.bytecode.sha256,
+    reference_semantic_state_root: link.execution.reference.semantic_state_root,
+    native_semantic_state_root: link.execution.native.semantic_state_root,
+    native_state_root: link.execution.native.native_state_root,
+  };
+  if (packageLockRoot !== null) {
+    source.package_lock_root = packageLockRoot;
+    roots.package_lock_root = packageLockRoot;
   }
-  const link = typed.receipt;
   const base = {
     format: 'rncs.rcl-typed-native-candidate.v0.1',
     version: '0.1.0',
     status: link.status,
-    source: {
-      language: 'RCL',
-      source_root: link.source.source_root,
-      type_module_root: link.type_modules.ir_root,
-      program_root: link.program.program_root,
-    },
+    source,
     typed_link: link,
-    roots: {
-      typed_link_root: link.link_root,
-      type_module_root: link.type_modules.ir_root,
-      program_root: link.program.program_root,
-      bytecode_root: link.bytecode.sha256,
-      reference_semantic_state_root: link.execution.reference.semantic_state_root,
-      native_semantic_state_root: link.execution.native.semantic_state_root,
-      native_state_root: link.execution.native.native_state_root,
-    },
+    roots,
     authority: {
       candidate_only: true,
       canonical_write_authorized: false,
@@ -176,6 +178,22 @@ export async function compileRclTypedCandidate(source, options = {}) {
     boundary: 'RNCS control-plane typed candidate only: the existing typed compiler/native VM is root-bound for candidate execution; native authority-plan compilation and canonical commit remain separate and explicit.',
   };
   return { ...base, candidate_root: rclJsonRoot(base) };
+}
+
+function throwTypedCandidateFailure(typed) {
+  if (!typed.ok) {
+    const first = typed.diagnostics?.[0] ?? { code: 'RCL_TYPED_CANDIDATE_COMPILATION_FAILURE', message: 'Typed candidate compilation failed' };
+    throw Object.assign(new Error(first.message), { code: first.code, details: { diagnostics: typed.diagnostics ?? [] } });
+  }
+  return createRclTypedCandidate(typed.receipt);
+}
+
+export async function compileRclTypedCandidate(source, options = {}) {
+  return throwTypedCandidateFailure(await compileTypedNativeLink(source, options));
+}
+
+export async function compileRclTypedCandidateFromPackage(packageDir, options = {}) {
+  return throwTypedCandidateFailure(await compileTypedNativeLinkFromPackage(packageDir, options));
 }
 
 export function verifyRclTypedCandidate(candidate, options = {}) {
@@ -190,6 +208,8 @@ export function verifyRclTypedCandidate(candidate, options = {}) {
   if (candidate.authority?.canonical_write_authorized !== false) errors.push('RCL_TYPED_CANDIDATE_CANONICAL_WRITE_FORBIDDEN');
   if (candidate.authority?.commit_requires_explicit_rncs_authority !== true) errors.push('RCL_TYPED_CANDIDATE_COMMIT_GATE_REQUIRED');
   if (candidate.roots?.typed_link_root !== candidate.typed_link?.link_root) errors.push('RCL_TYPED_CANDIDATE_TYPED_LINK_ROOT_MISMATCH');
+  if (candidate.source?.package_lock_root !== undefined && candidate.source.package_lock_root !== candidate.typed_link?.package?.lock_root) errors.push('RCL_TYPED_CANDIDATE_PACKAGE_ROOT_MISMATCH');
+  if (candidate.roots?.package_lock_root !== undefined && candidate.roots.package_lock_root !== candidate.typed_link?.package?.lock_root) errors.push('RCL_TYPED_CANDIDATE_PACKAGE_ROOT_MISMATCH');
   const typed = verifyTypedNativeLink(candidate.typed_link, options);
   if (!typed.ok) errors.push(...typed.errors);
   return { ok: errors.length === 0, errors };

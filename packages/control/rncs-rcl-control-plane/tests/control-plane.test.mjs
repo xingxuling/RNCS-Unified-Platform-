@@ -1,11 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { runTypedPackageDemo } from '@taowind/reality-computation-language';
 import {
   buildRclControlPlane,
   compileRclSource,
   compileRclTypedCandidate,
+  compileRclTypedCandidateFromPackage,
   verifyRclTypedCandidate,
   compileRclAuthorityPlan,
   compileControlPlaneEdge,
@@ -218,6 +222,26 @@ export record SpatialCommand<T> {
   const tampered = structuredClone(candidate);
   tampered.roots.native_state_root = '0'.repeat(64);
   assert.ok(verifyRclTypedCandidate(tampered, { source }).errors.includes('RCL_TYPED_CANDIDATE_ROOT_MISMATCH'));
+});
+
+test('typed RCL package candidate binds the manifest and verified lock root', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rncs-rcl-typed-package-candidate-'));
+  const packageDemo = runTypedPackageDemo({ baseDir: dir });
+  assert.equal(packageDemo.ok, true);
+
+  const candidate = await compileRclTypedCandidateFromPackage(dir);
+  assert.equal(candidate.format, 'rncs.rcl-typed-native-candidate.v0.1');
+  assert.equal(candidate.status, 'CANDIDATE_EXECUTION_VERIFIED');
+  assert.equal(candidate.source.package_lock_root, packageDemo.lockRoot);
+  assert.equal(candidate.roots.package_lock_root, packageDemo.lockRoot);
+  assert.equal(candidate.typed_link.package.lock_root, packageDemo.lockRoot);
+  const source = fs.readFileSync(path.join(dir, 'src', 'app.rcl'), 'utf8');
+  assert.deepEqual(verifyRclTypedCandidate(candidate, { source }), { ok: true, errors: [] });
+
+  const tampered = structuredClone(candidate);
+  tampered.source.package_lock_root = '0'.repeat(64);
+  assert.ok(verifyRclTypedCandidate(tampered, { source }).errors.includes('RCL_TYPED_CANDIDATE_ROOT_MISMATCH'));
+  assert.ok(verifyRclTypedCandidate(tampered, { source }).errors.includes('RCL_TYPED_CANDIDATE_PACKAGE_ROOT_MISMATCH'));
 });
 
 test('Energy authority state passes semantic native parity through the RNCS compiler', async () => {

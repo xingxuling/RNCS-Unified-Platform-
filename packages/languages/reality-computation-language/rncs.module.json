@@ -78,6 +78,7 @@
     "combined-typed-rcl-ir",
     "stage4-module-self-hosting-core",
     "rcl-typed-native-link-candidate",
+    "rcl-typed-package-native-link-candidate",
     "typed-native-reference-parity",
     "rncs-control-plane-double-write-seed",
     "native-byte-primitives",

@@ -209,6 +209,7 @@ export {
   RCL_TYPED_NATIVE_LINK_FORMAT,
   RCLTypedNativeLinkError,
   compileTypedNativeLink,
+  compileTypedNativeLinkFromPackage,
   verifyTypedNativeLink,
 } from './typed-native-link-kernel.mjs';
 
