@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { compileTypedNativeLink, runTypedPackageDemo } from '@taowind/reality-computation-language';
+import { compileTypedNativeLink, compileTypedNativeLinkFromPackage, runTypedPackageDemo } from '@taowind/reality-computation-language';
 import {
   buildRclControlPlane,
   compileRclSource,
@@ -308,6 +308,23 @@ test('typed package authority candidate reuses one verified package-to-plan path
   assert.equal(authority.plan.source.typed_package_lock_root, packageDemo.lockRoot);
   assert.equal(authority.plan.source.typed_candidate_root, authority.candidate_root);
   assert.equal(authority.plan.source.typed_replay_root, authority.typed_replay_root);
+  assert.deepEqual(verifyRclTypedAuthorityCandidate(authority), { ok: true, errors: [] });
+});
+
+test('typed package authority candidate can select native self-hosted constructor lowering', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rncs-rcl-typed-authority-selfhost-package-'));
+  const packageDemo = runTypedPackageDemo({ baseDir: dir });
+  assert.equal(packageDemo.ok, true);
+  const typed = await compileTypedNativeLinkFromPackage(dir, { selfHosted: true });
+  assert.equal(typed.ok, true);
+  assert.equal(typed.receipt.compiler.kind, 'rcl-general-selfhost-typed-constructor-lowering');
+  assert.equal(typed.receipt.compiler.typed_opcode_parity, true);
+  const authority = await compileRclTypedAuthorityCandidateFromPackage(dir, { selfHosted: true });
+  assert.equal(authority.ok, true);
+  assert.equal(authority.status, 'CANDIDATE_AUTHORITY_PLAN_VERIFIED');
+  assert.equal(authority.typed_link_root, typed.receipt.link_root);
+  assert.equal(authority.authority.native_selfhost_authority_compilation, 'NOT_ENTERED');
+  assert.equal(authority.authority.canonical_write_authorized, false);
   assert.deepEqual(verifyRclTypedAuthorityCandidate(authority), { ok: true, errors: [] });
 });
 

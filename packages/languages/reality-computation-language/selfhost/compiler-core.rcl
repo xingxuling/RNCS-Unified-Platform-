@@ -139,6 +139,31 @@ reality RCLGeneralSelfHostCompiler {
   reckon path_node(path : Text) -> Sequence =
     sequence_append(sequence_append(sequence_append(empty_sequence(), "PathExpr"), path), 1)
 
+  reckon record_field_node(name : Text, expression : Sequence) -> Sequence =
+    sequence_append(sequence_append(empty_sequence(), name), expression)
+
+  reckon record_field_name(node : Sequence) -> Text = sequence_get(node, 0)
+  reckon record_field_expression(node : Sequence) -> Sequence = sequence_get(node, 1)
+
+  reckon record_node(fields : Sequence) -> Sequence =
+    sequence_append(sequence_append(sequence_append(empty_sequence(), "RecordExpr"), fields), record_expression_count(fields, 0, 1))
+
+  reckon record_fields(node : Sequence) -> Sequence = sequence_get(node, 1)
+
+  reckon canonical_type_text_from(value : Text, index : Number, output : Text) -> Text =
+    choose(index >= length(value), output,
+      choose(char_at(value, index) == ".",
+        canonical_type_text_from(value, index + 1, output + "::"),
+        canonical_type_text_from(value, index + 1, output + char_at(value, index))))
+
+  reckon canonical_type_text(value : Text) -> Text = canonical_type_text_from(value, 0, "")
+
+  reckon is_upper_letter(value : Text) -> Truth =
+    choose(length(value) == 0, false, upper_text(value) == value and lower_text(value) != value)
+
+  reckon is_typed_union_constructor(name : Text) -> Truth =
+    choose(length(name) == 0, false, is_upper_letter(char_at(name, 0)))
+
   reckon unary_node(operator : Text, expression : Sequence) -> Sequence =
     sequence_append(sequence_append(sequence_append(sequence_append(empty_sequence(), "UnaryExpr"), operator), expression), expression_count(expression) + 1)
 
@@ -192,15 +217,17 @@ reality RCLGeneralSelfHostCompiler {
   reckon parse_prefix(tokens : Sequence, index : Number) -> Sequence =
     choose(either(token_text_at(tokens, index) == not_operator(), token_text_at(tokens, index) == minus_operator()),
       parse_unary_after(tokens, index, parse_expression(tokens, index + 1, 7)),
-      choose(token_kind_at(tokens, index) == "NUMBER",
-        make_node_state(index + 1, literal_node("Number", text(number_from_text(token_text_at(tokens, index))))),
-        choose(token_kind_at(tokens, index) == "STRING",
-          make_node_state(index + 1, literal_node("Text", token_text_at(tokens, index))),
-          choose(either(token_text_at(tokens, index) == "true", token_text_at(tokens, index) == "false"),
-            make_node_state(index + 1, literal_node("Truth", token_text_at(tokens, index))),
-            choose(token_text_at(tokens, index) == "(",
-              parse_parenthesized_after(parse_expression(tokens, index + 1, 0)),
-              parse_identifier_expression(tokens, parse_path(tokens, index)))))))
+      choose(token_kind_at(tokens, index) == "SYMBOL" and token_text_at(tokens, index) == "{",
+        parse_record_expression_after(tokens, parse_record_after_open(tokens, index)),
+        choose(token_kind_at(tokens, index) == "NUMBER",
+          make_node_state(index + 1, literal_node("Number", text(number_from_text(token_text_at(tokens, index))))),
+          choose(token_kind_at(tokens, index) == "STRING",
+            make_node_state(index + 1, literal_node("Text", token_text_at(tokens, index))),
+            choose(either(token_text_at(tokens, index) == "true", token_text_at(tokens, index) == "false"),
+              make_node_state(index + 1, literal_node("Truth", token_text_at(tokens, index))),
+              choose(token_text_at(tokens, index) == "(",
+                parse_parenthesized_after(parse_expression(tokens, index + 1, 0)),
+                parse_identifier_expression(tokens, parse_path(tokens, index))))))))
 
   reckon parse_unary_after(tokens : Sequence, index : Number, expression_state : Sequence) -> Sequence =
     make_node_state(state_index(expression_state), unary_node(token_text_at(tokens, index), state_node(expression_state)))
@@ -232,6 +259,28 @@ reality RCLGeneralSelfHostCompiler {
 
   reckon parse_expression_after_prefix(tokens : Sequence, minimum : Number, prefix_state : Sequence) -> Sequence =
     parse_binary_tail(tokens, state_node(prefix_state), state_index(prefix_state), minimum)
+
+  reckon parse_record_fields(tokens : Sequence, index : Number, output : Sequence) -> Sequence =
+    choose(token_text_at(tokens, index) == "}", make_node_state(index + 1, output),
+      choose(token_kind_at(tokens, index) == "IDENT" and token_text_at(tokens, index + 1) == ":",
+        parse_record_field_after_expression(tokens, token_text_at(tokens, index),
+          parse_expression(tokens, index + 2, 0), output),
+        syntax_failure(tokens, index, "RCL_TYPED_RECORD_FIELD")))
+
+  reckon parse_record_field_after_expression(tokens : Sequence, name : Text, expression_state : Sequence, output : Sequence) -> Sequence =
+    choose(token_text_at(tokens, state_index(expression_state)) == ",",
+      parse_record_fields(tokens, state_index(expression_state) + 1,
+        sequence_append(output, record_field_node(name, state_node(expression_state)))),
+      choose(token_text_at(tokens, state_index(expression_state)) == "}",
+        make_node_state(state_index(expression_state) + 1,
+          sequence_append(output, record_field_node(name, state_node(expression_state)))),
+        syntax_failure(tokens, state_index(expression_state), "RCL_TYPED_RECORD_CLOSE")))
+
+  reckon parse_record_after_open(tokens : Sequence, index : Number) -> Sequence =
+    parse_record_fields(tokens, index + 1, empty_sequence())
+
+  reckon parse_record_expression_after(tokens : Sequence, record_state : Sequence) -> Sequence =
+    make_node_state(state_index(record_state), record_node(state_node(record_state)))
 
   reckon make_param(name : Text, value_type : Text) -> Sequence =
     sequence_append(sequence_append(empty_sequence(), name), value_type)
@@ -274,7 +323,12 @@ reality RCLGeneralSelfHostCompiler {
   reckon reckon_expression(node : Sequence) -> Sequence = sequence_get(node, 3)
 
   reckon parse_facet_after_path(tokens : Sequence, start : Number, path_state : Sequence) -> Sequence =
-    parse_facet_after_type(tokens, start, state_text(path_state), parse_path(tokens, state_index(path_state) + 1))
+    parse_facet_after_type(tokens, start, state_text(path_state), parse_type_text(tokens, state_index(path_state) + 1, ""))
+
+  reckon parse_type_text(tokens : Sequence, index : Number, output : Text) -> Sequence =
+    choose(token_text_at(tokens, index) == "=", make_text_state(index, output),
+      choose(token_kind_at(tokens, index) == "EOF", syntax_failure(tokens, index, "RCL_FACET_TYPE_REQUIRED"),
+        parse_type_text(tokens, index + 1, output + token_text_at(tokens, index))))
 
   reckon parse_facet_after_type(tokens : Sequence, start : Number, path : Text, type_state : Sequence) -> Sequence =
     parse_facet_after_expression(tokens, start, path, state_text(type_state),
@@ -1358,6 +1412,12 @@ reality RCLGeneralSelfHostCompiler {
   reckon json_quote(value : Text) -> Text = quote_character() + json_escape_from(value, 0, "") + quote_character()
   reckon json_truth(value : Text) -> Text = choose(value == "true", "true", "false")
 
+  reckon canonical_record_fields(items : Sequence, index : Number, output : Text) -> Text =
+    choose(index >= length(items), output + "]",
+      canonical_record_fields(items, index + 1,
+        output + choose(index == 0, "", ",") + "{\"name\":" + json_quote(record_field_name(sequence_get(items, index)))
+          + ",\"value\":" + canonical_expression(record_field_expression(sequence_get(items, index))) + "}"))
+
   reckon canonical_expression(node : Sequence) -> Text =
     choose(expr_kind(node) == "LiteralExpr",
       "{\"kind\":\"LiteralExpr\",\"value\":"
@@ -1371,8 +1431,10 @@ reality RCLGeneralSelfHostCompiler {
           choose(expr_kind(node) == "BinaryExpr",
             "{\"kind\":\"BinaryExpr\",\"left\":" + canonical_expression(expr_left(node))
               + ",\"operator\":" + json_quote(expr_text(node)) + ",\"right\":" + canonical_expression(expr_right(node)) + "}",
-            "{\"args\":" + canonical_expression_array(expr_args(node), 0, "[")
-              + ",\"kind\":\"CallExpr\",\"name\":" + json_quote(expr_text(node)) + "}"))))
+            choose(expr_kind(node) == "RecordExpr",
+              "{\"fields\":" + canonical_record_fields(record_fields(node), 0, "[") + ",\"kind\":\"RecordLiteralExpr\"}",
+              "{\"args\":" + canonical_expression_array(expr_args(node), 0, "[")
+                + ",\"kind\":\"CallExpr\",\"name\":" + json_quote(expr_text(node)) + "}")))))
 
   reckon canonical_expression_array(items : Sequence, index : Number, output : Text) -> Text =
     choose(index >= length(items), output + "]",
@@ -1906,6 +1968,16 @@ reality RCLGeneralSelfHostCompiler {
           choose(find_reckon_index(reckons, 0, expr_text(node)) >= 0,
           length(expr_args(node)) == length(reckon_params(sequence_get(reckons, find_reckon_index(reckons, 0, expr_text(node))))), true)))))))
 
+  reckon validate_record_fields(items : Sequence, index : Number, locals : Sequence, facets : Sequence, reckons : Sequence) -> Truth =
+    choose(index >= length(items), true,
+      choose(validate_expression(record_field_expression(sequence_get(items, index)), locals, facets, reckons),
+        validate_record_fields(items, index + 1, locals, facets, reckons), false))
+
+  reckon validate_facet_expression(node : Sequence, facets : Sequence, reckons : Sequence) -> Truth =
+    choose(expr_kind(node) == "CallExpr" and is_typed_union_constructor(expr_text(node)),
+      validate_expression_array(expr_args(node), 0, empty_sequence(), facets, reckons),
+      validate_expression(node, empty_sequence(), facets, reckons))
+
   reckon validate_expression(node : Sequence, locals : Sequence, facets : Sequence, reckons : Sequence) -> Truth =
     choose(expr_kind(node) == "LiteralExpr", true,
       choose(expr_kind(node) == "PathExpr",
@@ -1915,9 +1987,11 @@ reality RCLGeneralSelfHostCompiler {
           choose(expr_kind(node) == "BinaryExpr",
             choose(validate_expression(expr_left(node), locals, facets, reckons),
               validate_expression(expr_right(node), locals, facets, reckons), false),
-            choose(semantic_check(call_is_known(expr_text(node), reckons), "RCL_SEMANTIC_UNKNOWN_CALL", expr_text(node)),
-              choose(semantic_check(call_arity_valid(node, reckons), "RCL_SEMANTIC_CALL_ARITY", expr_text(node)),
-                validate_expression_array(expr_args(node), 0, locals, facets, reckons), false), false)))))
+            choose(expr_kind(node) == "RecordExpr",
+              validate_record_fields(record_fields(node), 0, locals, facets, reckons),
+              choose(semantic_check(call_is_known(expr_text(node), reckons), "RCL_SEMANTIC_UNKNOWN_CALL", expr_text(node)),
+                choose(semantic_check(call_arity_valid(node, reckons), "RCL_SEMANTIC_CALL_ARITY", expr_text(node)),
+                  validate_expression_array(expr_args(node), 0, locals, facets, reckons), false), false))))))
 
   reckon validate_facets(items : Sequence, index : Number, facets : Sequence, reckons : Sequence) -> Truth =
     choose(index >= length(items), true,
@@ -1925,7 +1999,7 @@ reality RCLGeneralSelfHostCompiler {
       choose(semantic_check(facet_domain_kind(sequence_get(items, index)) == "measure" or expr_kind(facet_expression(sequence_get(items, index))) != "LiteralExpr"
             or facet_type(sequence_get(items, index)) == expr_text(facet_expression(sequence_get(items, index))),
           "RCL_SEMANTIC_TYPE_MISMATCH", facet_path(sequence_get(items, index))),
-        choose(validate_expression(facet_expression(sequence_get(items, index)), empty_sequence(), facets, reckons),
+        choose(validate_facet_expression(facet_expression(sequence_get(items, index)), facets, reckons),
           validate_facets(items, index + 1, facets, reckons), false), false)))
 
   reckon validate_reckons(items : Sequence, index : Number, facets : Sequence, reckons : Sequence) -> Truth =
@@ -2051,7 +2125,14 @@ reality RCLGeneralSelfHostCompiler {
           choose(expr_kind(node) == "BinaryExpr",
             collect_expression_strings(expr_right(node), locals,
               collect_expression_strings(expr_left(node), locals, output)),
-            collect_call_strings(node, locals, output)))))
+            choose(expr_kind(node) == "RecordExpr",
+              collect_record_expression_strings(record_fields(node), 0, locals, output),
+              collect_call_strings(node, locals, output))))))
+
+  reckon collect_record_expression_strings(items : Sequence, index : Number, locals : Sequence, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      collect_record_expression_strings(items, index + 1, locals,
+        collect_expression_strings(record_field_expression(sequence_get(items, index)), locals, output)))
 
   reckon collect_call_strings(node : Sequence, locals : Sequence, output : Sequence) -> Sequence =
     choose(is_quantity_constructor(expr_text(node)),
@@ -2082,10 +2163,17 @@ reality RCLGeneralSelfHostCompiler {
           choose(expr_kind(node) == "BinaryExpr",
             collect_expression_numbers(expr_right(node), locals,
               collect_expression_numbers(expr_left(node), locals, output)),
-            choose(expr_text(node) == "intent_matches", collect_expression_numbers(intent_matches_expression(node), locals, output),
-              choose(expr_text(node) == "understood", collect_expression_numbers(understood_expression(node), locals, output),
-                choose(expr_text(node) == "selected", collect_expression_numbers(selected_expression(node), locals, output),
-                  collect_expression_numbers_array(expr_args(node), 0, locals, output))))))))
+            choose(expr_kind(node) == "RecordExpr",
+              collect_record_expression_numbers(record_fields(node), 0, locals, output),
+              choose(expr_text(node) == "intent_matches", collect_expression_numbers(intent_matches_expression(node), locals, output),
+                choose(expr_text(node) == "understood", collect_expression_numbers(understood_expression(node), locals, output),
+                  choose(expr_text(node) == "selected", collect_expression_numbers(selected_expression(node), locals, output),
+                    collect_expression_numbers_array(expr_args(node), 0, locals, output)))))))))
+
+  reckon collect_record_expression_numbers(items : Sequence, index : Number, locals : Sequence, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      collect_record_expression_numbers(items, index + 1, locals,
+        collect_expression_numbers(record_field_expression(sequence_get(items, index)), locals, output)))
 
   reckon collect_expression_numbers_array(items : Sequence, index : Number, locals : Sequence, output : Sequence) -> Sequence =
     choose(index >= length(items), output,
@@ -2099,8 +2187,26 @@ reality RCLGeneralSelfHostCompiler {
           append_unique_text(
             choose(facet_domain_kind(sequence_get(items, index)) == "measure",
               collect_measure_strings_complete(facet_domain_data(sequence_get(items, index)), output),
-              collect_expression_strings(facet_expression(sequence_get(items, index)), empty_sequence(), output)),
+              collect_typed_facet_strings(sequence_get(items, index), output)),
             facet_path(sequence_get(items, index))))))
+
+  reckon collect_typed_facet_strings(node : Sequence, output : Sequence) -> Sequence =
+    choose(expr_kind(facet_expression(node)) == "RecordExpr",
+      append_unique_text(append_unique_text(
+        collect_expression_strings(facet_expression(node), empty_sequence(), output),
+        canonical_type_text(facet_type(node))),
+        record_field_names(record_fields(facet_expression(node)), 0, "")),
+      choose(expr_kind(facet_expression(node)) == "CallExpr" and is_typed_union_constructor(expr_text(facet_expression(node))),
+        append_unique_text(append_unique_text(
+          collect_expression_strings(facet_expression(node), empty_sequence(), output),
+          canonical_type_text(facet_type(node))),
+          expr_text(facet_expression(node))),
+        collect_expression_strings(facet_expression(node), empty_sequence(), output)))
+
+  reckon record_field_names(items : Sequence, index : Number, output : Text) -> Text =
+    choose(index >= length(items), output,
+      record_field_names(items, index + 1,
+        output + choose(index == 0, "", "\n") + record_field_name(sequence_get(items, index))))
 
   reckon collect_facet_numbers(items : Sequence, index : Number, output : Sequence) -> Sequence =
     choose(index >= length(items), output,
@@ -2514,8 +2620,13 @@ reality RCLGeneralSelfHostCompiler {
     choose(index >= length(items), output,
       expression_count_array(items, index + 1, output + expression_count(sequence_get(items, index))))
 
+  reckon record_expression_count(items : Sequence, index : Number, output : Number) -> Number =
+    choose(index >= length(items), output,
+      record_expression_count(items, index + 1, output + expression_count(record_field_expression(sequence_get(items, index)))))
+
   reckon expression_count(node : Sequence) -> Number =
-    sequence_get(node, choose(expr_kind(node) == "BinaryExpr", 4, choose(expr_kind(node) == "PathExpr", 2, 3)))
+    sequence_get(node, choose(expr_kind(node) == "BinaryExpr", 4,
+      choose(expr_kind(node) == "PathExpr", 2, choose(expr_kind(node) == "RecordExpr", 2, 3))))
 
   reckon expression_call_count(node : Sequence) -> Number = sequence_get(node, 3)
 
@@ -2693,6 +2804,23 @@ reality RCLGeneralSelfHostCompiler {
       emit_expression_array(items, index + 1, locals, reckons, strings, numbers, main_count,
         start, append_all(emit_expression(sequence_get(items, index), locals, reckons, strings, numbers, main_count, start + length(output)), output)))
 
+  reckon emit_record_fields(items : Sequence, index : Number, locals : Sequence, reckons : Sequence, strings : Sequence, numbers : Sequence, main_count : Number, start : Number, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      emit_record_fields(items, index + 1, locals, reckons, strings, numbers, main_count, start,
+        append_all(emit_expression(record_field_expression(sequence_get(items, index)), locals, reckons, strings, numbers, main_count,
+          start + length(output)), output)))
+
+  reckon emit_typed_facet_expression(node : Sequence, value_type : Text, locals : Sequence, reckons : Sequence, strings : Sequence, numbers : Sequence, main_count : Number, start : Number) -> Sequence =
+    choose(expr_kind(node) == "RecordExpr",
+      append_all(one_instruction(36, find_text(strings, 0, canonical_type_text(value_type)),
+          find_text(strings, 0, record_field_names(record_fields(node), 0, "")), length(record_fields(node))),
+        emit_record_fields(record_fields(node), 0, locals, reckons, strings, numbers, main_count, start, empty_sequence())),
+      choose(expr_kind(node) == "CallExpr" and is_typed_union_constructor(expr_text(node)),
+        append_all(one_instruction(37, find_text(strings, 0, canonical_type_text(value_type)),
+            find_text(strings, 0, expr_text(node)), length(expr_args(node))),
+          emit_expression_array(expr_args(node), 0, locals, reckons, strings, numbers, main_count, start, empty_sequence())),
+        emit_expression(node, locals, reckons, strings, numbers, main_count, start)))
+
   reckon emit_short_binary(node : Sequence, locals : Sequence, reckons : Sequence, strings : Sequence, numbers : Sequence, main_count : Number, start : Number) -> Sequence =
     choose(expr_text(node) == "and",
       append_all(one_instruction(2, 0, 0, 0),
@@ -2814,10 +2942,11 @@ reality RCLGeneralSelfHostCompiler {
     choose(index >= length(items), output,
       emit_facets(items, index + 1, reckons, strings, numbers, main_count, start,
         choose(facet_deferred(sequence_get(items, index)), output,
-          append_all(one_instruction(5, find_text(strings, 0, facet_path(sequence_get(items, index))), 0, 0),
+            append_all(one_instruction(5, find_text(strings, 0, facet_path(sequence_get(items, index))), 0, 0),
             append_all(choose(facet_domain_kind(sequence_get(items, index)) == "measure",
                 emit_measurement(facet_domain_data(sequence_get(items, index)), reckons, strings, numbers, main_count, start + length(output)),
-                emit_expression(facet_expression(sequence_get(items, index)), empty_sequence(), reckons, strings, numbers, main_count, start + length(output))), output)))))
+                emit_typed_facet_expression(facet_expression(sequence_get(items, index)), facet_type(sequence_get(items, index)),
+                  empty_sequence(), reckons, strings, numbers, main_count, start + length(output))), output)))))
 
   reckon emit_text_sequence(items : Sequence, index : Number, strings : Sequence, output : Sequence) -> Sequence =
     choose(index >= length(items), output,

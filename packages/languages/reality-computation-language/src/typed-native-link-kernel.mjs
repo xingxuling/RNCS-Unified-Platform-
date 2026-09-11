@@ -6,6 +6,7 @@ import { tryCompileReality } from './compiler.mjs';
 import { compileRealityToBytecode, decodeBytecode, OPCODES } from './bytecode.mjs';
 import { runNativeBytecode } from './native-vm.mjs';
 import { runReality } from './runtime.mjs';
+import { compileSourceSelfHosted } from './selfhost-compiler.mjs';
 import { compileTypedModuleGraph } from './type-module-kernel.mjs';
 import { realityRoot } from './canonical.mjs';
 
@@ -82,6 +83,22 @@ function typedInstructionCount(decoded) {
   return (decoded.instructions ?? []).filter(instruction => TYPED_OPCODE_SET.has(instruction.op)).length;
 }
 
+function typedInstructionSignature(decoded) {
+  const stringOperand = index => decoded.strings?.[index] ?? null;
+  return (decoded.instructions ?? [])
+    .filter(instruction => TYPED_OPCODE_SET.has(instruction.op))
+    .map(instruction => {
+      const base = { op: instruction.op, flags: instruction.flags ?? 0, c: instruction.c };
+      if (instruction.op === OPCODES.MAKE_TYPED_RECORD || instruction.op === OPCODES.MAKE_TYPED_UNION) {
+        return { ...base, a: stringOperand(instruction.a), b: stringOperand(instruction.b) };
+      }
+      if (instruction.op === OPCODES.GET_TYPED_FIELD || instruction.op === OPCODES.IS_UNION_VARIANT) {
+        return { ...base, a: stringOperand(instruction.a) };
+      }
+      return { ...base, a: instruction.a, b: instruction.b };
+    });
+}
+
 function packageBinding(options, typeModuleRoot, programRoot, sourceRoot) {
   const lock = options.packageLock ?? null;
   const lockRoot = options.packageLockRoot ?? lock?.lockRoot ?? null;
@@ -127,8 +144,14 @@ export async function compileTypedNativeLink(source, options = {}) {
 
     const linked = tryCompileReality(source, { typeModuleReport });
     if (!linked.ok) return { ok: false, diagnostics: linked.diagnostics, receipt: null };
-    const bytecode = Buffer.from(compileRealityToBytecode(linked.program));
+    const referenceBytecode = Buffer.from(compileRealityToBytecode(linked.program));
+    const useSelfHostedCompiler = options.selfHosted === true || options.compiler === 'selfhost';
+    const bytecode = useSelfHostedCompiler
+      ? Buffer.from(compileSourceSelfHosted(source, options.selfHostedCompilerOptions ?? {}))
+      : referenceBytecode;
     const decoded = decodeBytecode(bytecode);
+    const referenceDecoded = decodeBytecode(referenceBytecode);
+    const typedOpcodeParity = JSON.stringify(typedInstructionSignature(decoded)) === JSON.stringify(typedInstructionSignature(referenceDecoded));
     const native = runNativeBytecode(bytecode, options.nativeRuntime ?? {});
     const reference = await runReality(linked.program, options.referenceRuntime ?? {});
     const referenceState = semanticState(reference.state);
@@ -141,7 +164,7 @@ export async function compileTypedNativeLink(source, options = {}) {
     const base = {
       format: RCL_TYPED_NATIVE_LINK_FORMAT,
       version: RCL_TYPED_NATIVE_LINK_VERSION,
-      status: native.stateRootVerified === true && native.stateRootParity === true && semanticStateParity
+      status: native.stateRootVerified === true && native.stateRootParity === true && semanticStateParity && typedOpcodeParity
         ? 'CANDIDATE_EXECUTION_VERIFIED'
         : 'CANDIDATE_EXECUTION_BLOCKED',
       source: {
@@ -150,6 +173,11 @@ export async function compileTypedNativeLink(source, options = {}) {
         source_bytes: Buffer.byteLength(source, 'utf8'),
       },
       package: packageInfo,
+      compiler: {
+        kind: useSelfHostedCompiler ? 'rcl-general-selfhost-typed-constructor-lowering' : 'rcl-js-typed-lowering',
+        reference_bytecode_sha256: sha256Buffer(referenceBytecode),
+        typed_opcode_parity: typedOpcodeParity,
+      },
       type_modules: {
         format: typeModuleReport.ir.format,
         version: typeModuleReport.ir.version,
@@ -194,8 +222,11 @@ export async function compileTypedNativeLink(source, options = {}) {
         canonical_write_authorized: false,
         commit_requires_explicit_rncs_authority: true,
         native_authority_plan: 'NOT_COMPILED_BY_TYPED_LINK',
+        native_selfhost_type_resolution: useSelfHostedCompiler ? 'SEALED_TYPED_PACKAGE_PRECHECK_ONLY' : 'NOT_APPLICABLE',
       },
-      boundary: 'Candidate typed link only: type-module graph, typed compiler, RBC/native VM and reference-state parity are rooted; native RCL authority-plan compilation, canonical mutation and promotion remain separate.',
+      boundary: useSelfHostedCompiler
+        ? 'Candidate typed link with native self-hosted constructor lowering: the sealed typed package graph performs field/variant/type validation before the self-hosted compiler consumes source and emits typed RBC; full independent native type-module resolution, native RCL authority-plan compilation, canonical mutation and promotion remain separate.'
+        : 'Candidate typed link only: type-module graph, typed compiler, RBC/native VM and reference-state parity are rooted; native RCL authority-plan compilation, canonical mutation and promotion remain separate.',
     };
     const receipt = { ...base, link_root: realityRoot(base) };
     const verification = verifyTypedNativeLink(receipt, { source, typeModuleReport, packageLock: options.packageLock, packageLockRoot: options.packageLockRoot });
@@ -343,6 +374,7 @@ export function verifyTypedNativeLink(receipt, options = {}) {
   if (receipt.execution?.native?.state_root_verified !== true) errors.push('RCL_TYPED_LINK_NATIVE_STATE_ROOT_UNVERIFIED');
   if (receipt.execution?.native?.state_root_parity !== true) errors.push('RCL_TYPED_LINK_NATIVE_STATE_ROOT_PARITY_REQUIRED');
   if (receipt.execution?.semantic_state_parity !== true) errors.push('RCL_TYPED_LINK_REFERENCE_NATIVE_PARITY_REQUIRED');
+  if (receipt.compiler?.kind === 'rcl-general-selfhost-typed-constructor-lowering' && receipt.compiler?.typed_opcode_parity !== true) errors.push('RCL_TYPED_LINK_SELFHOST_TYPED_OPCODE_PARITY_REQUIRED');
   if (options.source !== undefined && receipt.source?.source_root !== sha256Text(options.source)) errors.push('RCL_TYPED_LINK_SOURCE_ROOT_MISMATCH');
   if (options.typeModuleReport && receipt.type_modules?.ir_root !== options.typeModuleReport.irRoot) errors.push('RCL_TYPED_LINK_TYPE_MODULE_ROOT_MISMATCH');
   const lockRoot = options.packageLockRoot ?? options.packageLock?.lockRoot;

@@ -54,6 +54,30 @@ test('P3 typed native link executes the existing typed compiler and native VM wi
   assert.match(replay.replay.replay_root, /^[0-9a-f]{64}$/);
 });
 
+test('P3 typed native link can consume the sealed package through native self-hosted constructor lowering', async () => {
+  const result = await compileTypedNativeLink(source, { typeModuleSources, selfHosted: true });
+  assert.equal(result.ok, true);
+  assert.equal(result.receipt.status, 'CANDIDATE_EXECUTION_VERIFIED');
+  assert.equal(result.receipt.compiler.kind, 'rcl-general-selfhost-typed-constructor-lowering');
+  assert.equal(result.receipt.compiler.typed_opcode_parity, true);
+  assert.equal(result.receipt.authority.native_selfhost_type_resolution, 'SEALED_TYPED_PACKAGE_PRECHECK_ONLY');
+  assert.equal(result.receipt.execution.semantic_state_parity, true);
+  assert.equal(result.receipt.execution.native.state_root_parity, true);
+  assert.deepEqual(verifyTypedNativeLink(result.receipt, { source, typeModuleReport: result.program.typeModules }), { ok: true, errors: [] });
+  const replay = replayTypedNativeLink(result.receipt, result.bytecode, { source, typeModuleReport: result.program.typeModules });
+  assert.equal(replay.ok, true);
+  assert.equal(replay.replay.status, 'CANDIDATE_REPLAY_VERIFIED');
+});
+
+test('P3 self-hosted typed lowering does not bypass sealed type validation', async () => {
+  const invalid = await compileTypedNativeLink(
+    'reality InvalidTyped { facet app.command : core.SpatialCommand<Text> = { id: "x" } }',
+    { typeModuleSources, selfHosted: true },
+  );
+  assert.equal(invalid.ok, false);
+  assert.ok(invalid.diagnostics.some(item => item.code === 'RCL_RECORD_FIELD_MISSING'));
+});
+
 test('P3 typed native link requires a typed module graph', async () => {
   const result = await compileTypedNativeLink(source);
   assert.equal(result.ok, false);
@@ -86,6 +110,19 @@ test('P3 typed native package link consumes a verified manifest and lock root', 
   });
   assert.equal(replay.ok, true);
   assert.equal(replay.replay.execution.semantic_state_parity, true);
+});
+
+test('P3 typed native package link can select the native self-hosted lowering path', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rcl-typed-package-selfhost-link-'));
+  const packageDemo = runTypedPackageDemo({ baseDir: dir });
+  assert.equal(packageDemo.ok, true);
+
+  const result = await compileTypedNativeLinkFromPackage(dir, { selfHosted: true });
+  assert.equal(result.ok, true);
+  assert.equal(result.receipt.package.lock_root, packageDemo.lockRoot);
+  assert.equal(result.receipt.compiler.kind, 'rcl-general-selfhost-typed-constructor-lowering');
+  assert.equal(result.receipt.compiler.typed_opcode_parity, true);
+  assert.equal(result.receipt.execution.semantic_state_parity, true);
 });
 
 test('P3 typed native package link rejects a missing or drifted lock', async () => {
