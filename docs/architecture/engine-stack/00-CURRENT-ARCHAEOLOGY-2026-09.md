@@ -747,6 +747,24 @@ typed module graph + RCL source
 
 candidate 的边界仍是刻意的：`authority.native_authority_plan=NOT_COMPILED_BY_TYPED_LINK`；把相同 typed source 直接交给旧的 `compileRclSource()` 仍会由 native self-host compiler 以 `RCLC_COMPILER_FAILURE` 拒绝 record literal。因此本轮关闭的是“已有 typed P3 path 能否形成 RNCS 可消费、可验根的 candidate link”这一共享 seam，没有关闭 self-host/native authority typed lowering、physical profile 一等 RCL primitive、canonical commit、dynamic terrain、设备/生产运行或 K400 PASS。详细收据见 `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_CANDIDATE_v0.1.json`。
 
+## 本轮 typed package manifest/lock → native candidate seam
+
+沿 package-first 的最小路径继续收敛：没有为 package 再造一套编译器，也没有绕过已有 `compileTypedPackage()`、`verifyTypedPackageLock()` 或 typed native link。`compileTypedPackage()` 的实际 build report 现在把已编译的 entry source、`.rcltype` sources 和 type-module report 交给 `compileTypedNativeLinkFromPackage()`；该入口先要求 lockfile 存在且与当前 manifest、文件 hashes、typed module roots、semantic roots 和 program root 一致，再把相同 package roots 送入既有 typed compiler/native VM/reference parity 链。
+
+```text
+`rcl.package.json` + `rcl.package.lock.json`
+  → existing typed package build / lock verification
+  → entry source + typed module graph
+  → existing typed compiler / RBC / native VM
+  → reference/native semantic parity
+  → `rcl.typed-native-link.v0.1` with `package.lock_root`
+  → RNCS `rncs.rcl-typed-native-candidate.v0.1`
+```
+
+除了 `typeModuleRoot` 与 `programRoot`，link 现在还校验 lockfile entry hash 与 `source_root` 一致；RNCS candidate 同时暴露并重新绑定 `source.package_lock_root`、`roots.package_lock_root` 和 typed link package root。lock 缺失、manifest/source/type drift、entry hash 不一致或 root tamper 均在 candidate/native link 前 fail closed。RCL library 暴露 `compileTypedNativeLinkFromPackage()`，RNCS control plane 暴露 `compileRclTypedCandidateFromPackage()`；这条路径仍只生产 candidate execution，`native_authority_plan=NOT_COMPILED_BY_TYPED_LINK`、canonical write 和 promotion gate 没有变化。
+
+本轮正负例已本地执行：RCL typed package/link focused `9/9 PASS`，RNCS control-plane `20/20 PASS`，覆盖 verified lock consumption、missing lock、source drift、package root binding、candidate verification 与 tamper rejection。该 seam 关闭的是“已经存在的 typed package/lock 能否进入可验证 candidate link”这一共享输入缺口；native self-host compiler 直接消费 `.rcltype`/sealed ABI、RCL 一等 physical command primitive、canonical authority commit、dynamic terrain 和设备/生产证据仍 OPEN。固定回执位于 `docs/verification/RNCS_RCL_TYPED_PACKAGE_NATIVE_CANDIDATE_v0.1.json`，不覆盖历史 candidate evidence。
+
 ## 本轮 Large World → RSR terrain lowering adapter
 
 在保持 Large World Runtime 不依赖 RSR 的前提下，新增 `packages/integration/large-world-rsr-bridge`。它先验证 region、chunk、stream resolution 和 source stream transition，再只接受 active chunk，把既有 `chunk.mesh.positions` 的 row-major y 样本降低为 `rncs.entity-state-batch.v0.1` 的 `spatial.fixtures.items.shape=heightfield`；Kernel 既有 materializer 随后生成 RSR static terrain body。每个 binding 同时保留 `chunk_root`、`state_root`、`content_root`、`mesh_root`、`height_samples_root`、`origin_mm` 和 `stream_root`，candidate/admission/physical transition 另行绑定 `stream_transition_root`，相邻 chunk 的共享边界样本经回归保持相等。

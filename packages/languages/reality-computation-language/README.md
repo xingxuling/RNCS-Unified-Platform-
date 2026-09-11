@@ -683,6 +683,14 @@ rcl type-package-verify examples/typed-package rcl.package.lock.json
 
 This adds `rcl.package.json` and `rcl.package.lock.json` support. The lockfile pins entry `.rcl`, `.rcltype` source hashes, typed module roots, semantic map roots and final program root so package-level typed builds can be verified and source drift can be rejected.
 
+The verified package can now feed the existing typed native VM link as a candidate:
+
+```js
+const candidate = await compileTypedNativeLinkFromPackage(packageDir);
+```
+
+The link refuses a missing or drifted lockfile and binds the manifest entry hash, typed-module root, program root and `packageLockRoot` into the candidate receipt. This remains candidate execution only; native RCL authority-plan compilation, canonical mutation and promotion still require their separate explicit RNCS authority path.
+
 ## v0.33.0-alpha.1 — Typed RBC Object Layout Seed
 
 P3 now pushes typed constructors into RBC/native VM execution:

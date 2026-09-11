@@ -1,0 +1,135 @@
+{
+  "format": "rncs.rcl-typed-package-native-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "223bee4",
+    "packagePath": "packages/languages/reality-computation-language/examples/typed-package",
+    "manifest": "rcl.package.json",
+    "lockfile": "rcl.package.lock.json",
+    "rclPackage": "@taowind/reality-computation-language@0.94.0-alpha.1",
+    "controlPlanePackage": "@taowind/rncs-rcl-control-plane@0.4.0-alpha.1",
+    "authorityBoundary": "Verified package-to-native candidate execution only; native authority-plan compilation, canonical write and promotion remain separate."
+  },
+  "seam": {
+    "manifestFormat": "rcl.typed-package.manifest.v0.32",
+    "lockFormat": "rcl.typed-package.lock.v0.32",
+    "typedLinkFormat": "rcl.typed-native-link.v0.1",
+    "candidateFormat": "rncs.rcl-typed-native-candidate.v0.1",
+    "semanticOwners": {
+      "packageManifestAndLock": "RCL typed package kernel",
+      "typedModuleGraph": "RCL type-module kernel",
+      "typedCompilation": "RCL typed compiler",
+      "typedBytecodeAndNativeExecution": "RCL RBC/native VM",
+      "candidateEnvelope": "RNCS RCL control plane",
+      "canonicalAuthority": "Not entered by this candidate"
+    }
+  },
+  "archaeology": {
+    "preRefreshLockRoot": "37a8d0489d06b95279405780142a82b40532d9c5b3bec6da61e06011f996e0ae",
+    "preRefreshResult": "REJECTED: RCL_TYPED_PACKAGE_LOCK_MISMATCH",
+    "refreshResult": "The existing example lock was regenerated from the current checked-in manifest, CRLF-preserved source hashes and typed compiler roots; no validation was weakened.",
+    "currentLockRoot": "9a387d627d74425cfdcc4d923befb308a25342c6b6868f1c1d9441a4ffe64ec2"
+  },
+  "positiveEvidence": [
+    "The existing typed package manifest and lockfile are verified before linking; the current lock root is reproducible.",
+    "The package build report feeds its existing entry source and .rcltype graph into the existing typed compiler, RBC emitter, native VM and reference runtime.",
+    "The typed native link binds package lock root, entry source root, typed-module root and program root; the entry file hash must equal source_root.",
+    "Native state-root verification, native/reference semantic-state parity and RNCS candidate-root verification all pass.",
+    "RNCS exposes compileRclTypedCandidateFromPackage() while preserving candidate-only authority metadata."
+  ],
+  "negativeEvidence": [
+    "A missing lock fails with RCL_TYPED_PACKAGE_LOCK_MISSING before native candidate execution.",
+    "A changed .rcltype source fails with RCL_TYPED_PACKAGE_LOCK_MISMATCH before native candidate execution.",
+    "Candidate, package-root and authority tamper cases fail closed in the typed-link/control-plane tests.",
+    "The same typed package source still does not enter compileRclSource() native authority compilation; the native self-host path rejects the typed record literal with RCLC_COMPILER_FAILURE.",
+    "No canonical world mutation, physical device, production deployment, external transport, target GPU performance or K400 PASS is established."
+  ],
+  "execution": {
+    "commands": [
+      "node src/cli.mjs type-package-build examples/typed-package rcl.package.lock.json",
+      "node src/cli.mjs type-package-verify examples/typed-package rcl.package.lock.json",
+      "node --test --test-concurrency=1 tests/typed-package-kernel.test.mjs tests/typed-native-link.test.mjs",
+      "node --test --test-concurrency=1 packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs",
+      "npm test --workspace @taowind/reality-computation-language",
+      "Direct Node run: compileRclTypedCandidateFromPackage() + verifyRclTypedCandidate() + compileRclSource()"
+    ],
+    "results": {
+      "packageBuild": "PASS",
+      "packageVerify": "PASS: expectedLockRoot equals rebuiltLockRoot",
+      "typedPackageNativeFocusedSuite": "9/9 PASS",
+      "rclControlPlaneSuite": "20/20 PASS",
+      "fullRclSuite": "618 tests / 617 pass / 0 fail / 1 skip",
+      "candidateVerification": "PASS: ok=true, errors=[]",
+      "nativeAuthorityTypedPackage": "BLOCKED: RCLC_COMPILER_FAILURE",
+      "missingLockNegative": "PASS: RCL_TYPED_PACKAGE_LOCK_MISSING",
+      "sourceDriftNegative": "PASS: RCL_TYPED_PACKAGE_LOCK_MISMATCH"
+    }
+  },
+  "receipt": {
+    "candidateRoot": "00c0929e2547c450048f55d42a8a2c01cdfef3fa3285a17bf32a83389301e488",
+    "typedLinkRoot": "73f487526f311594579c584df6559b50de15738650cc84dc8a4395e32f01cce9",
+    "packageLockRoot": "9a387d627d74425cfdcc4d923befb308a25342c6b6868f1c1d9441a4ffe64ec2",
+    "sourceRoot": "8e2b0f4dc47c1710c893bb9e1b102ab067c186f9325acc3d10d88edba2479293",
+    "manifestEntrySha256": "8e2b0f4dc47c1710c893bb9e1b102ab067c186f9325acc3d10d88edba2479293",
+    "manifestSha256": "a58db44bd152dad8bc40ea445d502c0ea745aac4ca1b3ee4f193829f8315341c",
+    "typeSourceSha256": "715fb25a41546000acc43e6cdb76904236797b48d3f9fdc9ea79bb726a652151",
+    "typeModuleRoot": "db946a8588cd523c468ec972e134c466fec0872e3b7753db1c84e90a6bf29a00",
+    "programRoot": "d042acfbb3484fa16c11551190bcab1e994a913f270aba17299c59654cb52bbf",
+    "semanticMapRoot": "0cb0db9062a65e2abfc39806ec56bece8c196daee4a5caeb13c24fc432ccf783",
+    "typeBindingsRoot": "81297a1c96c1640ba46825f143dc97e6476b11b991aed64ba13856ae4445d484",
+    "sourceMapRoot": "3eb948090477938847c2c37f12e506b018fe933149ac965e1e4a6d76e71838ce",
+    "bytecodeRoot": "1f7d81325e3957ced042169db65f25e35727195e5a991342ec28443ccb25523c",
+    "bytecodeBytes": 376,
+    "bytecodeInstructions": 8,
+    "typedInstructionCount": 2,
+    "referenceSemanticStateRoot": "bc81446c0eba8fcad5cc0c6b1afda7fea406c584b120519f71cbbdd057c5b09a",
+    "nativeSemanticStateRoot": "bc81446c0eba8fcad5cc0c6b1afda7fea406c584b120519f71cbbdd057c5b09a",
+    "nativeStateRoot": "efb7cc27959ab6858cbd0e90a67aff6f6535bb6ba6afdb4b28b1c1ed933606c4",
+    "nativeStateRootVerified": true,
+    "nativeStateRootParity": true,
+    "semanticStateParity": true,
+    "authority": {
+      "candidateOnly": true,
+      "canonicalWriteAuthorized": false,
+      "commitRequiresExplicitRncsAuthority": true,
+      "nativeAuthorityPlan": "NOT_COMPILED_BY_TYPED_LINK"
+    }
+  },
+  "authorityProbe": {
+    "status": "BLOCKED_TYPED_NATIVE_AUTHORITY_LINK",
+    "compiler": "rcl-native-selfhost",
+    "errorCode": "RCLC_COMPILER_FAILURE",
+    "errorMessage": "RCL_SEMANTIC_ASSERT: { at 2:38",
+    "authorityTypeModuleRoot": null,
+    "authorityStateRoot": null
+  },
+  "rclGap": {
+    "id": "RCL_GAP_RNCS_FIRST_CLASS_PHYSICAL_COMMAND_PRIMITIVE",
+    "subgap": "RCL_GAP_RNCS_RCL_TYPED_MODULE_NATIVE_AUTHORITY_LINK",
+    "task": "Make the native self-host authority compiler consume the sealed typed package/link ABI without duplicating compiler semantics or weakening candidate/commit gates.",
+    "missingCapability": "Native authority lowering and root binding for the .rcltype graph, package lock, typed constructors, typed bytecode and authority-plan evidence.",
+    "workaround": "The existing RCL typed package kernel and typed compiler/native VM now produce a verified package-bound candidate; physical profile and Kernel command batch remain explicit control-plane/integration contracts.",
+    "donor": "Existing RCL typed package lock, type-module kernel, typed compiler semantic map, typed RBC/native VM, typed heap/reference ABI and native C runtime; no external donor promoted.",
+    "gapType": "language-runtime-authority-link",
+    "generality": "Reusable for physical command profiles, World Body IR, input/network commands, asset contracts and behavior contracts.",
+    "candidateAbsorption": "Use the package-bound receipt as the sealed handoff; next add native self-host typed graph/link consumption, compiler parity, reference/native replay, tamper rejection and explicit authority-plan root binding before any canonical write path.",
+    "affectedK400Cells": ["EXPRESS", "COMPILE", "LOWER", "EXECUTE", "CORRECT", "ROBUST", "EVIDENCE"]
+  },
+  "gateAssessment": {
+    "EXPRESS": "CANDIDATE_EVIDENCE",
+    "COMPILE": "CANDIDATE_EVIDENCE",
+    "LOWER": "CANDIDATE_EVIDENCE",
+    "EXECUTE": "CANDIDATE_EVIDENCE",
+    "CORRECT": "CANDIDATE_EVIDENCE",
+    "ROBUST": "CANDIDATE_EVIDENCE",
+    "PERFORMANCE": "NOT_RUN",
+    "AI_GENERATE": "NOT_APPLICABLE",
+    "EVIDENCE": "CANDIDATE_EVIDENCE",
+    "promotion": "NO_K400_PASS"
+  },
+  "decision": "RCL_TYPED_PACKAGE_LOCK_BOUND_NATIVE_CANDIDATE_VERIFIED_NATIVE_SELFHOST_AUTHORITY_TYPED_LINK_AND_FIRST_CLASS_PHYSICAL_COMMAND_PRIMITIVE_OPEN",
+  "evidenceRoot": "4518d2156276234704d0903de77284318711e08acf20aaf97c661c62996ebf70"
+}
