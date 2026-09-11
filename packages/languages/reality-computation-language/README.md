@@ -622,11 +622,10 @@ Added in v0.31:
 
 Deferred:
 
-- RBC bytecode object layout for record/union values
-- native VM heap/object representation for typed records and unions
-- package-level lockfile integration
 - incremental compilation
-- complete compiler self-hosting in RCL itself
+- complete compiler self-hosting in RCL itself, including the full typed-module graph and typed constructor surface
+- native authority-plan consumption of the typed link and package lock roots
+- canonical RNCS mutation/promotion from typed candidates
 
 ## Existing resource/runtime layers
 
@@ -838,6 +837,14 @@ P3 typed runtime closure adds:
 - snapshot reload verification
 
 This closes the typed object/reference/heap line enough to move toward P4 debugging, tracing and deterministic replay.
+
+## Current typed/native authority boundary
+
+The P3 typed module, package lock, typed RBC object layout, native heap/reference/GC slices and typed native link candidate are implemented and locally executable. The typed compiler path accepts `typeModuleSources` or a typed module report, emits source/program/type roots, and the native VM verifies reference/native semantic-state parity.
+
+The RNCS control-plane authority entry remains intentionally separate: `compileRclSource()` still invokes the native self-host compiler and does not consume the typed module graph. Use `compileRclTypedCandidate()` for the rooted candidate envelope; it records `native_authority_plan=NOT_COMPILED_BY_TYPED_LINK`, `candidate_only=true` and `canonical_write_authorized=false`. This is a candidate execution seam, not a canonical authority or production release path.
+
+Evidence: `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_AUDIT_v0.1.json` and `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_CANDIDATE_v0.1.json`.
 
 
 ## v0.38.0-alpha.1 — Observable Debug Replay Platform Seed

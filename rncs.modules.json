@@ -532,6 +532,8 @@
         "cross-file-type-checking",
         "combined-typed-rcl-ir",
         "stage4-module-self-hosting-core",
+        "rcl-typed-native-link-candidate",
+        "typed-native-reference-parity",
         "rncs-control-plane-double-write-seed",
         "native-byte-primitives",
         "deterministic-rbc-emission",
@@ -590,7 +592,9 @@
       "test": "npm test --workspace @taowind/rncs-rcl-control-plane",
       "capabilities": [
         "rcl-native-authority-plan",
+        "rcl-typed-native-candidate-envelope",
         "rcl-native-spatial-command-plan-candidate",
+        "rcl-physical-command-profile-candidate",
         "no-canonical-commit-without-rncs-authority"
       ]
     },

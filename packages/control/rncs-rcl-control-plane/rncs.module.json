@@ -20,6 +20,7 @@
  "test": "npm test --workspace @taowind/rncs-rcl-control-plane",
   "capabilities": [
     "rcl-native-authority-plan",
+    "rcl-typed-native-candidate-envelope",
     "rcl-native-spatial-command-plan-candidate",
     "rcl-physical-command-profile-candidate",
     "no-canonical-commit-without-rncs-authority"
