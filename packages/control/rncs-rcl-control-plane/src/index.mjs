@@ -33,6 +33,8 @@ export const PACKAGE_ROOT = path.dirname(HERE);
 export const RCL_ROOT = path.join(PACKAGE_ROOT, 'rcl');
 export const RCL_SPATIAL_COMMAND_PLAN_FORMAT = 'rncs.rcl-spatial-command-plan.v0.1';
 export const RCL_SPATIAL_COMMAND_PLAN_VERSION = '0.1.0';
+export const RCL_TYPED_AUTHORITY_CANDIDATE_FORMAT = 'rncs.rcl-typed-authority-candidate.v0.1';
+export const RCL_TYPED_AUTHORITY_CANDIDATE_VERSION = '0.1.0';
 
 export const CONTROL_PLANE_EDGES = Object.freeze([
   ['core', 'rfe'],
@@ -198,6 +200,19 @@ export async function compileRclTypedCandidateFromPackage(packageDir, options = 
   return throwTypedCandidateFailure(await compileTypedNativeLinkFromPackage(packageDir, options));
 }
 
+export async function compileRclTypedAuthorityCandidateFromPackage(packageDir, options = {}) {
+  const typed = await compileTypedNativeLinkFromPackage(packageDir, options);
+  if (!typed.ok) throwTypedCandidateFailure(typed);
+  const candidate = createRclTypedCandidate(typed.receipt);
+  return compileRclTypedAuthorityCandidate(candidate, typed.bytecode, {
+    ...options,
+    source: options.source ?? typed.packageBuild.source,
+    typeModuleReport: options.typeModuleReport ?? typed.packageBuild.typeModuleReport,
+    packageLock: options.packageLock ?? typed.packageBuild.lock,
+    packageLockRoot: options.packageLockRoot ?? typed.receipt.package.lock_root,
+  });
+}
+
 export function verifyRclTypedCandidate(candidate, options = {}) {
   const errors = [];
   if (!candidate || typeof candidate !== 'object') return { ok: false, errors: ['RCL_TYPED_CANDIDATE_REQUIRED'] };
@@ -217,11 +232,7 @@ export function verifyRclTypedCandidate(candidate, options = {}) {
   return { ok: errors.length === 0, errors };
 }
 
-export function replayRclTypedCandidate(candidate, bytecodeOrPath, options = {}) {
-  const candidateVerification = verifyRclTypedCandidate(candidate, options);
-  if (!candidateVerification.ok) return { ok: false, diagnostics: candidateVerification.errors.map(code => ({ code, message: code, severity: 'error' })), replay: null };
-  const typedReplay = replayTypedNativeLink(candidate.typed_link, bytecodeOrPath, options);
-  if (!typedReplay.ok) return { ok: false, diagnostics: typedReplay.diagnostics ?? [], replay: null };
+function createRclTypedReplay(candidate, typedReplay) {
   const base = {
     format: 'rncs.rcl-typed-native-replay.v0.1',
     version: '0.1.0',
@@ -238,6 +249,14 @@ export function replayRclTypedCandidate(candidate, bytecodeOrPath, options = {})
     boundary: 'RNCS replay admission only: the sealed typed link is re-consumed by the native VM and its roots are compared; native authority-plan compilation, canonical mutation and promotion remain separate.',
   };
   return { ok: true, ...base, replay_root: rclJsonRoot(base) };
+}
+
+export function replayRclTypedCandidate(candidate, bytecodeOrPath, options = {}) {
+  const candidateVerification = verifyRclTypedCandidate(candidate, options);
+  if (!candidateVerification.ok) return { ok: false, diagnostics: candidateVerification.errors.map(code => ({ code, message: code, severity: 'error' })), replay: null };
+  const typedReplay = replayTypedNativeLink(candidate.typed_link, bytecodeOrPath, options);
+  if (!typedReplay.ok) return { ok: false, diagnostics: typedReplay.diagnostics ?? [], replay: null };
+  return createRclTypedReplay(candidate, typedReplay);
 }
 
 export function verifyRclTypedReplay(replay, options = {}) {
@@ -257,6 +276,123 @@ export function verifyRclTypedReplay(replay, options = {}) {
   const replayPayload = { ...replay.replay };
   delete replayPayload.replay_root;
   if (replay.replay?.replay_root !== realityRoot(replayPayload)) errors.push('RCL_TYPED_REPLAY_PAYLOAD_ROOT_MISMATCH');
+  return { ok: errors.length === 0, errors };
+}
+
+function typedReplayAuthorityExecution(candidate, typedReplay) {
+  const link = candidate.typed_link;
+  return {
+    format: 'rncs.rcl-typed-native-authority-execution.v0.1',
+    languageVersion: RCL_LANGUAGE_VERSION,
+    bytecodeVersion: link.bytecode.version,
+    bytecodeHash: link.bytecode.sha256,
+    byteLength: link.bytecode.byte_length,
+    instructionCount: link.bytecode.instruction_count,
+    compiler: {
+      kind: 'rcl-typed-native-link-replay',
+      artifact: 'sealed-typed-link-replay',
+      artifactHash: link.link_root,
+    },
+    compilerParity: {
+      ok: true,
+      reference: 'rcl-typed-native-link',
+      referenceBytecodeHash: link.bytecode.sha256,
+    },
+    native: typedReplay.native,
+    parity: {
+      ok: true,
+      checks: {
+        state: true,
+        projections: true,
+        history: true,
+        roots: true,
+        rawRoots: true,
+        historySemantics: true,
+      },
+    },
+  };
+}
+
+export async function compileRclTypedAuthorityCandidate(candidate, bytecodeOrPath, options = {}) {
+  const candidateVerification = verifyRclTypedCandidate(candidate, options);
+  if (!candidateVerification.ok) return { ok: false, diagnostics: candidateVerification.errors.map(code => ({ code, message: code, severity: 'error' })), authority_plan: null };
+  if (typeof options.source !== 'string' || options.source.trim().length === 0) {
+    return { ok: false, diagnostics: [{ code: 'RCL_TYPED_AUTHORITY_SOURCE_REQUIRED', message: 'Typed authority candidate compilation requires the original RCL source for plan provenance', severity: 'error' }], authority_plan: null };
+  }
+  const typedReplay = replayTypedNativeLink(candidate.typed_link, bytecodeOrPath, options);
+  if (!typedReplay.ok) return { ok: false, diagnostics: typedReplay.diagnostics ?? [], authority_plan: null };
+  try {
+    const replay = createRclTypedReplay(candidate, typedReplay);
+    const execution = typedReplayAuthorityExecution(candidate, typedReplay);
+    const authority = await compileRclAuthorityPlan(options.source, { ...options, execution });
+    const plan = structuredClone(authority.plan);
+    plan.source.typed_candidate_root = candidate.candidate_root;
+    plan.source.typed_link_root = candidate.typed_link.link_root;
+    plan.source.typed_replay_root = replay.replay_root;
+    plan.source.typed_type_module_root = candidate.source?.type_module_root ?? null;
+    plan.source.typed_program_root = candidate.source?.program_root ?? null;
+    if (candidate.source?.package_lock_root !== undefined) plan.source.typed_package_lock_root = candidate.source.package_lock_root;
+    plan.evidence_requirements.push(
+      { kind: 'rcl-typed-candidate', root: candidate.candidate_root },
+      { kind: 'rcl-typed-link', root: candidate.typed_link.link_root },
+      { kind: 'rcl-typed-link-replay', root: replay.replay_root },
+    );
+    plan.acceptance_rules.push(
+      { rule: 'rcl-typed-link-replay-verified' },
+      { rule: 'rcl-typed-candidate-only' },
+    );
+    const base = {
+      format: RCL_TYPED_AUTHORITY_CANDIDATE_FORMAT,
+      version: RCL_TYPED_AUTHORITY_CANDIDATE_VERSION,
+      status: 'CANDIDATE_AUTHORITY_PLAN_VERIFIED',
+      candidate_root: candidate.candidate_root,
+      typed_link_root: candidate.typed_link.link_root,
+      typed_replay_root: replay.replay_root,
+      replay,
+      authority_plan_root: rclJsonRoot(plan),
+      plan,
+      authority: {
+        candidate_only: true,
+        canonical_write_authorized: false,
+        commit_requires_explicit_rncs_authority: true,
+        native_authority_plan: 'CONSUMED_SEALED_TYPED_LINK_REPLAY',
+        native_selfhost_authority_compilation: 'NOT_ENTERED',
+      },
+      boundary: 'Candidate authority-plan bridge only: an already verified typed-link replay feeds the existing RNCS authority planner; native self-host typed compilation, canonical mutation and promotion remain separate.',
+    };
+    return { ok: true, ...base, authority_candidate_root: rclJsonRoot(base) };
+  } catch (error) {
+    return {
+      ok: false,
+      diagnostics: [{ code: error.code ?? 'RCL_TYPED_AUTHORITY_PLAN_CANDIDATE_FAILURE', message: error.message, severity: 'error' }],
+      authority_plan: null,
+    };
+  }
+}
+
+export function verifyRclTypedAuthorityCandidate(candidate, options = {}) {
+  const errors = [];
+  if (!candidate || typeof candidate !== 'object') return { ok: false, errors: ['RCL_TYPED_AUTHORITY_CANDIDATE_REQUIRED'] };
+  const rootless = { ...candidate };
+  delete rootless.authority_candidate_root;
+  delete rootless.ok;
+  if (candidate.authority_candidate_root !== rclJsonRoot(rootless)) errors.push('RCL_TYPED_AUTHORITY_CANDIDATE_ROOT_MISMATCH');
+  if (candidate.format !== RCL_TYPED_AUTHORITY_CANDIDATE_FORMAT) errors.push('RCL_TYPED_AUTHORITY_CANDIDATE_FORMAT_INVALID');
+  if (candidate.version !== RCL_TYPED_AUTHORITY_CANDIDATE_VERSION) errors.push('RCL_TYPED_AUTHORITY_CANDIDATE_VERSION_INVALID');
+  if (candidate.status !== 'CANDIDATE_AUTHORITY_PLAN_VERIFIED') errors.push('RCL_TYPED_AUTHORITY_CANDIDATE_STATUS_INVALID');
+  if (candidate.authority?.candidate_only !== true) errors.push('RCL_TYPED_AUTHORITY_CANDIDATE_ONLY_REQUIRED');
+  if (candidate.authority?.canonical_write_authorized !== false) errors.push('RCL_TYPED_AUTHORITY_CANONICAL_WRITE_FORBIDDEN');
+  if (candidate.authority?.commit_requires_explicit_rncs_authority !== true) errors.push('RCL_TYPED_AUTHORITY_COMMIT_GATE_REQUIRED');
+  if (candidate.authority?.native_selfhost_authority_compilation !== 'NOT_ENTERED') errors.push('RCL_TYPED_AUTHORITY_NATIVE_SELFHOST_BOUNDARY_INVALID');
+  if (candidate.candidate_root !== candidate.replay?.candidate_root) errors.push('RCL_TYPED_AUTHORITY_CANDIDATE_ROOT_BINDING_MISMATCH');
+  if (candidate.typed_link_root !== candidate.replay?.typed_link_root) errors.push('RCL_TYPED_AUTHORITY_TYPED_LINK_ROOT_BINDING_MISMATCH');
+  if (candidate.typed_replay_root !== candidate.replay?.replay_root) errors.push('RCL_TYPED_AUTHORITY_TYPED_REPLAY_ROOT_BINDING_MISMATCH');
+  if (candidate.authority_plan_root !== rclJsonRoot(candidate.plan)) errors.push('RCL_TYPED_AUTHORITY_PLAN_ROOT_MISMATCH');
+  if (candidate.plan?.source?.typed_candidate_root !== candidate.candidate_root) errors.push('RCL_TYPED_AUTHORITY_PLAN_CANDIDATE_ROOT_MISMATCH');
+  if (candidate.plan?.source?.typed_link_root !== candidate.typed_link_root) errors.push('RCL_TYPED_AUTHORITY_PLAN_TYPED_LINK_ROOT_MISMATCH');
+  if (candidate.plan?.source?.typed_replay_root !== candidate.typed_replay_root) errors.push('RCL_TYPED_AUTHORITY_PLAN_TYPED_REPLAY_ROOT_MISMATCH');
+  const replay = verifyRclTypedReplay(candidate.replay, { candidateRoot: candidate.candidate_root });
+  if (!replay.ok) errors.push(...replay.errors);
   return { ok: errors.length === 0, errors };
 }
 
@@ -751,6 +887,9 @@ export async function compileRclAuthorityPlan(source, options = {}) {
   const subjectId = String(options.subjectId ?? authorityTransition?.subject?.subject_id ?? 'subject:rcl-native');
   const baselineGeneration = Number(options.baselineGeneration ?? 0);
   const riskLevel = options.riskLevel ?? 'high';
+  const compilerEvidenceKind = execution.compiler?.kind === 'rcl-typed-native-link-replay'
+    ? 'rcl-typed-native-link-replay'
+    : 'rcl-native-selfhost-compiler';
   const plan = {
     format: 'rncs.compilation-plan.v0.2',
     version: '0.2.0',
@@ -813,7 +952,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     ],
     projection_targets: ['aetherworld', 'rncs.rsr', 'rncs.vsr'],
     evidence_requirements: [
-      { kind: 'rcl-native-selfhost-compiler', root: execution.compiler?.artifactHash },
+      { kind: compilerEvidenceKind, root: execution.compiler?.artifactHash },
       { kind: 'rcl-native-bytecode', root: execution.bytecodeHash },
       { kind: 'rcl-native-authority-state', root: nativeStateRoot, verified: true },
       { kind: 'rcl-native-parity', verified: execution.parity?.ok === true },

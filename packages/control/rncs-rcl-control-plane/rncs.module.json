@@ -23,6 +23,7 @@
     "rcl-typed-native-candidate-envelope",
     "rcl-typed-package-native-candidate-envelope",
     "rcl-typed-link-replay-candidate",
+    "rcl-typed-sealed-authority-plan-candidate",
     "rcl-native-spatial-command-plan-candidate",
     "rcl-physical-command-profile-candidate",
     "no-canonical-commit-without-rncs-authority"

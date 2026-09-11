@@ -10,9 +10,12 @@ import {
   compileRclSource,
   compileRclTypedCandidate,
   compileRclTypedCandidateFromPackage,
+  compileRclTypedAuthorityCandidate,
+  compileRclTypedAuthorityCandidateFromPackage,
   verifyRclTypedCandidate,
   replayRclTypedCandidate,
   verifyRclTypedReplay,
+  verifyRclTypedAuthorityCandidate,
   compileRclAuthorityPlan,
   compileControlPlaneEdge,
   CONTROL_PLANE_EDGES,
@@ -254,6 +257,58 @@ test('typed RCL package candidate binds the manifest and verified lock root', as
   tampered.source.package_lock_root = '0'.repeat(64);
   assert.ok(verifyRclTypedCandidate(tampered, { source }).errors.includes('RCL_TYPED_CANDIDATE_ROOT_MISMATCH'));
   assert.ok(verifyRclTypedCandidate(tampered, { source }).errors.includes('RCL_TYPED_CANDIDATE_PACKAGE_ROOT_MISMATCH'));
+});
+
+test('sealed typed-link replay feeds the existing authority planner as a candidate-only plan', async () => {
+  const typeModuleSources = {
+    'core.rcltype': `module core
+export record SpatialCommand<T> {
+  id: Text
+  payload: T
+}`,
+  };
+  const source = `reality TypedAuthorityPlan {
+    facet rncs.world.ready : Truth = true
+    facet app.command : core.SpatialCommand<Text> = { id: "command-1", payload: "patch-heightfield" }
+  }`;
+  const candidate = await compileRclTypedCandidate(source, { typeModuleSources });
+  const typed = await compileTypedNativeLink(source, { typeModuleSources });
+  const authority = await compileRclTypedAuthorityCandidate(candidate, typed.bytecode, {
+    source,
+    typeModuleReport: typed.program.typeModules,
+  });
+  assert.equal(authority.ok, true);
+  assert.equal(authority.format, 'rncs.rcl-typed-authority-candidate.v0.1');
+  assert.equal(authority.status, 'CANDIDATE_AUTHORITY_PLAN_VERIFIED');
+  assert.equal(authority.authority.candidate_only, true);
+  assert.equal(authority.authority.canonical_write_authorized, false);
+  assert.equal(authority.authority.native_authority_plan, 'CONSUMED_SEALED_TYPED_LINK_REPLAY');
+  assert.equal(authority.authority.native_selfhost_authority_compilation, 'NOT_ENTERED');
+  assert.equal(authority.plan.source.typed_candidate_root, candidate.candidate_root);
+  assert.equal(authority.plan.source.typed_link_root, candidate.typed_link.link_root);
+  assert.equal(authority.plan.source.typed_replay_root, authority.typed_replay_root);
+  assert.ok(authority.plan.evidence_requirements.some(item => item.kind === 'rcl-typed-link-replay' && item.root === authority.typed_replay_root));
+  assert.ok(authority.plan.world_state_changes.some(change => change.path === 'world.rcl.state'));
+  assert.deepEqual(verifyRclTypedAuthorityCandidate(authority), { ok: true, errors: [] });
+
+  const tampered = structuredClone(authority);
+  tampered.authority.canonical_write_authorized = true;
+  const tamperedVerification = verifyRclTypedAuthorityCandidate(tampered);
+  assert.ok(tamperedVerification.errors.includes('RCL_TYPED_AUTHORITY_CANDIDATE_ROOT_MISMATCH'));
+  assert.ok(tamperedVerification.errors.includes('RCL_TYPED_AUTHORITY_CANONICAL_WRITE_FORBIDDEN'));
+});
+
+test('typed package authority candidate reuses one verified package-to-plan path', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rncs-rcl-typed-authority-package-'));
+  const packageDemo = runTypedPackageDemo({ baseDir: dir });
+  assert.equal(packageDemo.ok, true);
+  const authority = await compileRclTypedAuthorityCandidateFromPackage(dir);
+  assert.equal(authority.ok, true);
+  assert.equal(authority.status, 'CANDIDATE_AUTHORITY_PLAN_VERIFIED');
+  assert.equal(authority.plan.source.typed_package_lock_root, packageDemo.lockRoot);
+  assert.equal(authority.plan.source.typed_candidate_root, authority.candidate_root);
+  assert.equal(authority.plan.source.typed_replay_root, authority.typed_replay_root);
+  assert.deepEqual(verifyRclTypedAuthorityCandidate(authority), { ok: true, errors: [] });
 });
 
 test('Energy authority state passes semantic native parity through the RNCS compiler', async () => {
