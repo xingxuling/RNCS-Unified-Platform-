@@ -699,6 +699,14 @@ const replay = replayTypedNativeLink(candidate.receipt, candidate.bytecode);
 
 Replay re-runs the existing native VM and fails closed if bytecode, instruction metadata, native state root or candidate authority flags diverge. RNCS wraps this as replay admission with `replay_only: true`; it is not an authority-plan or canonical-write path. The fixed package replay is `CANDIDATE_REPLAY_VERIFIED` with typed replay root `76e78dcf9338b8fe287da644824c9dc93172b997874b9a2a21351e6ba390741f` and RNCS replay root `479dd47219ff2c834b48cd2982d46b5289d3792324de73d31c4456e2c0ad60a3`. The focused typed package/link/replay suite is `10/10 PASS`, the RNCS control-plane suite is `20/20 PASS`, and the full RCL suite is `619 tests / 618 pass / 0 fail / 1 skip`. Evidence: `docs/verification/RNCS_RCL_TYPED_LINK_REPLAY_CANDIDATE_v0.1.json`.
 
+The verified replay can now feed the existing RNCS authority planner as a candidate-only plan:
+
+```js
+const planCandidate = await compileRclTypedAuthorityCandidateFromPackage(packageDir);
+```
+
+This binds the typed candidate, link, replay, type-module, program and package-lock roots into the plan source and evidence list, then lowers the replayed native typed state through the existing `world.rcl.state` authority-plan path. The result is `rncs.rcl-typed-authority-candidate.v0.1`; `native_selfhost_authority_compilation` remains `NOT_ENTERED`, `canonical_write_authorized` remains `false`, and explicit RNCS simulation/authority/commit gates are still required. Fixed package evidence: `docs/verification/RNCS_RCL_TYPED_AUTHORITY_PLAN_CANDIDATE_v0.1.json`.
+
 ## v0.33.0-alpha.1 — Typed RBC Object Layout Seed
 
 P3 now pushes typed constructors into RBC/native VM execution:

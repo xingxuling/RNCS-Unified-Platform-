@@ -1,0 +1,108 @@
+{
+  "format": "rncs.rcl-typed-authority-plan-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_AUTHORITY_PLAN_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "7832c5c",
+    "packagePath": "packages/languages/reality-computation-language/examples/typed-package",
+    "rclPackage": "@taowind/reality-computation-language@0.94.0-alpha.1",
+    "controlPlanePackage": "@taowind/rncs-rcl-control-plane@0.4.0-alpha.1",
+    "authorityBoundary": "The existing RNCS authority planner consumes a verified typed-link replay as a candidate plan only; no canonical write or promotion authority is granted."
+  },
+  "seam": {
+    "typedCandidateFormat": "rncs.rcl-typed-native-candidate.v0.1",
+    "typedReplayFormat": "rncs.rcl-typed-native-replay.v0.1",
+    "authorityCandidateFormat": "rncs.rcl-typed-authority-candidate.v0.1",
+    "semanticOwners": {
+      "typedPackageAndLink": "RCL typed package/link kernels",
+      "nativeReplay": "RCL existing native VM",
+      "authorityPlanLowering": "RNCS RCL control plane existing authority planner",
+      "canonicalAuthority": "Not entered by this candidate"
+    }
+  },
+  "archaeology": {
+    "nativeSelfhostBoundary": "compileRclSource() still feeds only compiler.source to the native self-host compiler; its self-host expression parser does not consume .rcltype or typed-link receipts.",
+    "reusedPath": "compileRclTypedAuthorityCandidateFromPackage() reuses verified package lock, typed native link, sealed native replay and compileRclAuthorityPlan().",
+    "ownerCorrection": "Authority-plan evidence now records rcl-typed-native-link-replay for this bridge instead of falsely labeling the replay as rcl-native-selfhost-compiler.",
+    "noParallelCompiler": "No second typed compiler or authority planner was created; the bridge binds typed roots into the existing plan source and acceptance/evidence lists."
+  },
+  "positiveEvidence": [
+    "The fixed typed package lock is verified before the typed native link is consumed.",
+    "The sealed link is replayed by the existing native VM and its native state root is required before authority planning.",
+    "The existing authority planner lowers normalized typed record/union state into world.rcl.state candidate changes.",
+    "The generated plan binds typed candidate root, typed link root, typed replay root, type-module root, program root and package lock root.",
+    "The candidate verifier checks the envelope root, replay root, authority plan root and plan source root bindings.",
+    "The package convenience path executes the whole package-to-plan candidate chain without a second caller-owned glue protocol."
+  ],
+  "negativeEvidence": [
+    "Setting canonical_write_authorized=true fails verification and the envelope root no longer matches.",
+    "Receipt, replay and candidate tamper rejection remains covered by the typed-link/replay/control-plane suites.",
+    "native_selfhost_authority_compilation is explicitly NOT_ENTERED; compileRclSource() still rejects the typed record literal with RCLC_COMPILER_FAILURE.",
+    "The plan is not an authorization decision, canonical RFE merge, RSR mutation, physical-device result, production deployment or K400 PASS."
+  ],
+  "execution": {
+    "commands": [
+      "node --test --test-concurrency=1 packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs",
+      "npm test --workspace @taowind/reality-computation-language",
+      "Direct Node run: compileRclTypedAuthorityCandidateFromPackage() + verifyRclTypedAuthorityCandidate()",
+      "Direct Node negative run: authority envelope canonical-write tamper"
+    ],
+    "results": {
+      "rclControlPlaneSuite": "22/22 PASS",
+      "fullRclSuite": "619 tests / 618 pass / 0 fail / 1 skip",
+      "nativeDistributionPreflight": "PASS: PREBUILT_NATIVE_ARTIFACTS_VERIFIED; Zig unavailable, checked distribution matches source and artifact manifest",
+      "packageToAuthorityCandidate": "PASS: CANDIDATE_AUTHORITY_PLAN_VERIFIED",
+      "authorityCandidateVerification": "PASS: ok=true, errors=[]",
+      "canonicalWriteTamper": "PASS: root mismatch and canonical-write-forbidden diagnostics",
+      "nativeSelfhostTypedAuthority": "BLOCKED: RCLC_COMPILER_FAILURE; NOT_ENTERED by the bridge"
+    }
+  },
+  "receipt": {
+    "candidateRoot": "00c0929e2547c450048f55d42a8a2c01cdfef3fa3285a17bf32a83389301e488",
+    "typedLinkRoot": "73f487526f311594579c584df6559b50de15738650cc84dc8a4395e32f01cce9",
+    "typedReplayRoot": "479dd47219ff2c834b48cd2982d46b5289d3792324de73d31c4456e2c0ad60a3",
+    "authorityPlanRoot": "dce054e16f185e75253839ef5cb300d9932a94c37c2391e58a5aec040bc8a14a",
+    "authorityCandidateRoot": "63e3e8c14f7d4b0f2a0bcd2bc60fe01daca9decb782a415ff190bf7fe6cedb82",
+    "packageLockRoot": "9a387d627d74425cfdcc4d923befb308a25342c6b6868f1c1d9441a4ffe64ec2",
+    "typeModuleRoot": "db946a8588cd523c468ec972e134c466fec0872e3b7753db1c84e90a6bf29a00",
+    "programRoot": "d042acfbb3484fa16c11551190bcab1e994a913f270aba17299c59654cb52bbf",
+    "bytecodeRoot": "1f7d81325e3957ced042169db65f25e35727195e5a991342ec28443ccb25523c",
+    "nativeStateRoot": "efb7cc27959ab6858cbd0e90a67aff6f6535bb6ba6afdb4b28b1c1ed933606c4",
+    "worldStateChangePaths": ["world.rcl.state"],
+    "authority": {
+      "candidateOnly": true,
+      "canonicalWriteAuthorized": false,
+      "commitRequiresExplicitRncsAuthority": true,
+      "nativeAuthorityPlan": "CONSUMED_SEALED_TYPED_LINK_REPLAY",
+      "nativeSelfhostAuthorityCompilation": "NOT_ENTERED"
+    }
+  },
+  "rclGap": {
+    "id": "RCL_GAP_RNCS_FIRST_CLASS_PHYSICAL_COMMAND_PRIMITIVE",
+    "subgap": "RCL_GAP_RNCS_RCL_TYPED_MODULE_NATIVE_AUTHORITY_LINK",
+    "task": "Make the native self-host authority compiler consume the same sealed typed package/link ABI and emit byte-identical typed authority bytecode or an explicitly verified lowering receipt.",
+    "missingCapability": "Native self-host parser/provider input, typed module graph consumption, typed constructor lowering, compiler/reference/native parity and authority-plan root binding for the sealed ABI.",
+    "workaround": "The existing typed package/link/native VM path replays the sealed candidate and feeds its normalized native state into the existing RNCS authority planner as a candidate-only plan.",
+    "donor": "Existing RCL typed package lock, type-module kernel, typed compiler, RBC/native VM, typed heap/reference ABI and RNCS authority planner; no external donor promoted.",
+    "gapType": "language-runtime-authority-link",
+    "generality": "Reusable for physical command profiles, World Body IR, input/network commands, asset contracts and behavior contracts.",
+    "candidateAbsorption": "Next add a native self-host typed-link input contract, keep the existing typed compiler as reference, prove compiler/reference/native parity and bind a typed authority-plan root before any canonical mutation.",
+    "affectedK400Cells": ["EXPRESS", "COMPILE", "LOWER", "EXECUTE", "CORRECT", "ROBUST", "EVIDENCE"]
+  },
+  "gateAssessment": {
+    "EXPRESS": "CANDIDATE_EVIDENCE",
+    "COMPILE": "CANDIDATE_EVIDENCE",
+    "LOWER": "CANDIDATE_EVIDENCE",
+    "EXECUTE": "CANDIDATE_EVIDENCE",
+    "CORRECT": "CANDIDATE_EVIDENCE",
+    "ROBUST": "CANDIDATE_EVIDENCE",
+    "PERFORMANCE": "NOT_RUN",
+    "AI_GENERATE": "NOT_APPLICABLE",
+    "EVIDENCE": "CANDIDATE_EVIDENCE",
+    "promotion": "NO_K400_PASS"
+  },
+  "decision": "SEALED_TYPED_LINK_TO_EXISTING_AUTHORITY_PLAN_CANDIDATE_VERIFIED_NATIVE_SELFHOST_TYPED_AUTHORITY_AND_CANONICAL_COMMIT_BOUNDARIES_OPEN",
+  "evidenceRoot": "9281477f55a89adf35813da2c8067744badc86d773ddacddbf0e62eb918e8ea7"
+}

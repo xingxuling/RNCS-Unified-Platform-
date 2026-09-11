@@ -780,6 +780,21 @@ sealed `rcl.typed-native-link.v0.1` + RBC bytes
 
 这条路径是实际 replay/admission，不是新增 schema-only seam；bytecode substitution、receipt tamper、candidate-root tamper 和 authority escalation 负例均 fail closed。它仍然没有让 `compileRclSource()` 的 native self-host compiler 解析 `.rcltype` 或直接生成 typed authority plan，也没有授予 canonical write、RFE merge、RSR mutation 或 promotion 权限。RCL typed package/link/replay focused suite 为 `10/10 PASS`，RNCS control-plane 为 `20/20 PASS`，全量 RCL 回归为 `619 tests / 618 pass / 0 fail / 1 skip`；预构建 Windows native artifacts 通过 source/manifest hash 校验，但 Zig 不可用。固定 package replay 的 `typed_replay_root=76e78dcf9338b8fe287da644824c9dc93172b997874b9a2a21351e6ba390741f`、RNCS `replay_root=479dd47219ff2c834b48cd2982d46b5289d3792324de73d31c4456e2c0ad60a3` 已由 `verifyRclTypedReplay()` 验证。详细收据见 `docs/verification/RNCS_RCL_TYPED_LINK_REPLAY_CANDIDATE_v0.1.json`；下一步仍是让 native authority compiler 消费同一个 sealed ABI，并在 reference/native/compiler parity 与显式 authority gate 成立前保持 candidate-only。
 
+## 本轮 sealed typed-link → authority-plan candidate seam
+
+replay seam 成立后，把已验证的 typed-link replay 接入既有 `compileRclAuthorityPlan()`，但不把它伪装成 native self-host typed compilation。`compileRclTypedAuthorityCandidateFromPackage()` 复用 package lock、typed link、native replay 和现有 authority planner；planner 接收到 replay 后的真实 native state，把 typed record/union state 降成既有 `world.rcl.state` candidate change，并在 plan source/evidence/acceptance 中绑定 typed candidate root、typed link root、typed replay root、type-module root、program root 和 package lock root。
+
+```text
+verified package lock
+  → typed native link
+  → sealed native replay
+  → existing RNCS authority planner
+  → `rncs.rcl-typed-authority-candidate.v0.1`
+  → explicit RNCS authority / simulation / commit gates remain outside
+```
+
+本地真实执行：RNCS control-plane `22/22 PASS`；固定 package 的 `authority_plan_root=dce054e16f185e75253839ef5cb300d9932a94c37c2391e58a5aec040bc8a14a`、`authority_candidate_root=63e3e8c14f7d4b0f2a0bcd2bc60fe01daca9decb782a415ff190bf7fe6cedb82`，`verifyRclTypedAuthorityCandidate()` 为 `ok=true`。这条 bridge 的 `native_selfhost_authority_compilation=NOT_ENTERED`，canonical write 仍为 false；它关闭的是“typed candidate replay 是否能进入现有 authority-plan candidate 入口”，没有关闭 native self-host `.rcltype` lowering、compiler/reference/native byte parity、RFE merge、RSR mutation、设备/生产证据或 K400 PASS。详细收据见 `docs/verification/RNCS_RCL_TYPED_AUTHORITY_PLAN_CANDIDATE_v0.1.json`。
+
 ## 本轮 Large World → RSR terrain lowering adapter
 
 在保持 Large World Runtime 不依赖 RSR 的前提下，新增 `packages/integration/large-world-rsr-bridge`。它先验证 region、chunk、stream resolution 和 source stream transition，再只接受 active chunk，把既有 `chunk.mesh.positions` 的 row-major y 样本降低为 `rncs.entity-state-batch.v0.1` 的 `spatial.fixtures.items.shape=heightfield`；Kernel 既有 materializer 随后生成 RSR static terrain body。每个 binding 同时保留 `chunk_root`、`state_root`、`content_root`、`mesh_root`、`height_samples_root`、`origin_mm` 和 `stream_root`，candidate/admission/physical transition 另行绑定 `stream_transition_root`，相邻 chunk 的共享边界样本经回归保持相等。
