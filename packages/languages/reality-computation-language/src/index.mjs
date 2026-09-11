@@ -13,6 +13,7 @@ export {
   RCL_TYPED_COMPILER_FORMAT,
 } from './compiler.mjs';
 export { runReality } from './runtime.mjs';
+export { canonicalReality, realityRoot } from './canonical.mjs';
 export { RCLError, RCLSyntaxError, RCLCompileError, RCLRuntimeError } from './errors.mjs';
 export { toRncsProposalInput } from './rncs-bridge.mjs';
 export {
@@ -207,9 +208,11 @@ export {
 export {
   RCL_TYPED_NATIVE_LINK_VERSION,
   RCL_TYPED_NATIVE_LINK_FORMAT,
+  RCL_TYPED_NATIVE_LINK_REPLAY_FORMAT,
   RCLTypedNativeLinkError,
   compileTypedNativeLink,
   compileTypedNativeLinkFromPackage,
+  replayTypedNativeLink,
   verifyTypedNativeLink,
 } from './typed-native-link-kernel.mjs';
 

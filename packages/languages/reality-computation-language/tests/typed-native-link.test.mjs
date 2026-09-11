@@ -6,6 +6,7 @@ import path from 'node:path';
 import {
   compileTypedNativeLink,
   compileTypedNativeLinkFromPackage,
+  replayTypedNativeLink,
   verifyTypedNativeLink,
   RCL_TYPED_NATIVE_LINK_FORMAT,
   runTypedPackageDemo,
@@ -45,6 +46,12 @@ test('P3 typed native link executes the existing typed compiler and native VM wi
   assert.equal(result.receipt.authority.canonical_write_authorized, false);
   assert.equal(result.receipt.package.lock_root, null);
   assert.deepEqual(verifyTypedNativeLink(result.receipt, { source, typeModuleReport: result.program.typeModules }), { ok: true, errors: [] });
+  const replay = replayTypedNativeLink(result.receipt, result.bytecode, { source, typeModuleReport: result.program.typeModules });
+  assert.equal(replay.ok, true);
+  assert.equal(replay.replay.status, 'CANDIDATE_REPLAY_VERIFIED');
+  assert.equal(replay.replay.link_root, result.receipt.link_root);
+  assert.equal(replay.replay.execution.native_state_root, result.receipt.execution.native.native_state_root);
+  assert.match(replay.replay.replay_root, /^[0-9a-f]{64}$/);
 });
 
 test('P3 typed native link requires a typed module graph', async () => {
@@ -71,6 +78,14 @@ test('P3 typed native package link consumes a verified manifest and lock root', 
     packageLock: result.packageBuild.lock,
     packageLockRoot: packageDemo.lockRoot,
   }), { ok: true, errors: [] });
+  const replay = replayTypedNativeLink(result.receipt, result.bytecode, {
+    source: result.packageBuild.source,
+    typeModuleReport: result.packageBuild.typeModuleReport,
+    packageLock: result.packageBuild.lock,
+    packageLockRoot: packageDemo.lockRoot,
+  });
+  assert.equal(replay.ok, true);
+  assert.equal(replay.replay.execution.semantic_state_parity, true);
 });
 
 test('P3 typed native package link rejects a missing or drifted lock', async () => {
@@ -101,4 +116,14 @@ test('P3 typed native link rejects receipt and authority tampering', async () =>
   authorityTampered.authority.canonical_write_authorized = true;
   assert.ok(verifyTypedNativeLink(authorityTampered).errors.includes('RCL_TYPED_LINK_ROOT_MISMATCH'));
   assert.ok(verifyTypedNativeLink(authorityTampered).errors.includes('RCL_TYPED_LINK_CANONICAL_WRITE_FORBIDDEN'));
+});
+
+test('P3 sealed typed native link replay rejects bytecode substitution', async () => {
+  const result = await compileTypedNativeLink(source, { typeModuleSources });
+  assert.equal(result.ok, true);
+  const tamperedBytecode = Buffer.from(result.bytecode);
+  tamperedBytecode[tamperedBytecode.length - 1] ^= 1;
+  const replay = replayTypedNativeLink(result.receipt, tamperedBytecode, { source, typeModuleReport: result.program.typeModules });
+  assert.equal(replay.ok, false);
+  assert.equal(replay.diagnostics[0].code, 'RCL_TYPED_LINK_REPLAY_BYTECODE_ROOT_MISMATCH');
 });

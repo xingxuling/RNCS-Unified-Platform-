@@ -20,6 +20,8 @@ import {
   foundationContractSummary,
   compileTypedNativeLink,
   compileTypedNativeLinkFromPackage,
+  replayTypedNativeLink,
+  realityRoot,
   verifyTypedNativeLink,
 } from '@taowind/reality-computation-language';
 import { discoverRuntimeManifests } from '@taowind/reality-one-gateway';
@@ -212,6 +214,49 @@ export function verifyRclTypedCandidate(candidate, options = {}) {
   if (candidate.roots?.package_lock_root !== undefined && candidate.roots.package_lock_root !== candidate.typed_link?.package?.lock_root) errors.push('RCL_TYPED_CANDIDATE_PACKAGE_ROOT_MISMATCH');
   const typed = verifyTypedNativeLink(candidate.typed_link, options);
   if (!typed.ok) errors.push(...typed.errors);
+  return { ok: errors.length === 0, errors };
+}
+
+export function replayRclTypedCandidate(candidate, bytecodeOrPath, options = {}) {
+  const candidateVerification = verifyRclTypedCandidate(candidate, options);
+  if (!candidateVerification.ok) return { ok: false, diagnostics: candidateVerification.errors.map(code => ({ code, message: code, severity: 'error' })), replay: null };
+  const typedReplay = replayTypedNativeLink(candidate.typed_link, bytecodeOrPath, options);
+  if (!typedReplay.ok) return { ok: false, diagnostics: typedReplay.diagnostics ?? [], replay: null };
+  const base = {
+    format: 'rncs.rcl-typed-native-replay.v0.1',
+    version: '0.1.0',
+    status: typedReplay.replay.status,
+    candidate_root: candidate.candidate_root,
+    typed_link_root: candidate.typed_link.link_root,
+    replay: typedReplay.replay,
+    authority: {
+      candidate_only: true,
+      canonical_write_authorized: false,
+      commit_requires_explicit_rncs_authority: true,
+      replay_only: true,
+    },
+    boundary: 'RNCS replay admission only: the sealed typed link is re-consumed by the native VM and its roots are compared; native authority-plan compilation, canonical mutation and promotion remain separate.',
+  };
+  return { ok: true, ...base, replay_root: rclJsonRoot(base) };
+}
+
+export function verifyRclTypedReplay(replay, options = {}) {
+  const errors = [];
+  if (!replay || typeof replay !== 'object') return { ok: false, errors: ['RCL_TYPED_REPLAY_REQUIRED'] };
+  const rootless = { ...replay };
+  delete rootless.replay_root;
+  delete rootless.ok;
+  if (replay.replay_root !== rclJsonRoot(rootless)) errors.push('RCL_TYPED_REPLAY_ROOT_MISMATCH');
+  if (replay.format !== 'rncs.rcl-typed-native-replay.v0.1') errors.push('RCL_TYPED_REPLAY_FORMAT_INVALID');
+  if (replay.status !== 'CANDIDATE_REPLAY_VERIFIED') errors.push('RCL_TYPED_REPLAY_STATUS_INVALID');
+  if (replay.authority?.candidate_only !== true) errors.push('RCL_TYPED_REPLAY_CANDIDATE_ONLY_REQUIRED');
+  if (replay.authority?.canonical_write_authorized !== false) errors.push('RCL_TYPED_REPLAY_CANONICAL_WRITE_FORBIDDEN');
+  if (replay.authority?.replay_only !== true) errors.push('RCL_TYPED_REPLAY_ONLY_REQUIRED');
+  if (options.candidateRoot !== undefined && replay.candidate_root !== options.candidateRoot) errors.push('RCL_TYPED_REPLAY_CANDIDATE_ROOT_MISMATCH');
+  if (replay.typed_link_root !== replay.replay?.link_root) errors.push('RCL_TYPED_REPLAY_TYPED_LINK_ROOT_MISMATCH');
+  const replayPayload = { ...replay.replay };
+  delete replayPayload.replay_root;
+  if (replay.replay?.replay_root !== realityRoot(replayPayload)) errors.push('RCL_TYPED_REPLAY_PAYLOAD_ROOT_MISMATCH');
   return { ok: errors.length === 0, errors };
 }
 

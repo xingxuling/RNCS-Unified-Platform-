@@ -4,13 +4,15 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { runTypedPackageDemo } from '@taowind/reality-computation-language';
+import { compileTypedNativeLink, runTypedPackageDemo } from '@taowind/reality-computation-language';
 import {
   buildRclControlPlane,
   compileRclSource,
   compileRclTypedCandidate,
   compileRclTypedCandidateFromPackage,
   verifyRclTypedCandidate,
+  replayRclTypedCandidate,
+  verifyRclTypedReplay,
   compileRclAuthorityPlan,
   compileControlPlaneEdge,
   CONTROL_PLANE_EDGES,
@@ -222,6 +224,16 @@ export record SpatialCommand<T> {
   const tampered = structuredClone(candidate);
   tampered.roots.native_state_root = '0'.repeat(64);
   assert.ok(verifyRclTypedCandidate(tampered, { source }).errors.includes('RCL_TYPED_CANDIDATE_ROOT_MISMATCH'));
+
+  const typed = await compileTypedNativeLink(source, { typeModuleSources });
+  assert.equal(typed.ok, true);
+  const replay = replayRclTypedCandidate(candidate, typed.bytecode, { source, typeModuleReport: typed.program.typeModules });
+  assert.equal(replay.ok, true);
+  assert.equal(replay.status, 'CANDIDATE_REPLAY_VERIFIED');
+  assert.deepEqual(verifyRclTypedReplay(replay, { candidateRoot: candidate.candidate_root }), { ok: true, errors: [] });
+  const replayTampered = structuredClone(replay);
+  replayTampered.replay.bytecode.sha256 = '0'.repeat(64);
+  assert.ok(verifyRclTypedReplay(replayTampered, { candidateRoot: candidate.candidate_root }).errors.includes('RCL_TYPED_REPLAY_ROOT_MISMATCH'));
 });
 
 test('typed RCL package candidate binds the manifest and verified lock root', async () => {

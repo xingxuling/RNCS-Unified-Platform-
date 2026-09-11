@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import fs from 'node:fs';
 import path from 'node:path';
 import { compileTypedPackage, verifyTypedPackageLock } from './typed-package-kernel.mjs';
 import { tryCompileReality } from './compiler.mjs';
@@ -10,6 +11,7 @@ import { realityRoot } from './canonical.mjs';
 
 export const RCL_TYPED_NATIVE_LINK_VERSION = '0.1.0-alpha.1';
 export const RCL_TYPED_NATIVE_LINK_FORMAT = 'rcl.typed-native-link.v0.1';
+export const RCL_TYPED_NATIVE_LINK_REPLAY_FORMAT = 'rcl.typed-native-link-replay.v0.1';
 
 const TYPED_OPCODE_SET = new Set([
   OPCODES.MAKE_TYPED_RECORD,
@@ -250,6 +252,82 @@ export async function compileTypedNativeLinkFromPackage(packageDir, options = {}
     return { ...typed, packageVerification, packageBuild };
   } catch (error) {
     return { ...failure(error), packageDir: typeof packageDir === 'string' ? path.resolve(packageDir) : null };
+  }
+}
+
+export function replayTypedNativeLink(receipt, bytecodeOrPath, options = {}) {
+  try {
+    const receiptVerification = verifyTypedNativeLink(receipt, options);
+    if (!receiptVerification.ok) {
+      return { ok: false, diagnostics: receiptVerification.errors.map(code => diagnostic(code, code)), replay: null };
+    }
+    let bytecode;
+    if (Buffer.isBuffer(bytecodeOrPath) || bytecodeOrPath instanceof Uint8Array) bytecode = Buffer.from(bytecodeOrPath);
+    else if (typeof bytecodeOrPath === 'string' && bytecodeOrPath.length > 0) bytecode = fs.readFileSync(bytecodeOrPath);
+    else throw new RCLTypedNativeLinkError('Typed native link replay requires bytecode bytes or a bytecode path', [diagnostic('RCL_TYPED_LINK_REPLAY_BYTECODE_REQUIRED', 'Typed native link replay requires bytecode bytes or a bytecode path')]);
+
+    const bytecodeRoot = sha256Buffer(bytecode);
+    if (receipt.bytecode?.sha256 !== bytecodeRoot) {
+      throw new RCLTypedNativeLinkError('Typed native link replay bytecode root does not match the sealed receipt', [diagnostic('RCL_TYPED_LINK_REPLAY_BYTECODE_ROOT_MISMATCH', 'Typed native link replay bytecode root does not match the sealed receipt', { expected: receipt.bytecode?.sha256 ?? null, actual: bytecodeRoot })]);
+    }
+    const decoded = decodeBytecode(bytecode);
+    const decodedCounts = {
+      byte_length: bytecode.length,
+      instruction_count: decoded.instructions.length,
+      typed_instruction_count: typedInstructionCount(decoded),
+    };
+    for (const key of ['byte_length', 'instruction_count', 'typed_instruction_count']) {
+      if (receipt.bytecode?.[key] !== decodedCounts[key]) {
+        throw new RCLTypedNativeLinkError(`Typed native link replay ${key} does not match the sealed receipt`, [diagnostic('RCL_TYPED_LINK_REPLAY_BYTECODE_METADATA_MISMATCH', `Typed native link replay ${key} does not match the sealed receipt`, { key, expected: receipt.bytecode?.[key] ?? null, actual: decodedCounts[key] })]);
+      }
+    }
+
+    const native = runNativeBytecode(bytecode, options.nativeRuntime ?? {});
+    const semanticStateRoot = realityRoot(semanticState(native.state));
+    const expectedNative = receipt.execution?.native ?? {};
+    const checks = {
+      native_semantic_state_root: semanticStateRoot === expectedNative.semantic_state_root,
+      native_state_root: native.nativeStateRoot === expectedNative.native_state_root,
+      state_root_verified: native.stateRootVerified === expectedNative.state_root_verified,
+      state_root_parity: native.stateRootParity === expectedNative.state_root_parity,
+      semantic_state_parity: expectedNative.semantic_state_root === receipt.execution?.reference?.semantic_state_root
+        && receipt.execution?.semantic_state_parity === true,
+    };
+    const mismatches = Object.entries(checks).filter(([, ok]) => !ok).map(([key]) => key);
+    if (mismatches.length > 0) {
+      throw new RCLTypedNativeLinkError('Typed native link replay did not reproduce the sealed execution roots', [diagnostic('RCL_TYPED_LINK_REPLAY_EXECUTION_MISMATCH', 'Typed native link replay did not reproduce the sealed execution roots', { mismatches })]);
+    }
+
+    const base = {
+      format: RCL_TYPED_NATIVE_LINK_REPLAY_FORMAT,
+      version: RCL_TYPED_NATIVE_LINK_VERSION,
+      status: 'CANDIDATE_REPLAY_VERIFIED',
+      link_root: receipt.link_root,
+      bytecode: { ...decodedCounts, sha256: bytecodeRoot, version: decoded.version },
+      execution: {
+        native_semantic_state_root: semanticStateRoot,
+        native_state_root: native.nativeStateRoot,
+        state_root_verified: native.stateRootVerified === true,
+        state_root_parity: native.stateRootParity === true,
+        semantic_state_parity: true,
+      },
+      authority: {
+        candidate_only: true,
+        canonical_write_authorized: false,
+        commit_requires_explicit_rncs_authority: true,
+        replay_only: true,
+      },
+      boundary: 'Replay of a sealed typed native link only: the native VM re-consumes bytecode and reproduces bound roots; native authority-plan compilation, canonical mutation and promotion remain separate.',
+    };
+    return {
+      ok: true,
+      replay: { ...base, replay_root: realityRoot(base) },
+      decoded,
+      native,
+      diagnostics: [],
+    };
+  } catch (error) {
+    return { ...failure(error), replay: null };
   }
 }
 
