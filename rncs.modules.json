@@ -10,7 +10,10 @@
       "layer": "kernel",
       "runtime": "rncs.core",
       "dependsOn": [],
-      "test": "npm test --workspace @taowind/rncs-core-contract"
+      "test": "npm test --workspace @taowind/rncs-core-contract",
+      "capabilities": [
+        "candidate-command-batch-root-contract"
+      ]
     },
     {
       "id": "rfe-constitution",
@@ -618,6 +621,8 @@
       "test": "npm test --workspace @taowind/rcl-rsr-spatial-bridge",
       "capabilities": [
         "rcl-native-spatial-command-plan-lowering",
+        "rcl-physical-command-profile-lowering",
+        "kernel-candidate-command-batch-root-binding",
         "candidate-rsr-vsr-session-execution",
         "root-bound-spatial-command-replay",
         "candidate-only-no-canonical-commit"

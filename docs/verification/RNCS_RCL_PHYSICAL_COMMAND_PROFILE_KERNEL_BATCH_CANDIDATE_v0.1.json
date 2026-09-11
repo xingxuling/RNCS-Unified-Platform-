@@ -1,0 +1,129 @@
+{
+  "format": "rncs.rcl-physical-command-profile-kernel-batch-candidate.v0.1",
+  "version": "0.1.0",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "sourceCommit": "4d28591",
+  "controls": {
+    "rclControlPlane": {
+      "tests": "18/18 PASS",
+      "nativeParity": true,
+      "physicalCommandProfileRoot": "61386e4385866f958dfabdedbe53fc2d577832849349b37f2eac5785d3202bab"
+    },
+    "rncsCore": {
+      "tests": "50/50 PASS",
+      "commandBatchVerification": true
+    },
+    "rclRsrBridge": {
+      "tests": "3/3 PASS",
+      "loweringVerification": true
+    },
+    "realityEngineSession": {
+      "tests": "14/14 PASS"
+    },
+    "realitySimulationRuntime": {
+      "tests": "210/210 PASS"
+    }
+  },
+  "profile": {
+    "format": "rcl.physical-command-profile.v0.1",
+    "version": "0.1.0",
+    "profileId": "rcl.physical.spatial.v0.1",
+    "domain": "spatial",
+    "root": "61386e4385866f958dfabdedbe53fc2d577832849349b37f2eac5785d3202bab",
+    "candidateOnly": true,
+    "commandFamilies": [
+      {
+        "id": "world-editing",
+        "commandTypes": [
+          "patch-heightfield"
+        ]
+      },
+      {
+        "id": "destructible-surface",
+        "commandTypes": [
+          "patch-heightfield"
+        ]
+      },
+      {
+        "id": "correction-replay",
+        "commandTypes": [
+          "set-velocity"
+        ]
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "world-editing-destructible-surface",
+      "sourcePlanId": "plan:rcl:4afebc07e3a3c10336bfabfd",
+      "sourceStateRoot": "00eb8c1f9f6baf2fdb302b6ef96af4cf711adda1d1c4d3d8658f384693d4d284",
+      "sourceCommandPlanRoot": "818d2a9f65885bc3089c2ae01c02619c1126bdcf16675f3ed026658daa7d6889",
+      "sourceProfileRoot": "61386e4385866f958dfabdedbe53fc2d577832849349b37f2eac5785d3202bab",
+      "loweringRoot": "69326b8a28732cc40db7589496886b0ef7f16681256f17359d1612ef24c77a7a",
+      "kernelBatchRoot": "0253ac53d3bbcb2c08a1c91566a588aea9e54953446578602f4ad48cb1477bde",
+      "targetCommandRoot": "6c1b2070654349fb377e4c3ce37a35499933db9193fbd6697cb58f300a003a19",
+      "commandTypes": [
+        "patch-heightfield"
+      ],
+      "beforeRsrStateRoot": "fnv1a64:975a480af0beccf8",
+      "afterRsrStateRoot": "fnv1a64:3050479d39686902",
+      "frameRoot": "45729b2074bf27f75cb085a904c30cc85e214d3a76f49ab54abec6eac01aa6a2",
+      "frameVerified": true,
+      "replayBundleRoot": "fe927aea9ccc96fb5ca6a8d65af89a17db2e7e2bb4803cae6e41807b66bfc1b3",
+      "replayVerificationValid": true,
+      "replayVerificationDeterministic": true,
+      "replayRoot": "3cca1943dddecf482380222f4e06de0867672a4f1d425a642c2401c56e59f4aa",
+      "replayFinalStateRoot": "fnv1a64:3050479d39686902",
+      "replayDeterministic": true,
+      "formalSnapshotUnchanged": true,
+      "kernelBatchVerified": true,
+      "loweringVerified": true,
+      "replayBundleVerified": true
+    },
+    {
+      "id": "correction-replay",
+      "sourcePlanId": "plan:rcl:d3c1028d0f342d1d64421aa9",
+      "sourceStateRoot": "2279a7a21c8f1600eb4e45a3b65bdc0f1dc39da6beabdadcc479a6444d9e17d6",
+      "sourceCommandPlanRoot": "c2636bc9432bbf584b9554f8e31134754b410a54fef20da03b5fa66547e0bc11",
+      "sourceProfileRoot": "61386e4385866f958dfabdedbe53fc2d577832849349b37f2eac5785d3202bab",
+      "loweringRoot": "ed0b2713130b787bfde4085eef2e45531e2f1ec4b199654b5fe97fe67388c238",
+      "kernelBatchRoot": "e27e1882d0d37be94d69a3c21f603cb84d21679648f1de26438be24346c95fd5",
+      "targetCommandRoot": "39a0d6313864aeb29d70880688a0227955bd4b19fc4c858a8dbce82d5b1f3f7c",
+      "commandTypes": [
+        "set-velocity"
+      ],
+      "beforeRsrStateRoot": "fnv1a64:975a480af0beccf8",
+      "afterRsrStateRoot": "fnv1a64:4e6f7886a79004b0",
+      "frameRoot": "1422ff74152af9b68353070096f2b91e6cc04c302e6d5d0f14d164cb89705064",
+      "frameVerified": true,
+      "replayBundleRoot": "6ce858a38d121bff551d2450c4a986b004d0fddd0fbdcd6b1d7a118961dff339",
+      "replayVerificationValid": true,
+      "replayVerificationDeterministic": true,
+      "replayRoot": "6c06dc0c56002b220c82f1170e27f92a57d22d3b3dd440130d9806e949a546e2",
+      "replayFinalStateRoot": "fnv1a64:4e6f7886a79004b0",
+      "replayDeterministic": true,
+      "formalSnapshotUnchanged": true,
+      "kernelBatchVerified": true,
+      "loweringVerified": true,
+      "replayBundleVerified": true
+    }
+  ],
+  "negativeCases": {
+    "rclMismatchedSampleVectors": {
+      "observed": "RCL_RNCS_SPATIAL_COMMAND_SAMPLES_INVALID:bad",
+      "passed": true
+    },
+    "rclLoweringPayloadTamperRejected": true,
+    "kernelBatchPayloadTamperRejected": true,
+    "kernelCanonicalWriteTamperRejected": true,
+    "unsupportedCommandTypeRejected": true,
+    "unsupportedCommandTypeError": "RCL_RNCS_SPATIAL_COMMAND_TYPE_UNSUPPORTED:teleport-body"
+  },
+  "boundaries": [
+    "Candidate-only execution; canonical RNCS commit is not performed by this evidence run.",
+    "RCL owns the declaration/profile roots; rncs-core owns the generic batch envelope; RSR owns spatial execution.",
+    "The path supports existing patch-heightfield and set-velocity executors only.",
+    "Dynamic-body heightfields, continuous manifold streaming, large-world deform scheduling, device validation, and production performance remain open."
+  ],
+  "evidenceRoot": "83de482402e203d92a99571f89bbbc296918b0097d8e214b1162522f0153aa2b"
+}

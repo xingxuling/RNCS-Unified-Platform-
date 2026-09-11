@@ -21,6 +21,7 @@
   "capabilities": [
     "rcl-native-authority-plan",
     "rcl-native-spatial-command-plan-candidate",
+    "rcl-physical-command-profile-candidate",
     "no-canonical-commit-without-rncs-authority"
   ],
   "description": "RCL AOT authority mirror for twelve RNCS control/world modules including Aether Earth; spatial command plans remain candidate-only until explicit lowering and RNCS authority."

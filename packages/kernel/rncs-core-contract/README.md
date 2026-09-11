@@ -15,6 +15,7 @@
 - 连续性等级与命名边界强制检查
 - 离线审阅工作台
 - Entity Kernel v0.1：typed Fragment、Composition Signature、确定性 State Batch 与 Deferred Mutation Ledger
+- Candidate Entity Command Batch v0.1：以 source/profile/target command root 封存候选命令，并固定 canonical write 必须经过独立 RNCS authority
 - Representation Transition Candidate v0.1：跨表示 identity、authority、equivalence、residency/detail policy 与 candidate rollback；不会绕过 RFE commit
 - v0.3 Truth Layer Candidate：WorldTime、authority-receipted WorldEvent、deterministic event-log replay 与 provenance-bound Fact World Tree；不把 Subject Memory 当作 Canonical Fact
 - v0.3 Reality Property & Law Candidate：带来源、证据、版本和单位/维度的 Reality Quantity，RNCS-owned PropertySet/LawBindings，以及候选属性事务；Provider 只能计算或近似，不能改写 Canonical Property/Law
@@ -65,3 +66,5 @@ VSR/AER State   = 观察者投影状态
 ## Entity Kernel v0.1
 
 `src/entity-kernel.mjs` 提供一个小型、可复核的状态内核：Fragment Schema 只接受明确类型；Entity 由 Fragment Composition 形成稳定组合根；读取通过确定性 State Batch；写入先进入 Deferred Mutation Ledger，经过 authority、预算和 expected entity root 检查后才提交。\`decimal\` 使用规范化十进制字符串，保持 Node/Python 共享哈希不引入浮点歧义。
+
+`createEntityCommandBatch()` / `verifyEntityCommandBatch()` 是跨领域的候选命令封套。Kernel 只校验 source、profile、generation、command 与 batch roots 以及 candidate-only 边界，不解释物理命令；具体命令由下游 RSR、网络或其他 Provider 按各自 profile 执行。
