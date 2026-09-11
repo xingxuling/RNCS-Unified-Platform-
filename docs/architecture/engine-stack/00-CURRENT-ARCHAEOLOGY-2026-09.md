@@ -1,6 +1,6 @@
 # RNCS Engine Stack Current Archaeology
 
-日期：2026-09-10
+日期：2026-09-11
 
 状态：`CANDIDATE_ARCHITECTURE_AUDIT`
 
@@ -726,6 +726,26 @@ RCL native authority source
 负向链同样是实际执行结果而不是推断：将相同 typed source 交给 `@taowind/rncs-rcl-control-plane` 的 `compileRclSource()`，native self-host compiler 以 `RCLC_COMPILER_FAILURE`、`RCL_SEMANTIC_ASSERT: { at 3:51` 拒绝 record literal。`compileRclSource()` 当前没有把 `typeModuleSources`、typed package lock root 或 type-module root 传入 self-host compiler、reference compile 或 parity verifier；因此 P3 typed bytecode/native VM 的成功不能被提升为“RCL native authority 已支持一等 typed physical command primitive”。
 
 当前裁决：`RCL_GAP_RNCS_FIRST_CLASS_PHYSICAL_COMMAND_PRIMITIVE` 的精确子缺口为 `RCL_GAP_RNCS_RCL_TYPED_MODULE_NATIVE_AUTHORITY_LINK`。短期 workaround 仍是已有 P3 typed compiler/native VM candidate 加上 rooted `rcl.physical-command-profile.v0.1` 与 `rncs.entity-command-batch.v0.1` 控制面/集成契约；没有把 facet convention 伪装成 RCL 原语，也没有授予 canonical write 或 promotion 权限。下一步最小吸收顺序是：先定义 sealed typed-link receipt（type-module/package/source/semantic/program/bytecode/native parity roots），再让 self-host/native compiler 消费它，并补齐 tamper、replay、candidate-only 与 authority-plan root binding 回归；在此之前不扩张 RSR command union。该审计只把 K400 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / EVIDENCE` 记为 candidate evidence，`PERFORMANCE` 未运行，未宣布任何 K400 PASS。
+
+## 本轮 RCL typed native link candidate
+
+在确认 native authority compiler 尚未消费 `.rcltype` graph 后，沿最小吸收路径把已有 P3 能力封装成真正执行的 candidate，而不是只新增 schema：
+
+```text
+typed module graph + RCL source
+  → existing typed compiler / semantic map
+  → existing RBC typed object layout
+  → existing native VM
+  → reference/native semantic-state parity
+  → `rcl.typed-native-link.v0.1`
+  → RNCS `rncs.rcl-typed-native-candidate.v0.1`
+```
+
+`packages/languages/reality-computation-language/src/typed-native-link-kernel.mjs` 复用 `type-module-kernel`、`compiler.mjs`、`bytecode.mjs`、`typed-bytecode-layout` 的 RBC 路径、native VM 与 reference runtime，只负责把 source/type-module/package/program/bytecode/native/reference roots 封存为 `link_root`，并在 receipt 上固定 `candidate_only=true`、`canonical_write_authorized=false` 与 `commit_requires_explicit_rncs_authority=true`。`packages/control/rncs-rcl-control-plane/src/index.mjs` 的 `compileRclTypedCandidate()` 再把该 receipt 封装为可消费的 RNCS candidate root；它不改变既有 `compileRclSource()`，也不把 typed candidate 当作 native authority plan。
+
+本地真实执行：typed native link `3/3 PASS`，RCL control-plane `19/19 PASS`，typed focused suite `22/22 PASS`；加入新 candidate 后 RCL 全量为 `616 tests / 615 pass / 0 fail / 1 skip`。固定 candidate run 的 `candidate_root=1dbca1ed0fa22d7465a1274c5c97a863b0230437d322fc077c98ce7d2cc8e98d`、`typed_link_root=cd68f8d492434ee7386dd6591a09879afa6434ae36e08fa42e19d4b9885cc964`、`type_module_root=870e23470b122f16172b723ae1ee2c59ca81969b234c3566dc23fac9754ca561`、`program_root=f92c0f812f4bd698f9f386ea88b11f203d203e2b7c9dba25f93fc4abe3c32d67` 和 `native_state_root=f50ebb2526a74ad9b08c9d52e87035289215f8dc8cf9ced15a8e8844ba5762c9` 已互相绑定；reference/native semantic state root 相等，receipt verification 通过。
+
+candidate 的边界仍是刻意的：`authority.native_authority_plan=NOT_COMPILED_BY_TYPED_LINK`；把相同 typed source 直接交给旧的 `compileRclSource()` 仍会由 native self-host compiler 以 `RCLC_COMPILER_FAILURE` 拒绝 record literal。因此本轮关闭的是“已有 typed P3 path 能否形成 RNCS 可消费、可验根的 candidate link”这一共享 seam，没有关闭 self-host/native authority typed lowering、physical profile 一等 RCL primitive、canonical commit、dynamic terrain、设备/生产运行或 K400 PASS。详细收据见 `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_CANDIDATE_v0.1.json`。
 
 ## 本轮 Large World → RSR terrain lowering adapter
 

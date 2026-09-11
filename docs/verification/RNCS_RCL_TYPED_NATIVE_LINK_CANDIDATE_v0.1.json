@@ -1,0 +1,114 @@
+{
+  "format": "rncs.rcl-typed-native-link-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "c761520e14ce1b45a843af8acf97d1f070311a2b",
+    "rclPackage": "@taowind/reality-computation-language@0.94.0-alpha.1",
+    "controlPlanePackage": "@taowind/rncs-rcl-control-plane@0.4.0-alpha.1",
+    "authorityBoundary": "Candidate typed link and control-plane envelope only; native authority-plan compilation, canonical write and promotion remain separate."
+  },
+  "seam": {
+    "typedLinkFormat": "rcl.typed-native-link.v0.1",
+    "candidateFormat": "rncs.rcl-typed-native-candidate.v0.1",
+    "semanticOwners": {
+      "typedModuleGraph": "RCL type-module kernel",
+      "typedCompilation": "RCL typed compiler",
+      "typedBytecodeAndNativeExecution": "RCL RBC/native VM",
+      "candidateEnvelope": "RNCS RCL control plane",
+      "canonicalAuthority": "Not entered by this candidate"
+    }
+  },
+  "positiveEvidence": [
+    "The existing typed module graph accepts an explicit app→core import and emits rcl.type-module.semantic-ir.v0.29 with a deterministic root.",
+    "The existing typed compiler emits a semantic map and typed program root for core.SpatialCommand<Text>.",
+    "The existing typed RBC object layout and native VM execute the record with native state-root verification.",
+    "The candidate link compares reference and native semantic state after removing VM-only object identity/layout metadata; parity is true.",
+    "The RNCS control-plane envelope binds source, type-module, typed-link, program, bytecode and native roots and remains candidate-only.",
+    "Receipt root and authority tamper negative cases fail closed."
+  ],
+  "negativeEvidence": [
+    "The existing compileRclSource() native authority path still does not consume the typed module graph or typed package lock and rejects the same record literal with RCLC_COMPILER_FAILURE.",
+    "The candidate does not invoke compileRclAuthorityPlan(), canonical world mutation, RFE merge, commit or promotion.",
+    "No physical device, production deployment, external transport, target GPU, performance curve or K400 PASS is established."
+  ],
+  "execution": {
+    "commands": [
+      "node --test --test-concurrency=1 packages/languages/reality-computation-language/tests/type-module-kernel.test.mjs packages/languages/reality-computation-language/tests/type-linked-compiler.test.mjs packages/languages/reality-computation-language/tests/typed-bytecode-layout.test.mjs packages/languages/reality-computation-language/tests/typed-package-kernel.test.mjs packages/languages/reality-computation-language/tests/typed-native-link.test.mjs",
+      "node --test --test-concurrency=1 packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs",
+      "npm.cmd test --workspace @taowind/reality-computation-language",
+      "Direct candidate run: compileRclTypedCandidate() and verifyRclTypedCandidate()"
+    ],
+    "results": {
+      "typedFocusedSuite": "22/22 PASS",
+      "typedNativeLinkSuite": "3/3 PASS",
+      "rclControlPlaneSuite": "19/19 PASS",
+      "fullRclSuite": "616 tests / 615 pass / 0 fail / 1 skip",
+      "candidateVerification": "PASS",
+      "nativeAuthorityTypedSource": "BLOCKED: RCLC_COMPILER_FAILURE"
+    }
+  },
+  "receipt": {
+    "candidateRoot": "1dbca1ed0fa22d7465a1274c5c97a863b0230437d322fc077c98ce7d2cc8e98d",
+    "typedLinkRoot": "cd68f8d492434ee7386dd6591a09879afa6434ae36e08fa42e19d4b9885cc964",
+    "sourceRoot": "84c199a621125b94dab7c27703ad5d1607c287051ab4cd18cdfb29e53d237cba",
+    "typeModuleRoot": "870e23470b122f16172b723ae1ee2c59ca81969b234c3566dc23fac9754ca561",
+    "programRoot": "f92c0f812f4bd698f9f386ea88b11f203d203e2b7c9dba25f93fc4abe3c32d67",
+    "semanticMapRoot": "ec15a06f41e9a93942a9e7bc5a65c14ebbd8c2f4fdd29b8e7fe0c4023eb03c0e",
+    "typeBindingsRoot": "547f1c4b63c53d8f2a43d094c9bca10eeee4470c7cc953dd3c195fe7eb7f446e",
+    "sourceMapRoot": "caaa283160c3c8d373a0f406397437669dc9bf924a38baff7aae08a6426c3adc",
+    "bytecodeRoot": "2bcb9a197265e9f13c96232baf4c61c262f978f2cd51248fb45a3e4a113d54e1",
+    "bytecodeBytes": 347,
+    "bytecodeInstructions": 7,
+    "typedInstructionCount": 1,
+    "referenceSemanticStateRoot": "b5c05c5080379e0f127c3f20cde8a5d435bfa7ca111bbf722f2a1777cc692283",
+    "nativeSemanticStateRoot": "b5c05c5080379e0f127c3f20cde8a5d435bfa7ca111bbf722f2a1777cc692283",
+    "nativeStateRoot": "f50ebb2526a74ad9b08c9d52e87035289215f8dc8cf9ced15a8e8844ba5762c9",
+    "nativeStateRootVerified": true,
+    "nativeStateRootParity": true,
+    "semanticStateParity": true,
+    "authority": {
+      "candidateOnly": true,
+      "canonicalWriteAuthorized": false,
+      "commitRequiresExplicitRncsAuthority": true,
+      "nativeAuthorityPlan": "NOT_COMPILED_BY_TYPED_LINK"
+    }
+  },
+  "authorityProbe": {
+    "status": "BLOCKED_TYPED_NATIVE_AUTHORITY_LINK",
+    "compiler": "rcl-native-selfhost",
+    "artifact": "selfhost/compiler.rbc",
+    "errorCode": "RCLC_COMPILER_FAILURE",
+    "errorMessage": "RCL_SEMANTIC_ASSERT: { at 3:51",
+    "authorityTypeModuleRoot": null,
+    "authorityStateRoot": null
+  },
+  "rclGap": {
+    "id": "RCL_GAP_RNCS_FIRST_CLASS_PHYSICAL_COMMAND_PRIMITIVE",
+    "subgap": "RCL_GAP_RNCS_RCL_TYPED_MODULE_NATIVE_AUTHORITY_LINK",
+    "task": "Make the native self-host authority compiler consume the sealed typed link without duplicating compiler semantics or weakening candidate/commit gates.",
+    "missingCapability": "Self-host/native authority lowering and root binding for .rcltype graph, package lock, typed constructors, typed bytecode and authority-plan evidence.",
+    "workaround": "The existing typed compiler/native VM emits rcl.typed-native-link.v0.1, and RNCS control plane wraps it as a candidate-only envelope; physical profile and Kernel command batch remain explicit control-plane/integration contracts.",
+    "donor": "Existing RCL type-module kernel, typed compiler semantic map, typed RBC/native VM, typed heap/reference ABI, typed package lock and native C runtime; no external donor promoted.",
+    "gapType": "language-runtime-authority-link",
+    "generality": "Reusable for physical command profiles, World Body IR, input/network commands, asset contracts and behavior contracts.",
+    "candidateAbsorption": "Use this receipt as the root-bound handoff; add native self-host typed graph/link consumption, then require compiler parity, reference/native replay, tamper rejection and explicit authority-plan root binding before any canonical write path.",
+    "affectedK400Cells": ["EXPRESS", "COMPILE", "LOWER", "EXECUTE", "CORRECT", "ROBUST", "EVIDENCE"]
+  },
+  "gateAssessment": {
+    "EXPRESS": "CANDIDATE_EVIDENCE",
+    "COMPILE": "CANDIDATE_EVIDENCE",
+    "LOWER": "CANDIDATE_EVIDENCE",
+    "EXECUTE": "CANDIDATE_EVIDENCE",
+    "CORRECT": "CANDIDATE_EVIDENCE",
+    "ROBUST": "CANDIDATE_EVIDENCE",
+    "PERFORMANCE": "NOT_RUN",
+    "AI_GENERATE": "NOT_APPLICABLE",
+    "EVIDENCE": "CANDIDATE_EVIDENCE",
+    "promotion": "NO_K400_PASS"
+  },
+  "decision": "RCL_TYPED_NATIVE_LINK_CANDIDATE_AND_RNCS_CONTROL_PLANE_ENVELOPE_VERIFIED_NATIVE_SELFHOST_AUTHORITY_TYPED_LINK_AND_FIRST_CLASS_PHYSICAL_COMMAND_PRIMITIVE_OPEN",
+  "evidenceRoot": "ed02190a2ec6118d0c95a914297deb0f1c7b5099dded936c87ee8d99baff01c0"
+}
