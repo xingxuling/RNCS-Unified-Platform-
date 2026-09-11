@@ -18,6 +18,8 @@ import {
   FOUNDATION_CONTRACT_VERSION,
   FOUNDATION_MANIFEST_ROOT,
   foundationContractSummary,
+  compileTypedNativeLink,
+  verifyTypedNativeLink,
 } from '@taowind/reality-computation-language';
 import { discoverRuntimeManifests } from '@taowind/reality-one-gateway';
 
@@ -136,6 +138,61 @@ export async function compileRclSource(source, options = {}) {
   execution.authorityEvidence = authorityEvidence;
   execution.native.authorityEvidence = authorityEvidence;
   return execution;
+}
+
+export async function compileRclTypedCandidate(source, options = {}) {
+  const typed = await compileTypedNativeLink(source, options);
+  if (!typed.ok) {
+    const first = typed.diagnostics?.[0] ?? { code: 'RCL_TYPED_CANDIDATE_COMPILATION_FAILURE', message: 'Typed candidate compilation failed' };
+    throw Object.assign(new Error(first.message), { code: first.code, details: { diagnostics: typed.diagnostics ?? [] } });
+  }
+  const link = typed.receipt;
+  const base = {
+    format: 'rncs.rcl-typed-native-candidate.v0.1',
+    version: '0.1.0',
+    status: link.status,
+    source: {
+      language: 'RCL',
+      source_root: link.source.source_root,
+      type_module_root: link.type_modules.ir_root,
+      program_root: link.program.program_root,
+    },
+    typed_link: link,
+    roots: {
+      typed_link_root: link.link_root,
+      type_module_root: link.type_modules.ir_root,
+      program_root: link.program.program_root,
+      bytecode_root: link.bytecode.sha256,
+      reference_semantic_state_root: link.execution.reference.semantic_state_root,
+      native_semantic_state_root: link.execution.native.semantic_state_root,
+      native_state_root: link.execution.native.native_state_root,
+    },
+    authority: {
+      candidate_only: true,
+      canonical_write_authorized: false,
+      commit_requires_explicit_rncs_authority: true,
+      native_authority_plan: 'NOT_COMPILED_BY_TYPED_LINK',
+    },
+    boundary: 'RNCS control-plane typed candidate only: the existing typed compiler/native VM is root-bound for candidate execution; native authority-plan compilation and canonical commit remain separate and explicit.',
+  };
+  return { ...base, candidate_root: rclJsonRoot(base) };
+}
+
+export function verifyRclTypedCandidate(candidate, options = {}) {
+  const errors = [];
+  if (!candidate || typeof candidate !== 'object') return { ok: false, errors: ['RCL_TYPED_CANDIDATE_REQUIRED'] };
+  const rootless = { ...candidate };
+  delete rootless.candidate_root;
+  if (candidate.candidate_root !== rclJsonRoot(rootless)) errors.push('RCL_TYPED_CANDIDATE_ROOT_MISMATCH');
+  if (candidate.format !== 'rncs.rcl-typed-native-candidate.v0.1') errors.push('RCL_TYPED_CANDIDATE_FORMAT_INVALID');
+  if (candidate.status !== 'CANDIDATE_EXECUTION_VERIFIED') errors.push('RCL_TYPED_CANDIDATE_STATUS_INVALID');
+  if (candidate.authority?.candidate_only !== true) errors.push('RCL_TYPED_CANDIDATE_ONLY_REQUIRED');
+  if (candidate.authority?.canonical_write_authorized !== false) errors.push('RCL_TYPED_CANDIDATE_CANONICAL_WRITE_FORBIDDEN');
+  if (candidate.authority?.commit_requires_explicit_rncs_authority !== true) errors.push('RCL_TYPED_CANDIDATE_COMMIT_GATE_REQUIRED');
+  if (candidate.roots?.typed_link_root !== candidate.typed_link?.link_root) errors.push('RCL_TYPED_CANDIDATE_TYPED_LINK_ROOT_MISMATCH');
+  const typed = verifyTypedNativeLink(candidate.typed_link, options);
+  if (!typed.ok) errors.push(...typed.errors);
+  return { ok: errors.length === 0, errors };
 }
 
 const RCL_RNCS_WORLD_PREFIX = 'rncs.world.';

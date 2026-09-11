@@ -204,6 +204,14 @@ export {
   runTypedPackageDemo,
 } from './typed-package-kernel.mjs';
 
+export {
+  RCL_TYPED_NATIVE_LINK_VERSION,
+  RCL_TYPED_NATIVE_LINK_FORMAT,
+  RCLTypedNativeLinkError,
+  compileTypedNativeLink,
+  verifyTypedNativeLink,
+} from './typed-native-link-kernel.mjs';
+
 
 export {
   RCL_TYPED_BYTECODE_LAYOUT_VERSION,

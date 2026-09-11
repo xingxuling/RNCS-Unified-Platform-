@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import {
   buildRclControlPlane,
   compileRclSource,
+  compileRclTypedCandidate,
+  verifyRclTypedCandidate,
   compileRclAuthorityPlan,
   compileControlPlaneEdge,
   CONTROL_PLANE_EDGES,
@@ -189,6 +191,33 @@ test('current RCL source compiles and executes through the RNCS control-plane br
   assert.equal(result.native.state['world.value'], 7);
   assert.ok(result.byteLength > 36);
   assert.ok(result.instructionCount > 0);
+});
+
+test('typed RCL candidate keeps the typed link rooted without entering native authority compilation', async () => {
+  const typeModuleSources = {
+    'core.rcltype': `module core
+export record SpatialCommand<T> {
+  id: Text
+  payload: T
+}`,
+  };
+  const source = `reality TypedCandidate {
+    facet rncs.world.ready : Truth = true
+    facet app.command : core.SpatialCommand<Text> = { id: "command-1", payload: "patch-heightfield" }
+  }`;
+  const candidate = await compileRclTypedCandidate(source, { typeModuleSources });
+  assert.equal(candidate.format, 'rncs.rcl-typed-native-candidate.v0.1');
+  assert.equal(candidate.status, 'CANDIDATE_EXECUTION_VERIFIED');
+  assert.equal(candidate.authority.native_authority_plan, 'NOT_COMPILED_BY_TYPED_LINK');
+  assert.equal(candidate.authority.candidate_only, true);
+  assert.equal(candidate.authority.canonical_write_authorized, false);
+  assert.equal(candidate.source.type_module_root, candidate.typed_link.type_modules.ir_root);
+  assert.equal(candidate.roots.typed_link_root, candidate.typed_link.link_root);
+  assert.deepEqual(verifyRclTypedCandidate(candidate, { source }), { ok: true, errors: [] });
+
+  const tampered = structuredClone(candidate);
+  tampered.roots.native_state_root = '0'.repeat(64);
+  assert.ok(verifyRclTypedCandidate(tampered, { source }).errors.includes('RCL_TYPED_CANDIDATE_ROOT_MISMATCH'));
 });
 
 test('Energy authority state passes semantic native parity through the RNCS compiler', async () => {
