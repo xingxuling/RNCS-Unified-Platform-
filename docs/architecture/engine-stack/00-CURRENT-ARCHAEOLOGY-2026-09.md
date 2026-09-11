@@ -703,6 +703,30 @@ RCL control plane 负责声明值、样本向量、command type、tick、body/fi
 
 因此下一步不再扩张 RSR command union，而是审计 RCL native compiler 的 first-class typed module/link seam：确认 `physical command profile` 是否能在 RCL 自身的类型/模块/bytecode 边界中表达并保留同一 roots；若不能，则显式登记 `RCL_GAP_RNCS_FIRST_CLASS_PHYSICAL_COMMAND_PRIMITIVE`，继续把 profile 作为控制面/Provider contract，而不把 facet convention 误称为语言原语。只有该 owner seam 稳定后，再继续 dynamic terrain policy → continuous manifold / solver integration，避免在 RSR 之外再造第二套 terrain command owner。
 
+## 本轮 RCL typed module → native authority link 审计
+
+本轮先复用并执行已有 P3 资产，没有重写类型系统或再建一套编译器。源码考古确认当前实际存在两条不同的运行路径：
+
+```text
+`.rcltype` module graph
+  → typed semantic IR / typeModuleRoot
+  → `tryCompileReality(..., { typeModuleSources })`
+  → typed semantic map / programRoot
+  → typed RBC object layout
+  → existing native VM / verified state root
+
+RCL native authority source
+  → `compileSourceSelfHosted(source, { timeout })`
+  → untyped reference bytecode + native parity
+  → authority evidence / authority plan
+```
+
+已执行的正向链：`core.SpatialCommand<Text>` typed record 在显式 `.rcltype` module graph 中成功解析；typed compiler 产生 `rcl.typed-compiler.semantic-map.v0.34`，program root 为 `6a258897c62a059fc7a59090309ed72ad88c394214837dcda604e34fa5d0434b`；typed RBC/native VM 产生 `nativeStateRoot=f50ebb2526a74ad9b08c9d52e87035289215f8dc8cf9ced15a8e8844ba5762c9`，`stateRootVerified=true` 且 `stateRootParity=true`。跨模块限定引用没有显式 `import` 时现在返回 `RCL_MODULE_NOT_IMPORTED`，并有回归测试；同时修复了 typed package demo 在干净工作目录下无法创建 `output` 父目录的可复现性问题。RCL package 全量回归为 `613 tests / 612 pass / 0 fail / 1 skip`，typed focused suite 为 `19/19 PASS`。详细收据见 `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_AUDIT_v0.1.json`。
+
+负向链同样是实际执行结果而不是推断：将相同 typed source 交给 `@taowind/rncs-rcl-control-plane` 的 `compileRclSource()`，native self-host compiler 以 `RCLC_COMPILER_FAILURE`、`RCL_SEMANTIC_ASSERT: { at 3:51` 拒绝 record literal。`compileRclSource()` 当前没有把 `typeModuleSources`、typed package lock root 或 type-module root 传入 self-host compiler、reference compile 或 parity verifier；因此 P3 typed bytecode/native VM 的成功不能被提升为“RCL native authority 已支持一等 typed physical command primitive”。
+
+当前裁决：`RCL_GAP_RNCS_FIRST_CLASS_PHYSICAL_COMMAND_PRIMITIVE` 的精确子缺口为 `RCL_GAP_RNCS_RCL_TYPED_MODULE_NATIVE_AUTHORITY_LINK`。短期 workaround 仍是已有 P3 typed compiler/native VM candidate 加上 rooted `rcl.physical-command-profile.v0.1` 与 `rncs.entity-command-batch.v0.1` 控制面/集成契约；没有把 facet convention 伪装成 RCL 原语，也没有授予 canonical write 或 promotion 权限。下一步最小吸收顺序是：先定义 sealed typed-link receipt（type-module/package/source/semantic/program/bytecode/native parity roots），再让 self-host/native compiler 消费它，并补齐 tamper、replay、candidate-only 与 authority-plan root binding 回归；在此之前不扩张 RSR command union。该审计只把 K400 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / EVIDENCE` 记为 candidate evidence，`PERFORMANCE` 未运行，未宣布任何 K400 PASS。
+
 ## 本轮 Large World → RSR terrain lowering adapter
 
 在保持 Large World Runtime 不依赖 RSR 的前提下，新增 `packages/integration/large-world-rsr-bridge`。它先验证 region、chunk、stream resolution 和 source stream transition，再只接受 active chunk，把既有 `chunk.mesh.positions` 的 row-major y 样本降低为 `rncs.entity-state-batch.v0.1` 的 `spatial.fixtures.items.shape=heightfield`；Kernel 既有 materializer 随后生成 RSR static terrain body。每个 binding 同时保留 `chunk_root`、`state_root`、`content_root`、`mesh_root`、`height_samples_root`、`origin_mm` 和 `stream_root`，candidate/admission/physical transition 另行绑定 `stream_transition_root`，相邻 chunk 的共享边界样本经回归保持相等。

@@ -1,0 +1,128 @@
+{
+  "format": "rncs.rcl-typed-native-link-audit.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "AUDIT_GAP_CONFIRMED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "6110693fccb5f085ba73e414e4862745e972b7da",
+    "rclPackage": "@taowind/reality-computation-language@0.94.0-alpha.1",
+    "authorityPackage": "@taowind/rncs-rcl-control-plane@0.4.0-alpha.1",
+    "authorityBoundary": "The typed module/native VM path is a candidate execution path; RNCS native authority-plan compilation and canonical commit remain separate."
+  },
+  "scope": {
+    "question": "Can the existing RCL typed module/link and typed bytecode path express and execute the physical command profile through the same native authority path while preserving roots?",
+    "typedSource": "reality TypedAuthority { facet rncs.world.ready : Truth = true facet app.command : core.SpatialCommand<Text> = { id: \"command-1\", payload: \"patch-heightfield\" } }",
+    "typeModules": ["core.rcltype", "app.rcltype"],
+    "physicalProfileRelation": "The existing physical command profile remains a control-plane/Kernel candidate contract until this native authority link is unified."
+  },
+  "positiveEvidence": [
+    "The typed module graph compiles to rcl.type-module.semantic-ir.v0.29 with a deterministic root when app explicitly imports core.",
+    "A missing explicit import is rejected with RCL_MODULE_NOT_IMPORTED; the import boundary is now fail-closed and regression-tested.",
+    "The linked RCL compiler produces rcl.typed-compiler.semantic-map.v0.34 and a deterministic program root for core.SpatialCommand<Text>.",
+    "The typed program lowers to typed RBC object instructions and executes in the native VM with state-root verification and parity true.",
+    "The full RCL package regression completed with 612 passes, 1 skip and 0 failures; the targeted typed-module/linked-compiler/typed-bytecode/package set completed with 19/19 passes."
+  ],
+  "negativeEvidence": [
+    "compileRclSource() calls compileSourceSelfHosted(source, { timeout }), compileRealityToBytecode(source) and verifyNativeParity(source, { nativeRuntime: { timeout } }); it does not forward typeModuleSources or bind a typed-module root.",
+    "The same typed source is rejected by the native authority compiler with RCLC_COMPILER_FAILURE at the record literal, before an authority execution receipt can be produced.",
+    "The current native authority compiler therefore cannot consume the P3 .rcltype graph, typed constructor lowering or typed package lock as one root-bound authority artifact.",
+    "No canonical world mutation, commit/promotion, device, production, external transport or K400 PASS is established by this audit."
+  ],
+  "execution": {
+    "commands": [
+      "node --test --test-concurrency=1 packages/languages/reality-computation-language/tests/type-module-kernel.test.mjs packages/languages/reality-computation-language/tests/type-linked-compiler.test.mjs packages/languages/reality-computation-language/tests/typed-bytecode-layout.test.mjs packages/languages/reality-computation-language/tests/typed-package-kernel.test.mjs",
+      "npm.cmd test --workspace @taowind/reality-computation-language",
+      "Direct Node probe: compileTypedModuleGraph → tryCompileReality → compileTypedRealityToBytecodeLayout → runNativeBytecode → compileRclSource"
+    ],
+    "results": {
+      "targetedTypedSuite": "19/19 PASS",
+      "fullRclSuite": "613 tests / 612 pass / 0 fail / 1 skip",
+      "typedModuleGraphExplicitImport": "PASS",
+      "typedModuleGraphMissingImport": "PASS: RCL_MODULE_NOT_IMPORTED",
+      "typedNativeVmExecution": "PASS: nativeStateRootVerified=true, nativeStateRootParity=true",
+      "nativeAuthorityTypedSource": "BLOCKED: RCLC_COMPILER_FAILURE"
+    }
+  },
+  "receipts": {
+    "typeModuleFormat": "rcl.type-module.semantic-ir.v0.29",
+    "typeModuleRoot": "870e23470b122f16172b723ae1ee2c59ca81969b234c3566dc23fac9754ca561",
+    "semanticMapFormat": "rcl.typed-compiler.semantic-map.v0.34",
+    "programRoot": "6a258897c62a059fc7a59090309ed72ad88c394214837dcda604e34fa5d0434b",
+    "typedBytecode": {
+      "byteLength": 347,
+      "instructionCount": 7,
+      "typedInstructionCount": 1,
+      "layoutRoot": "1c1162febbbd99b76b1ef7c2260979bf1f1c68075489a82e8030ea3780b8bdf8"
+    },
+    "native": {
+      "nativeStateRoot": "f50ebb2526a74ad9b08c9d52e87035289215f8dc8cf9ced15a8e8844ba5762c9",
+      "stateRootVerified": true,
+      "stateRootParity": true,
+      "stateKeys": ["app.command", "rncs.world.ready"],
+      "typedState": {
+        "kind": "Record",
+        "canonicalType": "core::SpatialCommand<Text>",
+        "fields": ["id", "payload"]
+      }
+    }
+  },
+  "authorityProbe": {
+    "ok": false,
+    "errorName": "RCLNativeVMError",
+    "errorCode": "RCLC_COMPILER_FAILURE",
+    "errorMessage": "RCL_SEMANTIC_ASSERT: { at 3:51",
+    "authorityCompiler": "rcl-native-selfhost",
+    "authorityArtifact": "selfhost/compiler.rbc",
+    "authorityTypeModuleRoot": null,
+    "authorityStateRoot": null
+  },
+  "implementationFacts": [
+    {
+      "path": "packages/languages/reality-computation-language/src/type-module-kernel.mjs",
+      "fact": "P3 typed module parsing, import/export graph validation, semantic IR and deterministic type-module root exist; explicit qualified cross-module imports are enforced."
+    },
+    {
+      "path": "packages/languages/reality-computation-language/src/compiler.mjs",
+      "fact": "tryCompileReality() accepts typeModuleSources/typeModuleReport, links the graph into typed bindings/semantic map and lowers a typed program root."
+    },
+    {
+      "path": "packages/languages/reality-computation-language/src/typed-bytecode-layout.mjs",
+      "fact": "The typed program is compiled to RBC and executed by the native VM through the existing typed object layout path."
+    },
+    {
+      "path": "packages/control/rncs-rcl-control-plane/src/index.mjs",
+      "fact": "compileRclSource() still uses the self-host compiler plus untyped reference/parity calls and does not pass the typed-module graph into that authority path."
+    },
+    {
+      "path": "packages/languages/reality-computation-language/src/selfhost-compiler.mjs",
+      "fact": "compileSourceSelfHosted() accepts source/compiler options for the native self-host compiler but has no typed-module graph/link input."
+    }
+  ],
+  "rclGap": {
+    "id": "RCL_GAP_RNCS_FIRST_CLASS_PHYSICAL_COMMAND_PRIMITIVE",
+    "subgap": "RCL_GAP_RNCS_RCL_TYPED_MODULE_NATIVE_AUTHORITY_LINK",
+    "task": "Unify the existing P3 typed module, typed bytecode and native VM path with RNCS native authority-plan compilation without duplicating the RCL compiler or weakening authority boundaries.",
+    "missingCapability": "A versioned, root-bound typed link artifact consumed by the native authority compiler, including type-module root, package/lock root, source root, semantic/program root, bytecode root, native parity and explicit candidate-only authority metadata.",
+    "workaround": "Use the existing P3 JavaScript compiler plus typed RBC/native VM as a candidate execution path; keep the physical command profile and Kernel entity command batch as explicit control-plane/integration contracts.",
+    "donor": "Existing type-module-kernel, compiler.mjs typed resolver/semantic map, typed-bytecode-layout, typed heap/reference ABI, typed package lock and native C VM; no external donor promoted.",
+    "gapType": "language-runtime-authority-link",
+    "generality": "Reusable for physical command profiles, World Body IR, input/network commands, asset/behavior contracts and other typed world-facing artifacts.",
+    "candidateAbsorption": "Define and test a sealed typed-link receipt first; then add self-host/native compiler support and authority-plan root binding only after typed/reference/native parity, tamper, replay and candidate-only regressions pass.",
+    "affectedK400Cells": ["EXPRESS", "COMPILE", "LOWER", "EXECUTE", "CORRECT", "ROBUST", "EVIDENCE"]
+  },
+  "gateAssessment": {
+    "EXPRESS": "CANDIDATE_EVIDENCE",
+    "COMPILE": "CANDIDATE_EVIDENCE",
+    "LOWER": "CANDIDATE_EVIDENCE",
+    "EXECUTE": "CANDIDATE_EVIDENCE",
+    "CORRECT": "CANDIDATE_EVIDENCE",
+    "ROBUST": "CANDIDATE_EVIDENCE",
+    "PERFORMANCE": "NOT_RUN",
+    "AI_GENERATE": "NOT_APPLICABLE",
+    "EVIDENCE": "CANDIDATE_EVIDENCE",
+    "promotion": "NO_K400_PASS"
+  },
+  "decision": "P3_TYPED_MODULE_AND_TYPED_NATIVE_VM_CANDIDATE_VERIFIED_NATIVE_AUTHORITY_TYPED_LINK_OPEN_PHYSICAL_COMMAND_PROFILE_REMAINS_CONTROL_PLANE_KERNEL_CANDIDATE_CONTRACT",
+  "evidenceRoot": "c00ee8128b863418e22bb9a59d2e34e929355980928d161cd1301de60a1e2fe8"
+}
