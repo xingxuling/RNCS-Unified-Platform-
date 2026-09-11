@@ -1,0 +1,172 @@
+{
+  "format": "rncs.rsr-heightfield-mutation-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "17b3738",
+    "authority": "RSR runtime command execution only; no RCL promotion, provider commit, canonical promotion, release promotion or main-branch mutation"
+  },
+  "change": {
+    "owner": "RSR Spatial Embodiment",
+    "upstreamTerrainOwner": "Large World Runtime terrain sampling and grid mesh",
+    "contract": "tick-local patch-heightfield command -> rooted authored heightfield mutation event -> contact/cache invalidation -> replayable RSR state",
+    "algorithm": "sorted unique integer sample patches, optional expected heightfield root, maximum 4096 changed samples, atomic prevalidation, precise affected contact/cache invalidation, mutation/causal roots",
+    "explicitCandidateLabel": "bounded-heightfield-mutation-candidate"
+  },
+  "positiveEvidence": [
+    "A tick-2 patch changes one authored 3x3 center sample from 0 to 600 after expected-root validation.",
+    "Mutation event verifies and binds previous/next heightfield roots and changed sample.",
+    "Contacts touching the patched fixture re-enter lifecycle as begin events and stale impulse/cache identity is not reused.",
+    "The same command sequence produces identical RSR stateRoot and causal patch fact on replay.",
+    "Invalid stale expected root is rejected without changing the authored sample/bodyRoot."
+  ],
+  "negativeEvidence": [
+    "Only static or fixed-rotation kinematic heightfields are patchable; dynamic body heightfields remain rejected.",
+    "This is a bounded mutable surface candidate, not a continuous/full triangle contact manifold, deformable terrain solver, or industrial physics implementation.",
+    "Large World has not been given a deform stream/patch scheduler; the bridge still lowers active chunks as static terrain residency candidates.",
+    "No current RCL primitive or Kernel command-batch lowering owns this mutation; the RSR route is explicitly recorded as an RCL gap.",
+    "No canonical commit/promotion, external provider, Android/physical device, target GPU, external network or production performance proof."
+  ],
+  "execution": {
+    "commands": [
+      "npm.cmd run typecheck --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run lint --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run test:spatial-embodiment --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd test --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd test --workspace @taowind/large-world-rsr-bridge",
+      "npm.cmd run verify:release --workspace @taowind/reality-simulation-runtime",
+      "JSON parse checks for rncs.modules.json and rsr-spatial-heightfield-mutation.v0.1.schema.json",
+      "git diff --check on heightfield source, schema, tests, docs and registry paths"
+    ],
+    "results": {
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "spatialEmbodiment": "76/76 PASS",
+      "fullRsr": {
+        "vsr": "29/29 PASS",
+        "simulationV01": "11/11 PASS",
+        "constraintPhysicsV02": "19/19 PASS",
+        "embodiedDynamicsV03": "30/30 PASS",
+        "temporalExperienceV04": "35/35 PASS",
+        "spatialEmbodimentV06": "76/76 PASS",
+        "networkReconciliationV07": "7/7 PASS",
+        "representationObservation": "3/3 PASS",
+        "total": "210/210 PASS"
+      },
+      "largeWorldRsrBridge": "5/5 PASS",
+      "releaseAudit": "PASS (structural audit ok; generated embedded test summary predates this candidate)",
+      "schemaAndRegistryParse": "PASS",
+      "diffCheck": "PASS"
+    }
+  },
+  "fixtureReceipt": {
+    "initialAvatarPosition": {
+      "x": 500,
+      "y": 400,
+      "z": 500
+    },
+    "positionAfterFirstStep": {
+      "x": 500,
+      "y": 499,
+      "z": 500
+    },
+    "stateRootBeforePatch": "fnv1a64:6904ff621c8b13a9",
+    "bodyRootBeforePatch": "fnv1a64:5fd6d6b7291531f9",
+    "contactRootBeforePatch": "fnv1a64:0deb67385853de49",
+    "heightfieldRootBeforePatch": "fnv1a64:3daf1af8e6ccd40d",
+    "patchCommand": {
+      "id": "raise-center",
+      "tick": 2,
+      "type": "patch-heightfield",
+      "bodyId": "patch-terrain",
+      "fixtureId": "patch-terrain:heightfield",
+      "samples": [
+        {
+          "index": 4,
+          "height": 600
+        }
+      ],
+      "expectedHeightfieldRoot": "fnv1a64:3daf1af8e6ccd40d"
+    },
+    "mutationEvent": {
+      "kind": "terrain-mutation",
+      "phase": "patch",
+      "format": "rsr.spatial-heightfield-mutation.v0.1",
+      "version": "0.1.0",
+      "tick": 2,
+      "bodyId": "patch-terrain",
+      "fixtureId": "patch-terrain:heightfield",
+      "samples": [
+        {
+          "index": 4,
+          "height": 600
+        }
+      ],
+      "previousHeightfieldRoot": "fnv1a64:3daf1af8e6ccd40d",
+      "nextHeightfieldRoot": "fnv1a64:514b54750dc3ed8b",
+      "mutationRoot": "fnv1a64:5319c601681cd9ef"
+    },
+    "mutationVerified": true,
+    "positionAfterPatch": {
+      "x": 346,
+      "y": 756,
+      "z": 500
+    },
+    "heightfieldAfterPatch": [
+      0,
+      0,
+      0,
+      0,
+      600,
+      0,
+      0,
+      0,
+      0
+    ],
+    "contactCountAfterPatch": 4,
+    "contactPhasesAfterPatch": [
+      "begin",
+      "begin",
+      "begin",
+      "begin"
+    ],
+    "stateRootAfterPatch": "fnv1a64:a23305bb0679d85c",
+    "bodyRootAfterPatch": "fnv1a64:11c33a2d0d2aae30",
+    "contactRootAfterPatch": "fnv1a64:9ccd16d79d082de1",
+    "replayStateRoot": "fnv1a64:a23305bb0679d85c",
+    "causalDeltaRoot": "fnv1a64:d73f562f6878e988",
+    "causalPatchFact": {
+      "subject": "body:patch-terrain",
+      "predicate": "spatial.heightfield.patch",
+      "object": "fnv1a64:5319c601681cd9ef"
+    }
+  },
+  "negativeEvidenceReceipt": {
+    "error": "SPATIAL_HEIGHTFIELD_PATCH_EXPECTED_ROOT_MISMATCH",
+    "bodyRootUnchanged": true,
+    "samplesUnchanged": true
+  },
+  "rclGap": {
+    "id": "RCL_GAP_RNCS_TERRAIN_MUTATION_COMMAND_SEMANTICS",
+    "task": "Represent and lower deterministic local heightfield mutation as shared world command semantics",
+    "missingCapability": "RCL/Kernel has no current typed heightfield patch primitive or executable command-batch lowering",
+    "workaround": "RSR-native patch-heightfield command with explicit root/event/causal evidence",
+    "donor": "Existing RSR SpatialCommand, snapshot/replay, semanticHash and causal-delta path; no external donor promoted",
+    "gapType": "shared-world-mutation-primitive",
+    "generality": "potentially reusable across terrain, world-editing, destructible surfaces and simulation correction",
+    "candidateAbsorption": "audit as RCL primitive/profile plus Kernel lowering only after cross-domain regression",
+    "affectedK400Cells": [
+      "EXPRESS",
+      "COMPILE",
+      "LOWER",
+      "EXECUTE",
+      "CORRECT",
+      "ROBUST",
+      "EVIDENCE"
+    ]
+  },
+  "decision": "RSR_BOUNDED_HEIGHTFIELD_MUTATION_CANDIDATE_VERIFIED_DYNAMIC_BODY_TERRAIN_LARGE_WORLD_DEFORM_STREAM_CONTINUOUS_MANIFOLD_RCL_COMMAND_LOWERING_AND_DEVICE_BOUNDARIES_OPEN",
+  "evidenceRoot": "b28ddbcf7f06a91a63dc701a75d3d51a9a06017f5219e27dcf91b944d457857b"
+}

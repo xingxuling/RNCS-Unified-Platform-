@@ -205,7 +205,12 @@
         "rncs-core",
         "rfe-sdk"
       ],
-      "test": "npm test --workspace @taowind/reality-simulation-runtime"
+      "test": "npm test --workspace @taowind/reality-simulation-runtime",
+      "capabilities": [
+        "deterministic-spatial-embodiment",
+        "bounded-heightfield-patch-mutation",
+        "snapshot-replay-causal-heightfield-roots"
+      ]
     },
     {
       "id": "vsr",

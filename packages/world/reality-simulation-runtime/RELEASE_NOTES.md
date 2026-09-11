@@ -9,7 +9,8 @@
 - 新增 bounded heightfield sphere-vs-authored-triangle sweep：对 face、edge、vertex 候选做确定性固定点求交，按投影 XZ cell window 和 `4096` cell 上限 fail closed；sphere 走 exact local sweep，box/convex 等类型继续拒绝。
 - 新增 bounded upright-capsule-vs-authored-triangle sweep：解析 capsule segment interior 与 triangle face/edge/vertex 的 earliest candidate，并继续以 `4096` projected cell 上限 fail closed；任意旋转 capsule、动态 terrain 与完整接触流形仍保持 OPEN。
 - 新增 bounded heightfield contact manifold candidate：按 moving fixture footprint 采样最多四个 authored support points，共享 `manifoldId`、保留独立 impulse/cache key，只有主点执行位置修正；continuous manifold、动态 terrain 与完整工业求解仍保持 OPEN。
-- Spatial Embodiment 回归为 `74/74 PASS`，RSR 全量回归为 `208/208 PASS`；Large World -> RSR terrain lowering、同一 RSR 世界的 stream residency transition、bounded terrain-surface ray query、sphere sweep、upright-capsule sweep 与 bounded contact manifold 已有本地 candidate execution evidence，但不宣称完成生产级 stream policy、动态地形、连续完整接触流形、真实设备或生产性能。
+- 新增 bounded `patch-heightfield` runtime command：对 static/fixed-rotation kinematic heightfield 执行最多 4096 个有序整数样本的 root-bound patch，原子拒绝 stale root/duplicate/out-of-range/no-op 输入，输出 mutation event，并精确失效受影响 contact cache；当前命令可被 RSR snapshot/replay/causal delta 消费。
+- Spatial Embodiment 回归为 `76/76 PASS`，RSR 全量回归为 `210/210 PASS`；Large World -> RSR terrain lowering、同一 RSR 世界的 stream residency transition、bounded terrain-surface ray query、sphere sweep、upright-capsule sweep、bounded contact manifold 与 RSR-native terrain patch 已有本地 candidate execution evidence，但不宣称完成生产级 deform stream policy、动态 body terrain、连续完整接触流形、RCL/Kernel command lowering、真实设备或生产性能。
 
 - Added authored convex-hull fixtures with finite, non-coplanar vertex validation and deterministic triangle-index validation.
 - Routed convex-hull fixtures through rotated world-space support points, GJK/EPA contacts, broad-phase AABBs, snapshots, replay roots and VSR triangle-mesh projection.

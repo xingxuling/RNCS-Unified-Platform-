@@ -16,6 +16,7 @@ RSR是RNCS的三维权威状态、物理接触、角色具身和可验证重放�
 - 新增 candidate-only `replaceManagedStaticBodies(...)`：对带有受管理标签的静态体执行确定性 enter/exit/retain 驻留切换，预验证所有新体，清除受地形变化影响的接触/支撑缓存，保留其他动态体状态，并输出可验证的 residency transition root；该接口不授予 canonical world write authority。
 - 新增 bounded authored-surface heightfield ray query、sphere-vs-triangle sweep 与 upright-capsule-vs-triangle sweep；两类扫掠都对面、边、顶点候选做确定性固定点求交并受投影 cell 预算约束，胶囊仅支持直立轴。
 - 新增 bounded heightfield contact manifold candidate：按 moving shape footprint 采样最多四个 authored support points，共享 `manifoldId`、独立 contact cache key，只有主点执行位置修正；它仍不是连续或工业完整 manifold。
+- 新增 bounded `patch-heightfield` runtime command：对静态或固定旋转运动学 heightfield 以有序整数样本执行受限原子 patch，支持 expected heightfield root、mutation root、因地形变化精确失效接触缓存，并随 snapshot/replay 与 causal delta 输出；动态 body heightfield、RCL 原生命令语义和完整 terrain transaction 仍保持显式边界。
 
 ## RAGF Embodiment Binding
 
@@ -46,7 +47,7 @@ npm run verify:release
 
 - 角色控制器默认仍为Y轴直立胶囊；物理窄相位已支持带刚体旋转的Capsule。
 - Sphere/Box/Capsule/Convex Hull 常见组合均走广义凸支持路径；球-球使用稳定闭式特例，极少数 EPA 退化仍保留显式 legacy fallback 并计入诊断。
-- Convex Hull 当前是单个作者网格 fixture；自动凸分解、车辆轮胎接触和完整工业接触流形仍未实现。`heightfield` 仍是 candidate provider：仅支持未旋转静态/运动学场，在单个 AABB penetration test 之上提供最多四点 bounded support manifold，并新增 bounded authored-surface ray query、bounded sphere-vs-authored-triangle sweep 与 bounded upright-capsule-vs-authored-triangle sweep；它不是连续完整三角形接触流形，也没有动态地形或物理设备性能证据。
+- Convex Hull 当前是单个作者网格 fixture；自动凸分解、车辆轮胎接触和完整工业接触流形仍未实现。`heightfield` 仍是 candidate provider：仅支持未旋转静态/运动学场，在单个 AABB penetration test 之上提供最多四点 bounded support manifold、bounded authored-surface ray query、bounded sphere-vs-authored-triangle sweep、bounded upright-capsule-vs-authored-triangle sweep，以及最多 4096 个样本的 runtime patch；它不是连续完整三角形接触流形，不能接受动态 body heightfield，也没有 Large World deform stream、物理设备性能或生产部署证据。
 - 接触缓存是确定性单点持久流形，不是完整四点/八点工业接触流形。
 - 约束求解器仍是单线程整数确定性参考实现，不声称达到Jolt/PhysX/Chaos吞吐量。
-- Kernel binding 当前是一实体一 body/fixture 的确定性桥；多 fixture archetype、完整 ECS chunk/processor、并行 Job 和网络 wire frame 绑定仍未完成。Heightfield 与 managed residency 仍是 bounded candidate，不是生产级 terrain streaming、连续完整 swept terrain manifold、动态 terrain 或物理设备性能证明。
+- Kernel binding 当前是一实体一 body/fixture 的确定性桥；多 fixture archetype、完整 ECS chunk/processor、并行 Job 和网络 wire frame 绑定仍未完成。Heightfield patch 是 RSR-native command path，当前没有对应的 RCL primitive 或 Kernel command batch lowering；heightfield 与 managed residency 仍是 bounded candidate，不是生产级 terrain streaming、连续完整 swept terrain manifold、动态 terrain transaction 或物理设备性能证明。
