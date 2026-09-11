@@ -1,0 +1,115 @@
+{
+  "format": "rncs.rcl-typed-link-replay-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_REPLAY_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "4db64fa",
+    "packagePath": "packages/languages/reality-computation-language/examples/typed-package",
+    "rclPackage": "@taowind/reality-computation-language@0.94.0-alpha.1",
+    "controlPlanePackage": "@taowind/rncs-rcl-control-plane@0.4.0-alpha.1",
+    "authorityBoundary": "Sealed typed-link replay and RNCS replay admission only; native authority-plan compilation, canonical write and promotion remain separate."
+  },
+  "seam": {
+    "typedLinkFormat": "rcl.typed-native-link.v0.1",
+    "typedReplayFormat": "rcl.typed-native-link-replay.v0.1",
+    "rncsReplayFormat": "rncs.rcl-typed-native-replay.v0.1",
+    "semanticOwners": {
+      "sealedTypedLink": "RCL typed native link kernel",
+      "bytecodeReplay": "RCL existing native VM",
+      "candidateAdmission": "RNCS RCL control plane",
+      "canonicalAuthority": "Not entered by this candidate"
+    }
+  },
+  "archaeology": {
+    "inputEvidence": "docs/verification/RNCS_RCL_TYPED_PACKAGE_NATIVE_CANDIDATE_v0.1.json",
+    "inputCandidateRoot": "00c0929e2547c450048f55d42a8a2c01cdfef3fa3285a17bf32a83389301e488",
+    "inputTypedLinkRoot": "73f487526f311594579c584df6559b50de15738650cc84dc8a4395e32f01cce9",
+    "reuseDecision": "Reused the existing package lock verifier, typed-link receipt, RBC decoder, native VM and canonical root owner; added only sealed bytecode replay and RNCS admission binding.",
+    "recompileAvoided": "Replay consumes the sealed receipt and RBC bytes without reparsing source or creating a second typed compiler."
+  },
+  "positiveEvidence": [
+    "RCL replay verifies the sealed receipt before consuming bytecode.",
+    "Replay binds bytecode SHA-256, byte length, instruction count and typed instruction count to the receipt.",
+    "The existing native VM re-executes the RBC bytes and reproduces native semantic-state root, native state root, state-root verification/parity and reference/native parity.",
+    "RNCS replay admission binds the result to the candidate root and preserves replay_only=true plus canonical_write_authorized=false.",
+    "The fixed typed package replay and RNCS replay admission roots are independently verifiable."
+  ],
+  "negativeEvidence": [
+    "Bytecode substitution fails closed with RCL_TYPED_LINK_REPLAY_BYTECODE_ROOT_MISMATCH.",
+    "Receipt, candidate-root and authority tamper cases remain covered by the typed-link and RNCS control-plane tests.",
+    "The same package source is still rejected by compileRclSource() native authority compilation with RCLC_COMPILER_FAILURE; replay does not promote that path.",
+    "No canonical world mutation, RFE merge, RSR mutation, physical device, production deployment, external transport or K400 PASS is established."
+  ],
+  "execution": {
+    "commands": [
+      "node --test --test-concurrency=1 tests/typed-package-kernel.test.mjs tests/typed-native-link.test.mjs",
+      "node --test --test-concurrency=1 packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs",
+      "npm test --workspace @taowind/reality-computation-language",
+      "Direct Node run: compileTypedNativeLinkFromPackage() + replayTypedNativeLink() + compileRclTypedCandidateFromPackage() + replayRclTypedCandidate() + verifyRclTypedReplay()"
+    ],
+    "results": {
+      "typedPackageLinkReplayFocusedSuite": "10/10 PASS",
+      "rclControlPlaneSuite": "20/20 PASS",
+      "fullRclSuite": "619 tests / 618 pass / 0 fail / 1 skip",
+      "nativeDistributionPreflight": "PASS: PREBUILT_NATIVE_ARTIFACTS_VERIFIED; Zig unavailable, checked distribution matches source and artifact manifest",
+      "typedReplayVerification": "PASS: ok=true",
+      "rncsReplayAdmissionVerification": "PASS: ok=true, errors=[]",
+      "bytecodeSubstitutionNegative": "PASS: RCL_TYPED_LINK_REPLAY_BYTECODE_ROOT_MISMATCH",
+      "nativeAuthorityTypedLink": "BLOCKED: RCLC_COMPILER_FAILURE"
+    }
+  },
+  "receipt": {
+    "candidateRoot": "00c0929e2547c450048f55d42a8a2c01cdfef3fa3285a17bf32a83389301e488",
+    "typedLinkRoot": "73f487526f311594579c584df6559b50de15738650cc84dc8a4395e32f01cce9",
+    "typedReplayRoot": "76e78dcf9338b8fe287da644824c9dc93172b997874b9a2a21351e6ba390741f",
+    "rncsReplayRoot": "479dd47219ff2c834b48cd2982d46b5289d3792324de73d31c4456e2c0ad60a3",
+    "packageLockRoot": "9a387d627d74425cfdcc4d923befb308a25342c6b6868f1c1d9441a4ffe64ec2",
+    "typeModuleRoot": "db946a8588cd523c468ec972e134c466fec0872e3b7753db1c84e90a6bf29a00",
+    "programRoot": "d042acfbb3484fa16c11551190bcab1e994a913f270aba17299c59654cb52bbf",
+    "bytecodeRoot": "1f7d81325e3957ced042169db65f25e35727195e5a991342ec28443ccb25523c",
+    "bytecodeBytes": 376,
+    "bytecodeInstructions": 8,
+    "typedInstructionCount": 2,
+    "referenceSemanticStateRoot": "bc81446c0eba8fcad5cc0c6b1afda7fea406c584b120519f71cbbdd057c5b09a",
+    "nativeSemanticStateRoot": "bc81446c0eba8fcad5cc0c6b1afda7fea406c584b120519f71cbbdd057c5b09a",
+    "nativeStateRoot": "efb7cc27959ab6858cbd0e90a67aff6f6535bb6ba6afdb4b28b1c1ed933606c4",
+    "nativeStateRootVerified": true,
+    "nativeStateRootParity": true,
+    "semanticStateParity": true,
+    "authority": {
+      "candidateOnly": true,
+      "replayOnly": true,
+      "canonicalWriteAuthorized": false,
+      "commitRequiresExplicitRncsAuthority": true,
+      "nativeAuthorityPlan": "NOT_COMPILED_BY_TYPED_LINK"
+    }
+  },
+  "rclGap": {
+    "id": "RCL_GAP_RNCS_FIRST_CLASS_PHYSICAL_COMMAND_PRIMITIVE",
+    "subgap": "RCL_GAP_RNCS_RCL_TYPED_MODULE_NATIVE_AUTHORITY_LINK",
+    "task": "Make the native self-host authority compiler consume the same sealed typed package/link ABI and preserve compiler/reference/native parity before any authority plan can be admitted.",
+    "missingCapability": "Native self-host consumption of the .rcltype graph, typed constructors, sealed package/link receipt and typed authority-plan root binding.",
+    "workaround": "Use the existing package-bound typed candidate, replay it through the existing native VM, and expose only RNCS replay admission with explicit candidate-only authority flags.",
+    "donor": "Existing RCL typed package lock, type-module kernel, typed compiler, RBC/native VM, typed heap/reference ABI and native C runtime; no external donor promoted.",
+    "gapType": "language-runtime-authority-link",
+    "generality": "Reusable for physical command profiles, World Body IR, input/network commands, asset contracts and behavior contracts.",
+    "candidateAbsorption": "Next consume the sealed link in the native authority compiler, prove reference/native/compiler parity, bind an authority-plan root and retain tamper/replay gates before canonical commit.",
+    "affectedK400Cells": ["EXPRESS", "COMPILE", "LOWER", "EXECUTE", "CORRECT", "ROBUST", "EVIDENCE"]
+  },
+  "gateAssessment": {
+    "EXPRESS": "CANDIDATE_EVIDENCE",
+    "COMPILE": "CANDIDATE_EVIDENCE",
+    "LOWER": "CANDIDATE_EVIDENCE",
+    "EXECUTE": "CANDIDATE_EVIDENCE",
+    "CORRECT": "CANDIDATE_EVIDENCE",
+    "ROBUST": "CANDIDATE_EVIDENCE",
+    "PERFORMANCE": "NOT_RUN",
+    "AI_GENERATE": "NOT_APPLICABLE",
+    "EVIDENCE": "CANDIDATE_EVIDENCE",
+    "promotion": "NO_K400_PASS"
+  },
+  "decision": "SEALED_TYPED_LINK_REPLAY_AND_RNCS_ADMISSION_VERIFIED_NATIVE_AUTHORITY_TYPED_LINK_CANONICAL_COMMIT_AND_PRODUCTION_BOUNDARIES_OPEN",
+  "evidenceRoot": "63ecf3a41a33b99146c1b2bfab4687fbe132237b5f3619f86a45e34d7c30dcbc"
+}
