@@ -3,7 +3,7 @@
   "version": "0.9.0-alpha.1",
   "ok": true,
   "failures": [],
-  "sourceFileCount": 33,
+  "sourceFileCount": 35,
   "packageRuntimeDependencies": [
     "@taowind/visual-state-runtime"
   ],
@@ -13,9 +13,9 @@
     "constraintPhysicsV02": "19/19",
     "embodiedDynamicsV03": "30/30",
     "temporalExperienceV04": "35/35",
-    "spatialEmbodimentV06": "63/63",
+    "spatialEmbodimentV06": "71/71",
     "networkReconciliationV07": "7/7",
-    "total": "194/194"
+    "total": "205/205"
   },
   "spatialRoots": {
     "bodyRoot": "fnv1a64:0a131dd2b2291dc8",

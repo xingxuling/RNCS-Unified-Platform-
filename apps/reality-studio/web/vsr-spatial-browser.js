@@ -904,11 +904,13 @@ var VSRSpatial3D = (() => {
     catalog;
     loader;
     maxConcurrent;
+    loadPriority;
     states = /* @__PURE__ */ new Map();
-    constructor(catalog, loader, { maxConcurrent = 4 } = {}) {
+    constructor(catalog, loader, { maxConcurrent = 4, loadPriority = (asset) => 0 } = {}) {
       this.catalog = catalogMap(catalog);
       this.loader = loader;
       this.maxConcurrent = Math.max(1, Math.floor(maxConcurrent));
+      this.loadPriority = loadPriority;
       for (const id of this.catalog.keys()) this.states.set(id, { status: "idle", attempts: 0, leases: 0 });
     }
     state(assetId) {
@@ -940,7 +942,10 @@ var VSRSpatial3D = (() => {
           state.status = "blocked";
           operations.push({ assetId: id, status: "blocked", errorCode: "VSR_ASSET_DEPENDENCY_BLOCKED", errorMessage: "Dependency failed or is missing." });
         }
-        const candidates = [...pending].filter((id) => unique(this.catalog.get(id)?.dependencies).every((dependency) => this.states.get(dependency)?.status === "ready")), foregroundLoadable = candidates.filter((id) => foregroundPending.has(id)), loadable = (foregroundLoadable.length ? foregroundLoadable : candidates).slice(0, this.maxConcurrent);
+        const candidates = [...pending].filter((id) => unique(this.catalog.get(id)?.dependencies).every((dependency) => this.states.get(dependency)?.status === "ready")), foregroundLoadable = candidates.filter((id) => foregroundPending.has(id)), prioritized = foregroundLoadable.length ? foregroundLoadable : candidates, order = new Map(prioritized.map((id, index) => [id, index])), loadable = prioritized.sort((a, b) => {
+          const ap = Number(this.loadPriority(this.catalog.get(a))), bp = Number(this.loadPriority(this.catalog.get(b)));
+          return (Number.isFinite(bp) ? bp : 0) - (Number.isFinite(ap) ? ap : 0) || order.get(a) - order.get(b);
+        }).slice(0, this.maxConcurrent);
         if (!loadable.length) {
           for (const id of pending) {
             blocked.add(id);
@@ -1061,8 +1066,8 @@ var VSRSpatial3D = (() => {
   var requestKey = (origin, cacheName, suffix) => new Request(`${origin.replace(/\/$/, "")}/__rncs_vsr_asset_cache__/${encodeURIComponent(cacheName)}/${suffix}`);
   function createVSRBrowserAssetCache(options) {
     if (!options?.cacheName) throw new TypeError("VSR_BROWSER_ASSET_CACHE_NAME_REQUIRED");
-    const cacheName = String(options.cacheName), revisionRoot = options.revisionRoot === void 0 ? null : options.revisionRoot === null ? null : String(options.revisionRoot), maxBytes = budgetOf(options.maxBytes), storage = options.cacheStorage ?? globalThis.caches, cryptoApi = options.cryptoApi ?? globalThis.crypto, origin = String(options.origin ?? globalThis.location?.origin ?? "https://rncs.invalid"), entries = /* @__PURE__ */ new Map();
-    let cache, readyPromise, mutationQueue = Promise.resolve(), sequence = 0, manifestRoot, cacheHits = 0, cacheMisses = 0, cacheEvictions = 0, diagnostics = [], available = Boolean(storage && cryptoApi?.subtle);
+    const cacheName = String(options.cacheName), revisionRoot = options.revisionRoot === void 0 ? null : options.revisionRoot === null ? null : String(options.revisionRoot), maxBytes = budgetOf(options.maxBytes), persistAccesses = options.persistAccesses !== false, storage = options.cacheStorage ?? globalThis.caches, cryptoApi = options.cryptoApi ?? globalThis.crypto, origin = String(options.origin ?? globalThis.location?.origin ?? "https://rncs.invalid"), entries = /* @__PURE__ */ new Map();
+    let cache, readyPromise, mutationQueue = Promise.resolve(), sequence = 0, manifestRoot, manifestWrites = 0, scheduledPersist, cacheHits = 0, cacheMisses = 0, cacheEvictions = 0, diagnostics = [], available = Boolean(storage && cryptoApi?.subtle);
     const payloadRequest = (sha256Value) => requestKey(origin, cacheName, `${sha256Value}.bin`), manifestRequest = () => requestKey(origin, cacheName, "manifest.json");
     const entryView = (entry) => ({ sha256: entry.sha256, byteLength: entry.byteLength, lastAccess: entry.lastAccess, assetIds: unique2(entry.assetIds) });
     const base = () => ({ format: VSR_BROWSER_ASSET_CACHE_FORMAT, version: VSR_BROWSER_ASSET_CACHE_VERSION, revisionRoot, maxBytes, sequence, entries: [...entries.values()].map(entryView).sort((a, b) => a.sha256.localeCompare(b.sha256)), diagnostics: unique2(diagnostics) });
@@ -1071,12 +1076,27 @@ var VSRSpatial3D = (() => {
       const document = { ...manifestBase(base()), root: cryptographicHash(base()) };
       await cache.put(manifestRequest(), new Response(JSON.stringify(document), { status: 200, headers: { "content-type": "application/json", "x-rncs-root": document.root } }));
       manifestRoot = document.root;
+      manifestWrites++;
     };
     const mutate = (operation) => {
       const next = mutationQueue.then(operation);
-      mutationQueue = next.catch(() => {
-      });
+      mutationQueue = next.then(() => void 0, () => void 0);
       return next;
+    };
+    const requestPersist = () => {
+      if (scheduledPersist) return scheduledPersist;
+      let resolvePersist, rejectPersist;
+      const current = new Promise((resolve, reject) => {
+        resolvePersist = resolve;
+        rejectPersist = reject;
+      });
+      scheduledPersist = current;
+      setTimeout(() => {
+        if (scheduledPersist !== current) return;
+        scheduledPersist = void 0;
+        mutate(async () => persist()).then(resolvePersist, rejectPersist);
+      }, 0);
+      return current;
     };
     const clearCache = async () => {
       if (!cache) return;
@@ -1165,7 +1185,8 @@ var VSRSpatial3D = (() => {
           if (!response) throw new Error("VSR_BROWSER_ASSET_CACHE_PAYLOAD_MISSING");
           const bytes = new Uint8Array(await response.arrayBuffer());
           if (bytes.byteLength !== expected.byteLength || await sha256(cryptoApi, bytes) !== expected.sha256) throw new Error("VSR_BROWSER_ASSET_CACHE_PAYLOAD_INVALID");
-          return mutate(async () => {
+          let persistence;
+          const result = await mutate(async () => {
             const current = entries.get(expected.sha256);
             if (!current) {
               cacheMisses++;
@@ -1174,8 +1195,11 @@ var VSRSpatial3D = (() => {
             current.lastAccess = ++sequence;
             current.assetIds = unique2([...current.assetIds, String(expected.id ?? "")]);
             cacheHits++;
-            await persist();
-          }).then(() => new Uint8Array(bytes));
+            if (persistAccesses) persistence = requestPersist();
+            return new Uint8Array(bytes);
+          });
+          if (persistence) await persistence;
+          return result;
         } catch (error) {
           await mutate(async () => {
             diagnostics.push(error instanceof Error ? error.message : "VSR_BROWSER_ASSET_CACHE_PAYLOAD_INVALID");
@@ -1198,17 +1222,19 @@ var VSRSpatial3D = (() => {
         try {
           const body = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
           await cache.put(payloadRequest(expected.sha256), new Response(body, { status: 200, headers: { "content-type": "application/octet-stream", "x-rncs-sha256": expected.sha256 } }));
+          let persistence;
           await mutate(async () => {
             entries.set(expected.sha256, { sha256: expected.sha256, byteLength: bytes.byteLength, lastAccess: ++sequence, assetIds: [String(expected.id ?? "")] });
             await trim();
-            await persist();
+            persistence = requestPersist();
           });
+          await persistence;
         } catch (error) {
           diagnostics.push(error instanceof Error ? error.message : "VSR_BROWSER_ASSET_CACHE_WRITE_FAILED");
         }
       },
       inspect() {
-        return { format: VSR_BROWSER_ASSET_CACHE_FORMAT, version: VSR_BROWSER_ASSET_CACHE_VERSION, cacheName, revisionRoot, available, manifestRoot, bytesResident: [...entries.values()].reduce((sum, entry) => sum + entry.byteLength, 0), cachedAssetIds: unique2([...entries.values()].flatMap((entry) => entry.assetIds)), cacheHits, cacheMisses, cacheEvictions, diagnostics: unique2(diagnostics) };
+        return { format: VSR_BROWSER_ASSET_CACHE_FORMAT, version: VSR_BROWSER_ASSET_CACHE_VERSION, cacheName, revisionRoot, maxBytes, persistAccesses, available, manifestRoot, manifestWrites, bytesResident: [...entries.values()].reduce((sum, entry) => sum + entry.byteLength, 0), cachedAssetIds: unique2([...entries.values()].flatMap((entry) => entry.assetIds)), cacheHits, cacheMisses, cacheEvictions, diagnostics: unique2(diagnostics) };
       }
     };
   }

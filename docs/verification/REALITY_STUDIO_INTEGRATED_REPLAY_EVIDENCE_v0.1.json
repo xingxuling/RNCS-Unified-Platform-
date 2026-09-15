@@ -1,0 +1,208 @@
+{
+  "format": "taowind.reality-studio-integrated-replay-evidence-ledger.v0.1",
+  "version": "0.1.0-alpha.1",
+  "recorded_at": "2026-09-15",
+  "status": "LOCAL_CANDIDATE_VERIFIED_NO_CANONICAL_PROMOTION",
+  "scope": {
+    "checkout": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "baseline_commit": "aafb291f1d54505be75cfe2559b07a92e6e46d3a",
+    "github_actions_used": false,
+    "browser_verifier": "Python Playwright local fallback; Browser plugin unavailable"
+  },
+  "truth_boundaries": {
+    "adapter_role": "Product Body / Projection",
+    "canonical_owner": "Existing RNCS/RCL Runtime and Provider modules",
+    "new_live_or_canonical_authoritative_runtime_created": false,
+    "isolated_replay_runtime_instances_created": true,
+    "canonical_shared_tick_owner_claimed": false,
+    "canonical_state_mutated_by_replay": false,
+    "production_promotion_claimed": false,
+    "external_transport_claimed": false
+  },
+  "reuse_decisions": [
+    {
+      "owner": "BehaviorEditorSession",
+      "decision": "REUSE",
+      "api": "runtime.snapshot(), runtime.restore(), step()",
+      "role": "isolated Behavior replay from a true runtime snapshot"
+    },
+    {
+      "owner": "RealityNetworkRuntime",
+      "decision": "REUSE",
+      "api": "createCheckpoint(), createSessionFromCheckpoint(), submitInputPacket(), advanceServerTick()",
+      "role": "isolated Network replay from a verified checkpoint and original authorized input packet"
+    },
+    {
+      "owner": "Reality Studio Adapter",
+      "decision": "ADAPT",
+      "role": "records relative integration epochs and evidence only; it does not own a canonical shared runtime"
+    },
+    {
+      "owner": "RCL Canonical Core",
+      "decision": "KEEP_SEPARATE",
+      "role": "no new RCL primitive or shared tick owner is claimed by this product layer"
+    }
+  ],
+  "runtime_probe": {
+    "session_id": "evidence:integrated-replay-v01",
+    "inputs": [
+      {
+        "behavior_input": {"move_right": true},
+        "network_input": {"player_id": "blue", "command": {"type": "move", "x": 1000000, "z": 0}}
+      },
+      {
+        "behavior_input": {"move_left": true},
+        "network_input": {"player_id": "blue", "command": {"type": "move", "x": -1000000, "z": 0}}
+      }
+    ],
+    "integration_epoch": {
+      "epoch_id": "integration-epoch:evidence:integrated-replay-v01:1",
+      "epoch_root": "8c479b208f3620cc90d1c8b12bc2eecadb42ab6308b37204d366df2b34ed9c34",
+      "timeline_root": "85356c8ca510cd905c468c1b9678a7fbfd8418bee43ea6b5c80f94ef5de662c2",
+      "entry_count": 2,
+      "tick_aligned": true,
+      "entries": [
+        {
+          "epoch_tick": 1,
+          "behavior_state_root": "22943fe614b5eb80c64dc97cd8a5f4a0e37b23b42fcc9e22ac77202dbdf5d019",
+          "network_state_root": "fnv1a64:dcb9fe6751ebf17c",
+          "network_receipt_root": "03915ad4b179c353e4411d48e1503eafb9fe5b9c0250cc63330bdc9d9890b5c4",
+          "entry_root": "53a838980b79de7b8752528bef0ffb5853f19999764aa77d3d3afeb5340821a7"
+        },
+        {
+          "epoch_tick": 2,
+          "behavior_state_root": "52057390f38976016cc7468ba1b57654fa74d71b34c58b3bd1ac6fc85c39430b",
+          "network_state_root": "fnv1a64:993f61154f73d8cb",
+          "network_receipt_root": "b64e28ab093864e4fbd3602d5469795ad8e1c5d99c9e3b72e927a72c642e291f",
+          "entry_root": "23758b45fed2cfa171c56a294c6ce8edd95ef30acd878f662490e350c8461ca7"
+        }
+      ]
+    },
+    "isolated_replay": {
+      "format": "taowind.reality-studio-integrated-runtime-replay.v0.1",
+      "scope": "isolated-behavior-network-replay",
+      "status": "verified",
+      "deterministic": true,
+      "canonical_state_mutated": false,
+      "active_runtime_unchanged": true,
+      "replay_root": "e5a18311671ab4b680bcb5d9567f44e5fa120e682ef361e8ea2d51df7ae48eff",
+      "checks": [
+        {"epoch_tick": 1, "behavior_match": true, "network_match": true, "receipt_match": true, "entry_integrity_match": true, "submission_match": true, "check_root": "b01083edb9c66e4d3a0ecfa9382edd07682dc9a0b586f940a1f4ad18ae4caec5"},
+        {"epoch_tick": 2, "behavior_match": true, "network_match": true, "receipt_match": true, "entry_integrity_match": true, "submission_match": true, "check_root": "ee11567fa3ff29866c2c3d3a0b1aac2213a85ce68c88fdf3b0d75639e8116201"}
+      ]
+    },
+    "active_runtime": {
+      "tick": 2,
+      "state_root": "fnv1a64:993f61154f73d8cb",
+      "state_unchanged_after_replay": true
+    },
+    "evidence_status": {
+      "integrated_replay_entry": "verified",
+      "network_replay_coupling_gap": "candidate-verified",
+      "combined_runtime_tick_gap": "open"
+    }
+  },
+  "ui_run_probe": {
+    "session_id": "evidence:ui-run-replay-v01",
+    "run_ticks": 6,
+    "integration_entries": 6,
+    "replay_status": "verified",
+    "deterministic": true,
+    "active_runtime_unchanged": true,
+    "network_state_matches": true,
+    "network_receipt_matches": true,
+    "replay_root": "3589070247a17b1a414fad0c53693dedf987ea1eb3f09f75b5c0ebd5e2ce749d"
+  },
+  "negative_control": {
+    "scope": "test-only in-memory receipt expectation tamper",
+    "result": "PASS",
+    "expected": "replay fails without mutating the active runtime",
+    "observed": {
+      "status": "failed",
+      "deterministic": false,
+      "network_match": false,
+      "entry_integrity_match": false,
+      "canonical_state_mutated": false,
+      "active_runtime_unchanged": true
+    },
+    "production_data_modified": false
+  },
+  "browser_evidence": {
+    "flow": "create adapter session -> run 6 real ticks -> enable Replay -> isolated replay -> inspect epoch/roots/status",
+    "desktop": {
+      "viewport": "1600x1000",
+      "http_status": 200,
+      "node_count": 14,
+      "viewport_natural_size": [640, 360],
+      "initial_replay_disabled": true,
+      "replay_enabled_after_run": true,
+      "integrated_replay_fields_visible": true,
+      "horizontal_overflow": false,
+      "console_page_request_errors": 0,
+      "expanded_viewport_bounds": {"x": 230, "y": 98, "width": 994, "height": 860}
+    },
+    "mobile": {
+      "viewport": "390x844",
+      "http_status": 200,
+      "node_count": 14,
+      "viewport_natural_size": [640, 360],
+      "initial_replay_disabled": true,
+      "replay_enabled_after_run": true,
+      "integrated_replay_fields_visible": true,
+      "horizontal_overflow": false,
+      "console_page_request_errors": 0,
+      "expanded_viewport_bounds": {"x": 8, "y": 72, "width": 374, "height": 762}
+    },
+    "screenshots": [
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\integrated-replay-desktop.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\integrated-replay-desktop-expanded.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\integrated-replay-mobile.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\integrated-replay-mobile-expanded.png"
+    ]
+  },
+  "tests": [
+    {"name": "Reality Studio focused adapter/server/web tests", "result": "PASS", "passed": 13, "failed": 0},
+    {"name": "@taowind/reality-network-runtime", "result": "PASS", "passed": 31, "failed": 0},
+    {"name": "@taowind/reality-studio-native", "result": "FAIL_WITH_PREEXISTING_BLOCKERS", "total": 254, "passed": 250, "failed": 3, "skipped": 1},
+    {"name": "@taowind/world-body-studio-bridge", "result": "BLOCKED", "passed": 0, "failed": 1}
+  ],
+  "known_blockers": [
+    {
+      "scope": "Reality Studio full test",
+      "cause": "evidence/anime-forge-phase6-3-geometric-truth-v0.1 is absent",
+      "observed": "geometric truth workspace reports blocked instead of pass",
+      "introduced_by_this_round": false
+    },
+    {
+      "scope": "Reality Studio gateway/server and World Body Bridge test",
+      "cause": "sparse worktree marks packages/control/rncs-asset-cache/src/index.mjs with S and the source file is absent",
+      "observed": "gateway health is degraded and World Body Bridge cannot resolve the module",
+      "introduced_by_this_round": false
+    }
+  ],
+  "rcl_gap_record": {
+    "task": "close local Behavior + Network replay evidence without duplicating either runtime",
+    "missing_capability": "canonical shared Studio tick coordinator and shared receipt owner",
+    "workaround": "adapter-owned relative integration epoch with isolated replay evidence",
+    "donor": "existing BehaviorEditorSession and RealityNetworkRuntime checkpoint APIs",
+    "gap_type": "canonical coordination / receipt ownership",
+    "generality": "cross-runtime, potentially reusable after owner and IR review",
+    "candidate_absorption": "not proposed; requires explicit RCL/RNCS owner decision",
+    "affected_k400": ["EXPRESS", "LOWER", "EXECUTE", "CORRECT", "ROBUST", "EVIDENCE"]
+  },
+  "gaps": [
+    {"code": "RCL_GAP_STUDIO_COMBINED_RUNTIME_TICK", "status": "open", "reason": "adapter evidence is not a canonical shared runtime owner"},
+    {"code": "GAP_NETWORK_REPLAY_COUPLING", "status": "candidate-verified", "reason": "local isolated checkpoint replay matched roots, but no shared canonical receipt owner is claimed"},
+    {"code": "GAP_NETWORK_EXTERNAL_TRANSPORT", "status": "unavailable"},
+    {"code": "GAP_PRODUCTION_PROMOTION_AUTHORITY", "status": "unavailable"},
+    {"code": "GAP_RUNTIME_RESOURCE_METRICS", "status": "unavailable"},
+    {"code": "GAP_AGENT_HUB_API", "status": "unavailable"}
+  ],
+  "next_plan": {
+    "highest_leverage": "obtain an explicit RCL/RNCS owner decision before proposing any canonical combined-tick IR or coordinator",
+    "safe_follow_up": "restore the sparse rncs-asset-cache source and geometric-truth evidence in their owning scopes, then rerun blocked package tests",
+    "not_authorized_without_decision": ["canonical RCL primitive", "production authority", "external network transport", "production deployment"]
+  },
+  "ledger_payload_root": "1c5bdf725084250df31150df67f178f4ed7809a7f3d50552ae8b46a1545f1ece"
+}

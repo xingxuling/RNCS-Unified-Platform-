@@ -1,0 +1,240 @@
+{
+  "format": "taowind.reality-studio-evidence-ledger.v0.1",
+  "version": "0.1.0-alpha.1",
+  "recorded_at": "2026-09-15",
+  "status": "PRODUCTIZATION_CANDIDATE_LOCAL_RUNTIME_VERIFIED",
+  "scope": {
+    "checkout": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "baseline_commit": "aafb291f1d54505be75cfe2559b07a92e6e46d3a",
+    "runtime_server": "http://127.0.0.1:17608/",
+    "github_actions_used": false,
+    "screenshot_authority": "visual-baseline-only"
+  },
+  "truth_policy": {
+    "dynamic_ui_source": "RealityStudioAdapter.inspect() and RealityStudioAdapter.command()",
+    "canonical_owner": "RNCS/RCL and existing Runtime/Provider modules",
+    "studio_role": "Product Body / Projection",
+    "fake_success_allowed": false,
+    "production_promotion_claimed": false,
+    "unavailable_rendering": "explicit unavailable/paused/no-data/disconnected state"
+  },
+  "runtime_probe": {
+    "session_id": "evidence:reality-studio-productization-v01",
+    "initial": {
+      "adapter_status": "ready",
+      "runtime_status": "healthy",
+      "tick": 0,
+      "state_root": "fnv1a64:24b119412de0bdaf",
+      "graph_nodes": 14,
+      "world_body_metrics": {
+        "entities": 6,
+        "bodies": 6,
+        "unmapped_scene_nodes": 4
+      },
+      "commit_gate": "locked",
+      "viewport": {
+        "frame_verified": true,
+        "viewport_root": "6503cd16552d8607f1f03626b0e3628f50a8ed89fb08c5caf4b6d51087daf26b",
+        "frame_root": "724ed775256b3c18469ebb5a522a26e10094a881c753d2d5f32bac839b9bb76f",
+        "pixel_root": "2de7786f065855360cc5cdbafcf6f482517d838f4a0380427207a1ca92831e55"
+      }
+    },
+    "step": {
+      "behavior_tick": 1,
+      "network_tick": 1,
+      "network_state_root": "fnv1a64:dcb9fe6751ebf17c",
+      "transport_sent": 3,
+      "blue_client_sync": "synchronized"
+    },
+    "snapshot": {
+      "snapshot_root": "96ffe9de5d514620929504406b8471db4fc0ac739aeca3fb9d4b90a77aa58197",
+      "network_checkpoint_root": "f9364a1512523f8ed962388e6a733d19ea1818f484300295e2e0dfe175be6960",
+      "behavior_checkpoint_root": "eb41efec8361238499b13d2474b4b32f3bc6967a4599a64b7df2ac98ba9d10ee",
+      "network_tick": 1,
+      "behavior_tick": 1
+    },
+    "replay": {
+      "deterministic": true,
+      "replay_root": "69c6c0b94fe89419fd097120e58c263df4c5c619004cf0cbfbb9964b534e8db3",
+      "scope": "behavior-runtime-only"
+    },
+    "branch_evaluation": {
+      "recommended_branch_id": "branch:behavior-safety",
+      "workspace_root": "5c9c30abf2c6ac57632a8ebfc9fbc31a1a15fb491ca62f86a0b64e5756375150",
+      "comparison_root": "f9c74d05955308927edf136960139833f973dae4217f1f67c4484e2898f52f89",
+      "eligible_branches": [
+        "branch:behavior-safety",
+        "branch:rsr-vsr",
+        "branch:baseline"
+      ]
+    },
+    "candidate_lifecycle": {
+      "candidate_id": "live-update:studio:network-fixture:1",
+      "simulation_root": "ece5b8e54a7284660d913080a33324cce667a74de95b3b65508ea8aba3aaeed1",
+      "proposal_root": "e7dd3ed9c7d03a88c6b95d575eee2365b4d067316f69678854e2230fc7f13b80",
+      "authority_decision_root": "ad92ab8cc589e780cb1f09ed8771939d94e92126dd363f44cadccbc5418fa908",
+      "commit_root": "8eaa94b3feec735d61ea881f132e6ee066879ba4bcc6060e1933aadb86398005",
+      "phases": [
+        "simulated",
+        "authorized",
+        "committed-local-candidate"
+      ],
+      "verification_valid": true
+    },
+    "final": {
+      "runtime_status": "healthy",
+      "runtime_tick": 0,
+      "state_root": "fnv1a64:c8a25d00f792d5e1",
+      "commit_gate_status": "candidate-committed",
+      "gate_root": "d231cd9dd5977049e39c414165c9149fae18f4019bf1f6ac12c17064d1bf7c9d",
+      "local_candidate_commit_ready": false,
+      "commit_permitted": false,
+      "production_promotion_permitted": false,
+      "network_transport": {
+        "candidate_only": true,
+        "authoritative": false,
+        "commit_status": "NOT_COMMITTED",
+        "profile_root": "788c470b5bc6965a5a4af7c40bbf46a7e53e1bbdaab1ec09d1fc5d3378a6185e",
+        "fabric_root": "4fafa15ac4808e2369a606538b909a036c47c8859e13518ddb6d0e8864342b68"
+      },
+      "viewport": {
+        "status": "verified",
+        "width": 640,
+        "height": 360,
+        "imported_asset_count": 2,
+        "asset_draw_count": 2,
+        "source_state_root": "fnv1a64:c8a25d00f792d5e1",
+        "frame_root": "a4ac3c6b5168fa92e1296bb21fb724c6fc55f29915cfc37a78036e0eb400e9b2",
+        "pixel_root": "2de7786f065855360cc5cdbafcf6f482517d838f4a0380427207a1ca92831e55",
+        "viewport_root": "29c8a03864bc388ca2a7339616b741758468fe27f58bb545634d04f1dd289262"
+      },
+      "evidence_ledger_root": "cef9f001509c99302e819c94a3a3aacdb45c6087e9ad26f588fad96f72bc602a",
+      "event_head_root": "fcba6316fdb73bab0382644d2a0da8eeff0e3a40a7331802282a8916d4605312"
+    }
+  },
+  "source_roots": {
+    "project_root": "c763dce9829ad994818b472d73f81e61f81ae7c5f5e34eb4c46c3bda6d9ee46d",
+    "spatial_workspace_root": "2ba151a5e8abe348172f2b960008af79faf3f26fd08102898c355517a4f382e2",
+    "source_world_root": "ab49370188ae9147058e0756134225f6382c5f8e5f79c74be08e92520012a10f",
+    "active_scene_root": "82859e17f4e585eba10fd5ba724eb135589adb78bdac3b268ec75b799b144604",
+    "network_authoring_root": "c7a4bce2a17cf6df0340fc6042004e01eafe8c2cddcb80c5cb5637dd9de65a8c",
+    "network_compilation_root": "da7eac1f240e174900849457059ee6411a8c7b43f2300b17fc2e01884a01d3a8",
+    "network_world_config_root": "bc02c214ca499bd841ad8679ddc86b3e04859f578c86219e0c14acc44895c49b",
+    "behavior_program_root": "00c3f8117fa5bab399f297f938e89898ff232afac4069fdcc1501106866f8659",
+    "behavior_state_root": "49d419a760dbd247e69638e2776a3c85dab43a52e71f658aee66183bbad8c830",
+    "unified_spatial_workspace_root": "2ba151a5e8abe348172f2b960008af79faf3f26fd08102898c355517a4f382e2",
+    "unified_spatial_state_root": "fnv1a64:f855a672222d8214",
+    "rsr_state_root": "fnv1a64:c8a25d00f792d5e1",
+    "rsr_body_root": "fnv1a64:f0824746922f3f6d",
+    "vsr_frame_root": "a4ac3c6b5168fa92e1296bb21fb724c6fc55f29915cfc37a78036e0eb400e9b2",
+    "vsr_pixel_root": "2de7786f065855360cc5cdbafcf6f482517d838f4a0380427207a1ca92831e55",
+    "vsr_viewport_root": "29c8a03864bc388ca2a7339616b741758468fe27f58bb545634d04f1dd289262",
+    "world_body_root": "a98215ecf769246f6a1271ebc41313211bc6c5991a2cc9109164ef67cf50959e",
+    "world_body_manifest_root": "360aaade0860699a3d20488ef458bde95802ba4e3863b93bc7d7ecbf75850906",
+    "branch_workspace_root": "d8ac30e92599a970f4db2706eb784d1f5d9d44a6b522e736701a1e3bc7984ba3",
+    "branch_comparison_root": "666701171c24b2cf67c703000361f2608122895caa32dd14ac0c38938e118b94"
+  },
+  "entries": [
+    {"entry_id": "source-project", "kind": "unified-project", "status": "verified", "root": "c763dce9829ad994818b472d73f81e61f81ae7c5f5e34eb4c46c3bda6d9ee46d", "owner": "UnifiedManufacturingSession"},
+    {"entry_id": "network-compilation", "kind": "network-world-compilation", "status": "verified", "root": "da7eac1f240e174900849457059ee6411a8c7b43f2300b17fc2e01884a01d3a", "owner": "Network World Compiler"},
+    {"entry_id": "world-body-candidate", "kind": "world-body-ingress", "status": "candidate-verified", "root": "360aaade0860699a3d20488ef458bde95802ba4e3863b93bc7d7ecbf75850906", "owner": "World Body Studio Bridge"},
+    {"entry_id": "authoritative-rsr", "kind": "rsr-authority-snapshot", "status": "verified", "root": "fnv1a64:c8a25d00f792d5e1", "owner": "Reality Network Runtime / RSR"},
+    {"entry_id": "vsr-viewport", "kind": "vsr-projection", "status": "verified", "root": "29c8a03864bc388ca2a7339616b741758468fe27f58bb545634d04f1dd289262", "frame_root": "a4ac3c6b5168fa92e1296bb21fb724c6fc55f29915cfc37a78036e0eb400e9b2", "pixel_root": "2de7786f065855360cc5cdbafcf6f482517d838f4a0380427207a1ca92831e55", "owner": "VSR GLB Projection"},
+    {"entry_id": "branch-comparison", "kind": "reality-branch-comparison", "status": "candidate-verified", "root": "666701171c24b2cf67c703000361f2608122895caa32dd14ac0c38938e118b94", "owner": "Reality Branch Fabric"},
+    {"entry_id": "behavior-runtime", "kind": "behavior-runtime", "status": "verified", "root": "49d419a760dbd247e69638e2776a3c85dab43a52e71f658aee66183bbad8c830", "program_root": "00c3f8117fa5bab399f297f938e89898ff232afac4069fdcc1501106866f8659", "owner": "Behavior Fabric"},
+    {"entry_id": "adapter-events", "kind": "adapter-event-head", "status": "recorded", "root": "fcba6316fdb73bab0382644d2a0da8eeff0e3a40a7331802282a8916d4605312", "owner": "Reality Studio Adapter"},
+    {"entry_id": "production-promotion", "kind": "production-promotion", "status": "unavailable", "root": null, "owner": "External authority gate"}
+  ],
+  "ui_browser_evidence": {
+    "tool": "Python Playwright local browser smoke",
+    "desktop": {
+      "viewport": "1600x1000",
+      "http_status": 200,
+      "node_count": 14,
+      "viewport_natural_size": [640, 360],
+      "viewport_status": "VERIFIED",
+      "runtime": "healthy",
+      "control": "paused",
+      "active_reality": "Studio Authored Sovereign Network World",
+      "branch": "branch:behavior-safety",
+      "commit_gate_initial": "locked",
+      "viewport_expand": {"status": "PASS", "position": "fixed", "bounds": {"left": 230, "top": 98, "width": 994, "height": 860}},
+      "interaction_path": ["run tick=6", "snapshot recorded", "replay deterministic", "candidate simulated", "local authority authorized", "confirmed local candidate commit"],
+      "commit_gate_final": "candidate-committed",
+      "production_promotion": "UNAVAILABLE",
+      "inspector_summary": true,
+      "inspector_details": 3,
+      "horizontal_overflow": false,
+      "console_page_request_errors": 0
+    },
+    "mobile": {
+      "viewport": "390x844",
+      "http_status": 200,
+      "node_count": 14,
+      "viewport_natural_size": [640, 360],
+      "viewport_status": "VERIFIED",
+      "viewport_expand": {"status": "PASS", "position": "fixed", "bounds": {"left": 8, "top": 72, "width": 374, "height": 762}},
+      "horizontal_overflow": false,
+      "console_page_request_errors": 0
+    },
+    "short_desktop": {
+      "viewport": "1920x680",
+      "http_status": 200,
+      "node_count": 14,
+      "document_scroll_height": 680,
+      "vertical_overflow": false,
+      "viewport_panel_bounds": {"width": 826, "height": 175},
+      "viewport_frame_bounds": {"width": 814, "height": 106},
+      "verified_vsr_image_inside_frame": true,
+      "console_page_request_errors": 0
+    },
+    "screenshots": [
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\productization-after-initial.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\productization-after-expanded.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\productization-after-final.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\productization-after-mobile.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\reference-palette-desktop-final-fit.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\reference-palette-short-desktop-final-fit.png"
+    ]
+  },
+  "tests": [
+    {"name": "reality-studio-adapter", "result": "PASS", "passed": 3, "failed": 0},
+    {"name": "reality-studio-server", "result": "PASS", "passed": 1, "failed": 0},
+    {"name": "web-structure", "result": "PASS", "passed": 12, "failed": 0},
+    {"name": "@taowind/reality-network-runtime", "result": "PASS", "passed": 31, "failed": 0},
+    {"name": "@taowind/reality-studio-native", "result": "FAIL_WITH_PREEXISTING_BLOCKERS", "total": 253, "passed": 249, "failed": 3, "skipped": 1, "blockers": ["missing evidence/anime-forge-phase6-3-geometric-truth-v0.1", "sparse worktree missing @taowind/rncs-asset-cache/src/index.mjs"]},
+    {"name": "@taowind/world-body-studio-bridge", "result": "BLOCKED", "passed": 0, "failed": 1, "blocker": "sparse worktree missing @taowind/rncs-asset-cache/src/index.mjs"}
+  ],
+  "reuse_decisions": [
+    {"owner": "UnifiedManufacturingSession / RFE / Behavior Runtime", "decision": "REUSE"},
+    {"owner": "Network World Compiler / Reality Network Runtime / RSR", "decision": "REUSE"},
+    {"owner": "World Body Studio Bridge", "decision": "ADAPT"},
+    {"owner": "Reality Branch Fabric", "decision": "REUSE"},
+    {"owner": "VSR Projection", "decision": "REUSE"},
+    {"owner": "Reality Studio Adapter", "decision": "ADAPT"},
+    {"owner": "HTML/CSS/JS Product Body", "decision": "KEEP_SEPARATE"},
+    {"owner": "Production promotion / external authority", "decision": "KEEP_SEPARATE"},
+    {"owner": "WAN transport / Agent Hub / resource metrics", "decision": "UNKNOWN"}
+  ],
+  "gaps": [
+    {"code": "RCL_GAP_STUDIO_COMBINED_RUNTIME_TICK", "status": "open", "severity": "medium", "next": "research a shared coordinator seam without duplicating Behavior or Network Runtime"},
+    {"code": "GAP_NETWORK_REPLAY_COUPLING", "status": "open", "severity": "medium", "next": "bind network checkpoint/replay into the same receipt chain"},
+    {"code": "GAP_NETWORK_EXTERNAL_TRANSPORT", "status": "unavailable", "severity": "high", "next": "external provider/transport evidence and authority review"},
+    {"code": "GAP_PRODUCTION_PROMOTION_AUTHORITY", "status": "unavailable", "severity": "high", "next": "external key custody, approval, revocation/time and deploy gate"},
+    {"code": "GAP_WORLD_BODY_BRIDGE_FACET", "status": "open", "severity": "medium", "count": 4, "next": "World Body owner decides contract vs sidecar; Studio will not duplicate runtime"},
+    {"code": "GAP_RUNTIME_RESOURCE_METRICS", "status": "unavailable", "severity": "low", "next": "wait for real runtime metrics contract"},
+    {"code": "GAP_AGENT_HUB_API", "status": "unavailable", "severity": "medium", "next": "connect a real Agent Hub provider or keep unavailable"}
+  ],
+  "k400": {
+    "EXPRESS": "CANDIDATE",
+    "COMPILE": "LOCAL_VERIFIED",
+    "LOWER": "LOCAL_VERIFIED",
+    "EXECUTE": "LOCAL_VERIFIED",
+    "CORRECT": "LOCAL_VERIFIED",
+    "ROBUST": "CANDIDATE",
+    "PERFORMANCE": "NOT_RUN",
+    "AI_GENERATE": "NOT_RUN",
+    "EVIDENCE": "LOCAL_VERIFIED"
+  }
+}

@@ -126,6 +126,8 @@
     "@taowind/visual-state-runtime": "*",
     "@taowind/reality-asset-genesis-fabric": "*",
     "@taowind/reality-engine-session": "*",
+    "@taowind/reality-network-runtime": "*",
+    "@taowind/world-body-studio-bridge": "*",
     "@taowind/rcl-character-genome-bridge": "*",
     "@taowind/audio-target-runtime": "*"
   }

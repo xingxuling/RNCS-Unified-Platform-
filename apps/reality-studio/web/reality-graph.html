@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="RNCS Reality Studio — Reality Graph over the native runtime">
+  <title>RNCS Reality Studio</title>
+  <link rel="stylesheet" href="reality-studio.css">
+</head>
+<body>
+  <div class="studio-shell" id="studioShell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-mark" aria-hidden="true">R</div>
+        <div class="brand-copy">
+          <div class="brand-name">RNCS Reality Studio</div>
+          <div class="brand-tagline">构建可验证的数字世界</div>
+        </div>
+        <div class="brand-slogan">Build a Computable World for a Better Tomorrow</div>
+      </div>
+      <nav class="toolbar" aria-label="Runtime controls">
+        <button class="tool-button" data-action="new-session" title="创建一个新的本地适配器会话"><span class="tool-icon">＋</span>新建</button>
+        <button class="tool-button is-muted" data-unavailable title="文件项目打开尚未接入"><span class="tool-icon">□</span>打开</button>
+        <button class="tool-button is-muted" data-unavailable title="持久化项目保存尚未接入"><span class="tool-icon">▣</span>保存</button>
+        <span class="toolbar-divider"></span>
+        <button class="tool-button" data-command="branch-evaluate" data-requires-runtime><span class="tool-icon">⌁</span>编译</button>
+        <button class="tool-button tool-button-primary" data-command="run" data-requires-runtime><span class="tool-icon">▶</span>运行</button>
+        <button class="tool-button" data-command="pause" data-requires-runtime><span class="tool-icon">Ⅱ</span>暂停</button>
+        <button class="tool-button" data-command="step" data-requires-runtime><span class="tool-icon">›</span>单步</button>
+        <span class="toolbar-divider"></span>
+        <button class="tool-button" data-command="snapshot" data-requires-runtime><span class="tool-icon">◉</span>快照</button>
+        <button class="tool-button" data-command="replay" data-requires-runtime><span class="tool-icon">↻</span>回放</button>
+        <button class="tool-button" data-command="branch-evaluate" data-requires-runtime><span class="tool-icon">⑂</span>分支</button>
+        <button class="tool-button" data-command="candidate-propose" data-requires-runtime><span class="tool-icon">◇</span>候选</button>
+        <button class="tool-button" data-command="candidate-authorize" data-requires-runtime><span class="tool-icon">✓</span>授权</button>
+        <button class="tool-button" data-command="candidate-commit" data-requires-runtime><span class="tool-icon">⇧</span>提交</button>
+        <button class="tool-button is-muted" data-unavailable title="生产部署需要外部 authority gate"><span class="tool-icon">⇥</span>部署</button>
+        <span class="toolbar-grow"></span>
+        <button class="command-search" data-unavailable title="跨节点搜索尚未接入真实索引"><span>⌕</span><span>搜索节点、资源、证据…</span><kbd>Ctrl K</kbd></button>
+      </nav>
+      <div class="topbar-actions">
+        <span class="chrome-symbol" aria-hidden="true">♧</span>
+        <div class="runtime-pill" id="runtimePill"><span class="status-dot is-candidate"></span><span id="runtimePillText">需要本地 Studio 服务</span></div>
+        <div class="workspace-chip"><span class="avatar">N</span><span>Workspace<br><strong>Local System</strong></span></div>
+      </div>
+    </header>
+
+    <div class="workbench-grid">
+      <aside class="sidebar-panel">
+        <div class="sidebar-project">
+          <div class="project-icon">◈</div>
+          <div class="project-copy"><strong id="projectTitle">请通过本地服务打开</strong><span id="projectId">Runtime API required</span></div>
+          <span class="project-chevron">⌄</span>
+        </div>
+        <div class="sidebar-status" id="sidebarStatus"><span class="status-dot is-candidate"></span><span>等待本地 Adapter API</span></div>
+        <div class="sidebar-scroll">
+          <div class="nav-group">
+            <div class="nav-group-title"><span class="nav-glyph">▦</span>项目 <span>⌃</span></div>
+            <button class="nav-item is-active" data-node="studio-adapter"><span class="nav-glyph">◫</span>项目总览</button>
+            <button class="nav-item" data-node="data-source"><span class="nav-glyph">◌</span>数据与输入</button>
+            <button class="nav-item" data-node="semantic-compiler"><span class="nav-glyph">✣</span>语义编译</button>
+          </div>
+          <div class="nav-group">
+            <div class="nav-group-title"><span class="nav-glyph">◎</span>世界模型 <span>⌃</span></div>
+            <button class="nav-item" data-node="reality-kernel"><span class="nav-glyph">◆</span>Reality Kernel</button>
+            <button class="nav-item" data-node="world-body"><span class="nav-glyph">◉</span>World Body IR</button>
+            <button class="nav-item" data-node="rsr-runtime"><span class="nav-glyph">◈</span>RSR Runtime</button>
+          </div>
+          <div class="nav-group">
+            <div class="nav-group-title"><span class="nav-glyph">⑂</span>Candidate Reality <span>⌃</span></div>
+            <button class="nav-item" data-node="candidate-reality"><span class="nav-glyph">◇</span>候选分支</button>
+            <button class="nav-item" data-node="commit-gate"><span class="nav-glyph">⬡</span>Commit Gate</button>
+            <button class="nav-item" data-node="behavior-fabric"><span class="nav-glyph">♧</span>Behavior Fabric</button>
+          </div>
+          <div class="nav-group">
+            <div class="nav-group-title"><span class="nav-glyph">▤</span>Evidence Ledger <span>⌃</span></div>
+            <button class="nav-item" data-node="evidence-ledger"><span class="nav-glyph">▤</span>证据台账</button>
+            <button class="nav-item" data-node="authority-fabric"><span class="nav-glyph">⬢</span>Authority</button>
+          </div>
+          <div class="nav-group">
+            <div class="nav-group-title"><span class="nav-glyph">⌘</span>网络 <span>⌃</span></div>
+            <button class="nav-item" data-node="network-runtime"><span class="nav-glyph">⌘</span>Network Runtime</button>
+            <button class="nav-item" data-node="agent-hub"><span class="nav-glyph">♙</span>Agent Hub</button>
+          </div>
+          <div class="nav-group nav-group-quiet">
+            <div class="nav-group-title"><span class="nav-glyph">▣</span>输出与应用 <span>⌃</span></div>
+            <button class="nav-item" data-node="vsr-projection"><span class="nav-glyph">▣</span>VSR Viewport</button>
+          </div>
+        </div>
+        <div class="sidebar-footer"><span>Adapter</span><span id="adapterVersion">—</span></div>
+      </aside>
+
+      <main class="main-panel">
+        <div class="workspace-header">
+          <div class="workspace-header-main">
+            <div class="workspace-heading">
+              <div class="world-cube">◇</div>
+              <div><h1 id="workspaceHeading">Reality Graph</h1><p id="workspaceMeta">请通过 http://127.0.0.1:17608/ 打开；file:// 无法连接 Runtime API。</p></div>
+              <span class="live-badge is-candidate" id="liveBadge"><span class="status-dot is-candidate"></span>需要服务</span>
+            </div>
+            <div class="workspace-header-actions"><button class="square-button" aria-label="刷新" data-command="refresh">↻</button><button class="square-button" aria-label="聚焦图" data-command="focus">⌗</button><button class="zoom-readout">100%</button></div>
+          </div>
+          <div class="workspace-status-strip" id="workspaceStatusStrip" aria-label="Reality status summary">
+            <div class="status-signal"><span class="status-signal-label">RUNTIME</span><strong id="statusRuntimeValue">—</strong><small id="statusRuntimeMeta">—</small></div>
+            <div class="status-signal"><span class="status-signal-label">CONTROL</span><strong id="statusControlValue">—</strong><small id="statusControlMeta">—</small></div>
+            <div class="status-signal status-signal-wide"><span class="status-signal-label">ACTIVE REALITY</span><strong id="statusWorldValue">—</strong><small id="statusWorldMeta">—</small></div>
+            <div class="status-signal"><span class="status-signal-label">BRANCH</span><strong id="statusBranchValue">—</strong><small id="statusBranchMeta">—</small></div>
+            <div class="status-signal"><span class="status-signal-label">GATE</span><strong id="statusGateValue">—</strong><small id="statusGateMeta">—</small></div>
+          </div>
+        </div>
+
+        <section class="graph-panel panel-surface">
+          <div class="panel-toolbar graph-toolbar">
+            <div class="graph-toolbar-left"><div class="graph-context"><span class="graph-context-kicker">REALITY GRAPH</span><strong>Authoritative → Candidate → Promotion</strong></div><div class="panel-tabs"><button class="panel-tab is-active">Reality Graph</button><button class="panel-tab is-muted" data-unavailable>场景视图</button><button class="panel-tab is-muted" data-unavailable>仿真配置</button><button class="panel-tab is-muted" data-unavailable>代码编辑器</button><button class="panel-tab panel-tab-add" data-unavailable>＋</button></div></div>
+            <div class="graph-toolbar-actions"><span class="tool-hint" id="graphHint">节点位置是产品投影；节点状态来自后端</span><button class="square-button" data-command="refresh">⌁</button><button class="square-button" data-command="focus">⌖</button></div>
+          </div>
+          <div class="graph-canvas" id="graphCanvas">
+            <div class="graph-grid"></div>
+            <div class="graph-zone graph-zone-input"><span>DATA &amp; INPUT</span><small>validated ingress</small></div>
+            <div class="graph-zone graph-zone-output"><span>OUTPUT &amp; APPLICATION</span><small>verified projection</small></div>
+            <div class="graph-layer graph-layer-authoritative"><span class="graph-layer-label">Authoritative Reality</span><small>RNCS Runtime · RSR authority</small></div>
+            <div class="graph-layer graph-layer-candidate"><span class="graph-layer-label">Candidate Reality</span><small>Behavior Fabric · branch evaluation</small></div>
+            <div class="graph-layer graph-layer-promotion"><span class="graph-layer-label">Commit / Promotion Path</span><small>Explicit authority · production unavailable unless connected</small></div>
+            <svg class="graph-edges" id="graphEdges" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+            <div class="graph-nodes" id="graphNodes"><div class="graph-loading graph-loading-entry"><strong>需要本地 Reality Studio 服务</strong><span>直接打开 HTML 不包含 Runtime API，也不会显示假节点或假状态。</span><a href="http://127.0.0.1:17608/">打开 http://127.0.0.1:17608/</a></div></div>
+            <div class="graph-legend"><span><i class="legend-line legend-source"></i>数据流</span><span><i class="legend-line legend-runtime"></i>运行时</span><span><i class="legend-line legend-candidate"></i>候选</span><span><i class="legend-line legend-evidence"></i>Evidence</span><span><i class="legend-line legend-unavailable"></i>Unavailable</span></div>
+          </div>
+        </section>
+
+        <section class="lower-grid">
+          <div class="console-panel panel-surface">
+            <div class="panel-toolbar console-toolbar"><div class="panel-tabs console-tabs"><button class="panel-tab is-active" data-console="logs">运行日志</button><button class="panel-tab" data-console="events">事件流</button><button class="panel-tab" data-console="issues">问题</button><button class="panel-tab" data-console="performance">性能分析</button><button class="panel-tab" data-console="receipts">Receipts</button></div><button class="square-button" data-command="refresh">↻</button></div>
+            <div class="console-filter"><span class="filter-chip">后端事件</span><span class="filter-chip">全部模块</span><span class="filter-search">⌕ <span>搜索真实日志…</span></span></div>
+            <div class="console-content" id="consoleContent"><div class="empty-state">等待后端事件…</div></div>
+          </div>
+          <div class="viewport-panel panel-surface">
+            <div class="panel-toolbar viewport-toolbar"><div class="panel-tabs"><button class="panel-tab is-active">VSR / RSR Viewport</button></div><div class="viewport-source" id="viewportSource">等待投影</div><button class="viewport-expand-button" id="viewportExpandButton" data-action="toggle-viewport" aria-expanded="false">展开投影</button><button class="square-button" data-command="viewport" aria-label="刷新投影">↻</button></div>
+            <div class="viewport-frame" id="viewportFrame"><div class="viewport-grid"></div><img id="viewportImage" alt="Verified VSR viewport" hidden><div class="viewport-empty" id="viewportEmpty">等待真实 VSR 投影图像</div><div class="viewport-overlay" id="viewportOverlay"></div></div>
+            <div class="viewport-footer"><span id="viewportRoot">viewport_root —</span><span id="viewportState">source_state_root —</span><span id="viewportStatus">UNAVAILABLE</span></div>
+          </div>
+        </section>
+      </main>
+
+      <aside class="inspector-panel panel-surface">
+        <div class="inspector-kicker"><span>NODE INSPECTOR</span><span>LIVE PROJECTION</span></div>
+        <div class="inspector-heading"><div class="inspector-icon" id="inspectorIcon">◆</div><div><h2 id="inspectorTitle">Reality Graph</h2><p id="inspectorSubtitle">真实节点检查器</p></div><span class="inspector-status" id="inspectorStatus">—</span></div>
+        <div class="inspector-tabs"><button class="inspector-tab is-active" data-inspector-tab="properties">属性</button><button class="inspector-tab" data-inspector-tab="status">状态</button><button class="inspector-tab" data-inspector-tab="authority">权限</button><button class="inspector-tab" data-inspector-tab="logs">日志</button><button class="inspector-tab" data-inspector-tab="evidence">Evidence</button></div>
+        <div class="inspector-scroll" id="inspectorContent"><div class="empty-state">节点数据来自 Reality Graph 后端…</div></div>
+        <div class="commit-card" id="commitCard"><div class="commit-card-head"><span>Commit Gate</span><span id="commitGateStatus">LOCKED</span></div><p id="commitGateReason">未提出候选 Reality；生产 promotion unavailable。</p><button class="commit-action" data-command="candidate-commit" disabled>提交本地候选</button></div>
+      </aside>
+    </div>
+
+    <footer class="statusbar"><div><span class="status-dot" id="footerDot"></span><span id="footerRuntime">Runtime: 等待连接</span></div><div><span>Tick <strong id="footerTick">—</strong></span><span>RSR <strong id="footerStateRoot">—</strong></span><span>Evidence <strong id="footerEvidenceRoot">—</strong></span></div><div><span>Production promotion <strong class="text-warn">UNAVAILABLE</strong></span><span id="footerVersion">Adapter —</span></div></footer>
+    <div class="viewport-backdrop" data-action="toggle-viewport" aria-hidden="true"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+  <script type="module" src="reality-studio.js"></script>
+</body>
+</html>

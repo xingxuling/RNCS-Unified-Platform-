@@ -11,6 +11,9 @@
     "deterministic-3d-position-velocity-and-contact",
     "sphere-oriented-box-upright-capsule-shapes",
     "authored-convex-hull-fixtures",
+    "bounded-fixed-point-heightfield-provider",
+    "bounded-heightfield-surface-ray-query",
+    "managed-static-body-residency-transition",
     "non-coplanar-convex-validation",
     "15-axis-obb-sat-narrowphase",
     "deterministic-gjk-epa-sphere-box-capsule-hull-narrowphase",
@@ -32,6 +35,7 @@
     "kernel-rsr-vsr-scene-frame-pixel-binding",
     "vsr-v04-spatial-scene-frame-and-pixel-projection",
     "vsr-convex-mesh-projection",
+    "vsr-heightfield-mesh-projection",
     "v0.4-v0.3-v0.2-v0.1-compatibility"
   ],
   "verification": {
@@ -42,9 +46,9 @@
     "constraintPhysicsTests": "19/19 PASS",
     "embodiedDynamicsTests": "30/30 PASS",
     "temporalExperienceTests": "35/35 PASS",
-    "spatialEmbodimentTests": "63/63 PASS",
+    "spatialEmbodimentTests": "71/71 PASS",
     "networkReconciliationTests": "7/7 PASS",
-    "totalTests": "194/194 PASS",
+    "totalTests": "205/205 PASS",
     "releaseAudit": "PASS",
     "replay": "PASS",
     "recovery": "PASS",
@@ -133,6 +137,9 @@
   },
   "limitations": [
     "authored-convex-hull-only-no-automatic-decomposition",
+    "heightfield-unrotated-single-support-aabb-candidate",
+    "managed-residency-is-candidate-only-and-does-not-own-stream-policy",
+    "heightfield-ray-query-is-bounded-and-shape-cast-remains-open",
     "character-controller-upright-y-axis-capsule-default",
     "single-point-convex-contact-manifold",
     "reference-joint-solver-not-production-ragdoll",
@@ -141,14 +148,14 @@
     "no-skinned-mesh-motion-matching-cloth-muscle",
     "single-threaded-typescript-reference-runtime"
   ],
-  "fileCount": 434,
-  "contentBytes": 4824422,
-  "contentRoot": "04e7c1599a3a5f20e2fb3aedc3d857a73fa8b56bab268b46c49e4f9560e40a6d",
+  "fileCount": 452,
+  "contentBytes": 5026367,
+  "contentRoot": "c64b806b3b28ef304371dfc173092c62700ba2c8b15e3eb72530f004d085db13",
   "files": [
     {
       "path": "CHANGELOG.md",
-      "sha256": "deaf60dd21bcfe730626ebc6c26282442d0e677f058563a9cd2165e6123c1435",
-      "bytes": 3070
+      "sha256": "e4d4ca198e28d325bd9bd685635744f641ae44c304a7e46bcd53f19a7f4bf20f",
+      "bytes": 4555
     },
     {
       "path": "LICENSE",
@@ -157,18 +164,18 @@
     },
     {
       "path": "README.md",
-      "sha256": "eb5ab02bba4d4de661e9aa035a69af75d977b112b505881a5c58f935d242a181",
-      "bytes": 2975
+      "sha256": "d89c5711e1ac9d7bb968f072f763f6716f22a11db49db9d6070fc1c1e48480b7",
+      "bytes": 5206
     },
     {
       "path": "RELEASE_NOTES.md",
-      "sha256": "24c15a1d2507c5d505918814d6abc53a7184f99a7d51864fdb70179ac60651d1",
-      "bytes": 2257
+      "sha256": "947faea6d0341543f0a2a61876a7d8d0986d3310c696f9e2ec6446f178219482",
+      "bytes": 3493
     },
     {
       "path": "STATUS.md",
-      "sha256": "8581887c2b79c856afe2bfdad89cb16dabc1907425222e88bcaaf07208908ac5",
-      "bytes": 644
+      "sha256": "e205b64fbffd3dff7a4c0309b5e5fbf3e1b6ca7ff0deebc4a5618508569199a3",
+      "bytes": 1440
     },
     {
       "path": "apps/studio/app.js",
@@ -706,6 +713,21 @@
       "bytes": 4952
     },
     {
+      "path": "dist/packages/representation-observation/src/index.d.ts",
+      "sha256": "fa6ae885bf5f340c5b29c3894bdcd315b753c9adccf23f4ed18767f88a680d44",
+      "bytes": 2075
+    },
+    {
+      "path": "dist/packages/representation-observation/src/index.js",
+      "sha256": "4e29c6aad6ce85e4353f6f71db88676840bd47e1d41776088a7c0b692c7927d1",
+      "bytes": 4969
+    },
+    {
+      "path": "dist/packages/representation-observation/src/index.js.map",
+      "sha256": "f8590e17531159fc5b9182e4a9dbf78557d939e39e132cd569cebf459c266f8a",
+      "bytes": 3706
+    },
+    {
       "path": "dist/packages/simulation-cli/src/cli.d.ts",
       "sha256": "43e818adf60173644896298637f47b01d5819b17eda46eaa32d0c7d64724d012",
       "bytes": 31
@@ -767,18 +789,18 @@
     },
     {
       "path": "dist/packages/spatial-embodiment-vsr/src/index.d.ts",
-      "sha256": "825efcd5f33063feea8e6a389d8a121ed8dad54fd5ceb861b4895a6a1980e492",
-      "bytes": 2545
+      "sha256": "b675506a5945098b905d5fde43c017dc3fecf8df8e87f06dfb476591ba1dde4d",
+      "bytes": 2753
     },
     {
       "path": "dist/packages/spatial-embodiment-vsr/src/index.js",
-      "sha256": "0590c221b19483cf37987259a5c53f87e63d887337860c77c541fd261c39f11e",
-      "bytes": 9093
+      "sha256": "a30fa680e828e5fb61abafca73ff0ca3c9851f7976393ce216e33045e8c0a90d",
+      "bytes": 10465
     },
     {
       "path": "dist/packages/spatial-embodiment-vsr/src/index.js.map",
-      "sha256": "bcce4e12e491a41fd9aed4e354ba5ffe62e32161698d974ba044e0d7ebb04da1",
-      "bytes": 10195
+      "sha256": "b86eb821ba8f617f02ecb3d1c13110b57bd84dbb83e1e127efc3701a9b1fcde2",
+      "bytes": 11854
     },
     {
       "path": "dist/packages/spatial-embodiment-vsr/src/vsr-spatial-v04.d.ts",
@@ -812,33 +834,48 @@
     },
     {
       "path": "dist/packages/spatial-embodiment/src/index.d.ts",
-      "sha256": "7653d9cf37108e2768a3d3465cd73db1ac381ba528f04665b6b9b10b0927e5a9",
-      "bytes": 14350
+      "sha256": "d63c9238fe7c28067c43c3facb675539b1a788fac12960c32cf584f40042b9d0",
+      "bytes": 16102
     },
     {
       "path": "dist/packages/spatial-embodiment/src/index.js",
-      "sha256": "a3f97e68fb1f9a7e3e56cc330f7b99ad94c60cce14cefa5c8afdbe026dfe3988",
-      "bytes": 74353
+      "sha256": "e0054209379d5c028eaf11073bd20ab5e2ee9f93faebef196d051bfe54967526",
+      "bytes": 94370
     },
     {
       "path": "dist/packages/spatial-embodiment/src/index.js.map",
-      "sha256": "427a24c8c0380ae8ff2c5d1b55410102f3b18ecfc4ec9d1cd865855f0bd2e103",
-      "bytes": 96453
+      "sha256": "a0f133a748bf7924fdbd9858a167cf0e49a725402af630f5201c552beca69abc",
+      "bytes": 119205
     },
     {
       "path": "dist/packages/spatial-embodiment/src/kernel-binding.d.ts",
-      "sha256": "677e404e1da1a5b7363250593026faa5a126ad095d45ff125a73d2059d83797b",
-      "bytes": 2271
+      "sha256": "cb2e5d7e6ca01aea5e4e3818452f806c2e18ed52631725f83d03046322f4ca1d",
+      "bytes": 3080
     },
     {
       "path": "dist/packages/spatial-embodiment/src/kernel-binding.js",
-      "sha256": "de90e0762da9668be6fa18b767e58d190ef5482da8a644a9750d2a40598a22f8",
-      "bytes": 9980
+      "sha256": "5aa170aea1098a28ac0505565d26727085cab3fcc2234a58ae0580357c65f333",
+      "bytes": 18543
     },
     {
       "path": "dist/packages/spatial-embodiment/src/kernel-binding.js.map",
-      "sha256": "3a4a3d901e0cad61f06dd7c52552c3ac7e8a89f5e93b55769b32869e3de0b12f",
-      "bytes": 11057
+      "sha256": "24eabb70168d7f9595c438dac13ea3d120f39bee3157567d2ff25d6e53eab849",
+      "bytes": 19467
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/ragf-binding.d.ts",
+      "sha256": "da5ceaac56bfb798b7621e8febdbefc27316eab8b00cace303e7c08646d8a8ba",
+      "bytes": 2686
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/ragf-binding.js",
+      "sha256": "b429a984375a0603b16961572a4b1b1e0090fe93971e275cfc2601706b827c60",
+      "bytes": 6293
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/ragf-binding.js.map",
+      "sha256": "bec8e647772da2016970e9760a5c2c98e6b3839c1e53bf4a6a167aa577443440",
+      "bytes": 6442
     },
     {
       "path": "dist/packages/spec/src/index.d.ts",
@@ -862,8 +899,18 @@
     },
     {
       "path": "dist/schemas/rncs-kernel-rsr-vsr-binding.v0.1.schema.json",
-      "sha256": "f0ac630b0f46c9933295dcc447ad6b0299ac51f1444e4ebcaffd7b332e18d184",
-      "bytes": 4187
+      "sha256": "e862522376098f3ed9f9cd423497837c5438eea998c7851a62353700a0a346dc",
+      "bytes": 4396
+    },
+    {
+      "path": "dist/schemas/rsr-anime-secondary-motion-profile.v0.1.schema.json",
+      "sha256": "45b92f73c1a5dec656558b3231d00e587a54da0db94a828da09a1b89eccf646d",
+      "bytes": 858
+    },
+    {
+      "path": "dist/schemas/rsr-character-body-profile.v0.1.schema.json",
+      "sha256": "1fc5fdf6daef0162f42150f1f624492ba9c0d1c1c3995243f7c7b2b4c091aa02",
+      "bytes": 946
     },
     {
       "path": "dist/schemas/rsr-constraint-world.v0.2.schema.json",
@@ -887,8 +934,8 @@
     },
     {
       "path": "dist/schemas/rsr-spatial-embodiment.v0.6.schema.json",
-      "sha256": "c412b671708fc08bde2c45b6a30c6214300454bb947cf902e740e6acb818981e",
-      "bytes": 2814
+      "sha256": "840e342c7b6f1f62e2f8cd4fcaa47c266033b6520fc1c28dfc67cb1c95066589",
+      "bytes": 3230
     },
     {
       "path": "dist/schemas/vsr-0.1.schema.json",
@@ -966,6 +1013,21 @@
       "bytes": 6488
     },
     {
+      "path": "dist/tests/representation-observation.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/tests/representation-observation.js",
+      "sha256": "715215b5222e5f0e551f963c03e6e7df83c94753ff728778b0708ffb360c7040",
+      "bytes": 2948
+    },
+    {
+      "path": "dist/tests/representation-observation.js.map",
+      "sha256": "51b183fde523593f00f916deac889b37046ec65d39e844b6dbc5fc5bc6bea5b4",
+      "bytes": 2806
+    },
+    {
       "path": "dist/tests/run.d.ts",
       "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
       "bytes": 11
@@ -1002,13 +1064,13 @@
     },
     {
       "path": "dist/tests/spatial-embodiment.js",
-      "sha256": "93ec6dc49ee2d2fa4b8022d4cefda9090c106c5bf5528caef67f39e2bb452587",
-      "bytes": 34347
+      "sha256": "978a8d35736cfddcb0d7dd3a4165c5a7e831d4406703d4ecaf6dfbd014d55750",
+      "bytes": 44222
     },
     {
       "path": "dist/tests/spatial-embodiment.js.map",
-      "sha256": "bfcfa4ef03cb7dc48d25750d9123ddecbbc63931e3bd188913f858aa1899beff",
-      "bytes": 53951
+      "sha256": "43af4bfebe8a9dd83bc15117f7af6ec038698dd552a055236bdbf8e3e0437c0d",
+      "bytes": 67060
     },
     {
       "path": "docs/ANIMATION_AUDIO_EFFECTS_API_v0.4.md",
@@ -1217,7 +1279,7 @@
     },
     {
       "path": "evidence/RELEASE_AUDIT.json",
-      "sha256": "fe836d82e9c2572862353f95a68528be2c8d596570fc8bed3ff33046357d46d8",
+      "sha256": "4117b244245c00363cfd536e686c1348c9e5314ab8adb698fc9f5be3a7091a72",
       "bytes": 5510
     },
     {
@@ -1797,12 +1859,12 @@
     },
     {
       "path": "outputs/test-range-2/frames-manifest.json",
-      "sha256": "d48c80bdce3de0423b63f32cb80b0bfbd26b7619df3a8e0bdc2f5216682a5367",
-      "bytes": 896
+      "sha256": "f23450498d7c8ac72e193217bcc814335d3592551a411e3ff5bf538fc07216b8",
+      "bytes": 892
     },
     {
       "path": "outputs/test-range.mp4",
-      "sha256": "69f154493126a262e9fd1bfc3c2c3f0a472509e42f0b3e1e1976948d24a9ad3e",
+      "sha256": "e34f7fd9262f1d53153cefaab00ec5bc089073944d05a9c04815d8b823e578f4",
       "bytes": 2129
     },
     {
@@ -1817,8 +1879,8 @@
     },
     {
       "path": "outputs/test-range/frames-manifest.json",
-      "sha256": "f28f977ec9f162bfe987aa38bb6ec0bb75628fcc7369fe738ad347ce515f440b",
-      "bytes": 892
+      "sha256": "335f3028dee2ca47a658dd9e7c15987c4ec7e3fd87b992591bd79606f2e1f58e",
+      "bytes": 888
     },
     {
       "path": "outputs/test-simulation-pipeline-tamper/cache/549bc641bc9b8f427760ec9f106bef7cb953d96acaef66a81640a4ca40fa22d0.json",
@@ -1847,8 +1909,8 @@
     },
     {
       "path": "package.json",
-      "sha256": "1ba1d2c12dff9bf55c4d751a9effba512fbf0b9cf5a36ea9de58ce3732d69c24",
-      "bytes": 4456
+      "sha256": "dfc0bec3e34a7261598dfd5d054ea5792665746ce45f04953736a702308ad4f2",
+      "bytes": 4622
     },
     {
       "path": "packages/adapter-reality-one/README.md",
@@ -2011,6 +2073,11 @@
       "bytes": 4761
     },
     {
+      "path": "packages/representation-observation/src/index.ts",
+      "sha256": "0e7e51ced46ed6baca01c36abf32f318eafaeb459827aaa74f0f661623baeaf5",
+      "bytes": 6722
+    },
+    {
       "path": "packages/simulation-cli/src/cli.ts",
       "sha256": "26df6034154ea33b401903a988d4db03204ee163ee7ace45eba934abe98c736e",
       "bytes": 6789
@@ -2032,8 +2099,8 @@
     },
     {
       "path": "packages/spatial-embodiment-vsr/src/index.ts",
-      "sha256": "46d382b2a9cce26e20cb3400fde7efc07dd4649f200ba6e77ff2a8943b83df19",
-      "bytes": 11273
+      "sha256": "ed4b72a4b39afbf29548f3bd69d814d33cddaaff62ca469f3698f9e77cdb830a",
+      "bytes": 12957
     },
     {
       "path": "packages/spatial-embodiment-vsr/src/vsr-spatial-v04.ts",
@@ -2042,18 +2109,23 @@
     },
     {
       "path": "packages/spatial-embodiment/src/convex-narrow-phase.ts",
-      "sha256": "c8165d462e71dfa099dce182b8308c487ae24aa6a284ecbc5ec949406aa8345b",
-      "bytes": 13485
+      "sha256": "e983e05bb459b490224651551ea04af1669676a8bf8a5ed168ed3bb5837dfc1e",
+      "bytes": 13507
     },
     {
       "path": "packages/spatial-embodiment/src/index.ts",
-      "sha256": "52cc1c38e833d62997bf1b11c4c0ecf13d43e1aaf87288a585726e39a548eca1",
-      "bytes": 81614
+      "sha256": "69cc3539c21ce9cee7c36447a6907e4f8771c97d1e0a8cd44390e8d4b56acd66",
+      "bytes": 102464
     },
     {
       "path": "packages/spatial-embodiment/src/kernel-binding.ts",
-      "sha256": "f29d4d13fe54b09cee0167681317533f7badbee07aadc156b5392acc9776dfb3",
-      "bytes": 12503
+      "sha256": "b8ee3ceb276feed41f75021adb36d85c6f5e0bf4074b6c33e2c9d8901cb0c5b3",
+      "bytes": 22151
+    },
+    {
+      "path": "packages/spatial-embodiment/src/ragf-binding.ts",
+      "sha256": "1f4671098e7fd4913735a0b8867ad3169aee4dc65b7bf3c6e599e52064c6882d",
+      "bytes": 8357
     },
     {
       "path": "packages/spec/README.md",
@@ -2072,8 +2144,18 @@
     },
     {
       "path": "schemas/rncs-kernel-rsr-vsr-binding.v0.1.schema.json",
-      "sha256": "f0ac630b0f46c9933295dcc447ad6b0299ac51f1444e4ebcaffd7b332e18d184",
-      "bytes": 4187
+      "sha256": "e862522376098f3ed9f9cd423497837c5438eea998c7851a62353700a0a346dc",
+      "bytes": 4396
+    },
+    {
+      "path": "schemas/rsr-anime-secondary-motion-profile.v0.1.schema.json",
+      "sha256": "45b92f73c1a5dec656558b3231d00e587a54da0db94a828da09a1b89eccf646d",
+      "bytes": 858
+    },
+    {
+      "path": "schemas/rsr-character-body-profile.v0.1.schema.json",
+      "sha256": "1fc5fdf6daef0162f42150f1f624492ba9c0d1c1c3995243f7c7b2b4c091aa02",
+      "bytes": 946
     },
     {
       "path": "schemas/rsr-constraint-world.v0.2.schema.json",
@@ -2097,8 +2179,8 @@
     },
     {
       "path": "schemas/rsr-spatial-embodiment.v0.6.schema.json",
-      "sha256": "c412b671708fc08bde2c45b6a30c6214300454bb947cf902e740e6acb818981e",
-      "bytes": 2814
+      "sha256": "840e342c7b6f1f62e2f8cd4fcaa47c266033b6520fc1c28dfc67cb1c95066589",
+      "bytes": 3230
     },
     {
       "path": "schemas/vsr-0.1.schema.json",
@@ -2127,8 +2209,8 @@
     },
     {
       "path": "scripts/generate-release-manifest.mjs",
-      "sha256": "99cdd567b1e6c9f81832cc4ae80d93dfbe5b3301f571ddf6dedfb702e8181435",
-      "bytes": 5513
+      "sha256": "f0f84b3e62c66929ded62d018a5e69512baee8a2628d0451fb19eb235e6cdfa3",
+      "bytes": 5872
     },
     {
       "path": "scripts/lint.mjs",
@@ -2137,8 +2219,8 @@
     },
     {
       "path": "scripts/release-audit.mjs",
-      "sha256": "583c6e1f54e4b1efbf20c42109b9ca94443c787d4115df4d1b4fb70190ecea53",
-      "bytes": 6248
+      "sha256": "9ec3f895501e3b32fc44f762ecbf2cb035c7766610a676d23f41448793f94e21",
+      "bytes": 6254
     },
     {
       "path": "scripts/studio-smoke.mjs",
@@ -2151,9 +2233,19 @@
       "bytes": 1308
     },
     {
+      "path": "src/anime-motion.mjs",
+      "sha256": "c9e0b540088e8b136e2dab57fc22ee4cb53c8229d6480a1d1c308771488e18eb",
+      "bytes": 5175
+    },
+    {
+      "path": "src/character-body.mjs",
+      "sha256": "e6c107fc0f5c33b8a61158c9a2d8f6b66e2e5f71b7a1e81fd0ead5040b618714",
+      "bytes": 4584
+    },
+    {
       "path": "src/unified-index.mjs",
-      "sha256": "f8668854cb6a61eddcb25b0744f6af0baa1a62e6a9fb7b792b5f6b41bf38c212",
-      "bytes": 563
+      "sha256": "5ea35b3bb02d7531daa88f62c597b15ef23e99ff36be0888c4818cbf7ff7d546",
+      "bytes": 804
     },
     {
       "path": "tests/constraint-physics.ts",
@@ -2176,6 +2268,11 @@
       "bytes": 5984
     },
     {
+      "path": "tests/representation-observation.ts",
+      "sha256": "93a5f10c8694ad3c96dbf3c2161759d4467583e711e5c85ac4737cc1069690cb",
+      "bytes": 3043
+    },
+    {
       "path": "tests/run.ts",
       "sha256": "211a77b7371603b0850d1e2682f78531962ae502f68d21499a16693b01068d44",
       "bytes": 26958
@@ -2187,8 +2284,8 @@
     },
     {
       "path": "tests/spatial-embodiment.ts",
-      "sha256": "fc56fc0f644506faed800afc175a9c5a2e8901ccc954e62497854d155ee25279",
-      "bytes": 35027
+      "sha256": "00f6b8414af3e0d2def33024efb83577b6071c3a2002af3a495a5cd9b99395a7",
+      "bytes": 45055
     },
     {
       "path": "tsconfig.json",

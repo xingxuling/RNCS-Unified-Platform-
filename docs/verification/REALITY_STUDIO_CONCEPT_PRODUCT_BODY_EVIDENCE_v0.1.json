@@ -1,0 +1,168 @@
+{
+  "format": "taowind.reality-studio-concept-product-body-evidence-ledger.v0.1",
+  "version": "0.1.0-alpha.1",
+  "recorded_at": "2026-09-15",
+  "status": "LOCAL_PRODUCT_BODY_VERIFIED",
+  "scope": {
+    "checkout": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "baseline_commit": "aafb291f1d54505be75cfe2559b07a92e6e46d3a",
+    "github_actions_used": false,
+    "browser_verifier": "Python Playwright local fallback; Browser plugin unavailable"
+  },
+  "authority_boundary": {
+    "product_body_owner": "Reality Studio web projection",
+    "runtime_owner": "Existing RNCS Runtime, RSR, VSR, Behavior Fabric, Reality Branch, Authority and Evidence modules",
+    "canonical_owner_changed": false,
+    "new_runtime_or_provider_created": false,
+    "sample_or_offline_state_used": false,
+    "production_promotion_claimed": false
+  },
+  "product_body_changes": [
+    {
+      "area": "global chrome",
+      "outcome": "two-tier status and control bar with explicit disabled/unavailable product capabilities",
+      "truth_source": "Adapter controls and runtime status"
+    },
+    {
+      "area": "Reality Graph",
+      "outcome": "authoritative, candidate and commit-promotion visual stages with curved real edge projection",
+      "truth_source": "Adapter graph nodes, edges, roots, metrics and statuses"
+    },
+    {
+      "area": "Inspector",
+      "outcome": "summary-first live node card and folded details/roots/receipts/gaps",
+      "truth_source": "Adapter selected_node and inspector source roots"
+    },
+    {
+      "area": "VSR viewport",
+      "outcome": "dominant verified projection panel with expanded mode",
+      "truth_source": "renderNetworkAssetViewport PNG plus frame, pixel, viewport and source-state roots"
+    },
+    {
+      "area": "state consistency",
+      "outcome": "revision guard prevents a stale viewport response from overwriting newer Replay/Runtime evidence",
+      "truth_source": "same session id and matching verified viewport root"
+    },
+    {
+      "area": "reference palette and short desktop fit",
+      "outcome": "reference-image navy/cyan palette, a height-aware desktop composition, and full-frame VSR contain sizing",
+      "truth_source": "CSS-only Product Body projection; status semantic colors and VSR pixels remain Adapter/runtime supplied"
+    }
+  ],
+  "runtime_probe": {
+    "flow": "create adapter session -> run 6 real ticks -> enable Replay -> isolated Behavior plus Network replay -> inspect Runtime status",
+    "initial": {
+      "runtime_status": "healthy",
+      "replay_control_disabled": true,
+      "node_count": 14,
+      "vsr_viewport_natural_size": [640, 360],
+      "viewport_status": "VERIFIED"
+    },
+    "after_run_and_replay": {
+      "tick": 6,
+      "integration_entry_count": 6,
+      "replay_status": "verified",
+      "integration_timeline_root_visible": true,
+      "active_runtime_unchanged_visible": true,
+      "canonical_state_mutated": false
+    }
+  },
+  "browser_evidence": {
+    "desktop": {
+      "viewport": [1680, 946],
+      "http_status": 200,
+      "graph_nodes": 14,
+      "graph_bounds": {"width": 1066, "height": 421},
+      "inspector_bounds": {"width": 388, "height": 846},
+      "viewport_bounds": {"width": 672.609375, "height": 260},
+      "expanded_viewport_bounds": {"width": 1074, "height": 806},
+      "console_page_request_errors": 0
+    },
+    "mobile": {
+      "viewport": [390, 844],
+      "http_status": 200,
+      "graph_nodes": 14,
+      "lower_grid_columns": "374px",
+      "document_scroll_width": 390,
+      "horizontal_overflow": false,
+      "console_page_request_errors": 0
+    },
+    "short_desktop": {
+      "viewport": [1920, 680],
+      "http_status": 200,
+      "graph_nodes": 14,
+      "document_scroll_height": 680,
+      "vertical_overflow": false,
+      "graph_bounds": {"width": 1308, "height": 326},
+      "viewport_bounds": {"width": 826, "height": 175},
+      "viewport_frame_bounds": {"width": 814, "height": 106},
+      "verified_image_inside_frame": true,
+      "console_page_request_errors": 0,
+      "meaning": "The real 640x360 VSR image is contained rather than clipped behind the status bar or inside its projection frame."
+    },
+    "file_protocol_entry_guard": {
+      "protocol": "file:",
+      "html_response_status": 200,
+      "runtime_node_count": 0,
+      "adapter_api_fetches": 0,
+      "guidance_visible": true,
+      "target_url": "http://127.0.0.1:17608/",
+      "meaning": "A raw HTML file does not create or imitate an RNCS Runtime session."
+    },
+    "screenshots": [
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\concept-product-body-desktop.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\concept-product-body-desktop-after-replay.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\concept-product-body-desktop-expanded.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\concept-product-body-mobile.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\file-entry-guidance.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\reference-palette-desktop-final-fit.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\reference-palette-short-desktop-final-fit.png"
+    ]
+  },
+  "verification": [
+    {
+      "name": "Reality Studio adapter/server/web focused tests",
+      "result": "PASS",
+      "passed": 16,
+      "failed": 0
+    },
+    {
+      "name": "JavaScript syntax check",
+      "result": "PASS",
+      "target": "apps/reality-studio/web/reality-studio.js"
+    },
+    {
+      "name": "working-tree whitespace check",
+      "result": "PASS",
+      "note": "Only pre-existing CRLF warnings were emitted."
+    }
+  ],
+  "truthful_unavailable_or_open": [
+    "search index",
+    "project open/save persistence",
+    "scene view, simulation configuration and code editor",
+    "production promotion and external authority",
+    "external WAN/WebSocket/UDP/QUIC/WebRTC/TLS transport",
+    "Agent Hub API",
+    "runtime CPU, memory, GPU and FPS metrics",
+    "RCL_GAP_STUDIO_COMBINED_RUNTIME_TICK"
+  ],
+  "rcl_stress_case": {
+    "task": "prevent an old Product Body viewport response from replacing newer Runtime and Evidence state",
+    "missing_canonical_capability": "none added; existing combined runtime coordinator gap remains open",
+    "workaround": "UI-only response revision and root equality guard",
+    "semantic_owner": "Reality Studio Product Body",
+    "affected_k400": ["CORRECT", "ROBUST", "EVIDENCE"],
+    "candidate_absorption": "not proposed"
+  },
+  "next_plan": {
+    "product": "connect only real search, persistence or camera APIs when their owner contracts exist",
+    "canonical": "obtain an explicit RCL/RNCS owner decision before proposing a shared Studio tick coordinator or receipt owner",
+    "blocked_by_other_owners": [
+      "sparse rncs-asset-cache source",
+      "geometric-truth evidence directory"
+    ]
+  },
+  "ledger_payload_root": "a2742bfd2323b994b92b161b095fea722d1ad6260e9f2897cafab31611e78d4d"
+}

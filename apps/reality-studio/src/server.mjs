@@ -9,6 +9,7 @@ import {StudioRuntime} from './runtime.mjs';
 import {BehaviorSessionRegistry,compileBehaviorStudio} from './behavior-studio.mjs';
 import {normalizeProgram,validateProgram} from '@taowind/reality-behavior-fabric';
 import {UnifiedSessionRegistry,validateUnifiedProject,ensureUIInputProject} from './scene-studio.mjs';
+import {RealityStudioSessionRegistry} from './reality-studio-adapter.mjs';
 import {AssetForgeRegistry} from './asset-forge.mjs';
 import {AnimeForgeSessionRegistry} from './anime-forge-studio.mjs';
 import {CharacterGenomeSessionRegistry} from './character-genome-studio.mjs';
@@ -38,6 +39,7 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
   const runtime=await new StudioRuntime({dataDir}).init();
   const behaviorSessions=new BehaviorSessionRegistry();
   const unifiedSessions=new UnifiedSessionRegistry();
+  const realityStudioSessions=new RealityStudioSessionRegistry();
   const assetForgeSessions=new AssetForgeRegistry();
   const animeForgeSessions=new AnimeForgeSessionRegistry({dataDir,ffmpegPath,ffprobePath,geometricTruthEvidenceDir});
   const nativeCharacterSurgery=new NativeCharacterSurgeryWorkspace({evidenceDir:nativeCharacterSurgeryEvidenceDir});
@@ -184,6 +186,21 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
       if(req.method==='POST'&&u.pathname==='/api/unified/session/export'){const b=await body(req);return send(res,200,unifiedSessions.get(b.session_id).exportArtifacts());}
       if(req.method==='POST'&&u.pathname==='/api/unified/session/gpu-frame'){const b=await body(req),s=unifiedSessions.get(b.session_id);return send(res,200,s.compileGPUFrame({quality:b.quality,observer:b.observer,gpu_tier:b.gpu_tier,serialized:true}));}
 
+      if(req.method==='POST'&&u.pathname==='/api/reality-studio/session/new'){
+        const b=await body(req),session=await realityStudioSessions.create({sessionId:b.session_id??null,transportProfile:b.transport_profile??b.transport??{}});
+        return send(res,200,session.inspect());
+      }
+      if(req.method==='POST'&&u.pathname==='/api/reality-studio/session/inspect'){
+        const b=await body(req);return send(res,200,realityStudioSessions.get(b.session_id).inspect());
+      }
+      if(req.method==='POST'&&u.pathname==='/api/reality-studio/session/command'){
+        const b=await body(req),session=realityStudioSessions.get(b.session_id),result=await session.command(b.command,b);
+        return send(res,200,result);
+      }
+      if(req.method==='POST'&&u.pathname==='/api/reality-studio/session/viewport'){
+        const b=await body(req);return send(res,200,await realityStudioSessions.get(b.session_id).command('viewport',b));
+      }
+
       if(req.method==='POST'&&u.pathname==='/api/asset-forge/session/new'){
         const b=await body(req),manufacturing=unifiedSessions.get(b.unified_session_id),token=String(b.name??b.intent?.description??'asset').replace(/[^a-zA-Z0-9_-]/g,'-').slice(0,48)||'asset';
         const outDir=path.resolve(b.out_dir??path.join(dataDir,'asset-forge',`${Date.now()}-${token}`));
@@ -241,12 +258,12 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
       if(req.method==='POST'&&u.pathname==='/api/character-genome/send-to-anime'){const b=await body(req),character=characterGenomeSessions.get(b.session_id),anime=animeForgeSessions.get(b.anime_session_id),result=anime.bindCharacter({...character.animeBinding(),actorId:b.actor_id??null});return send(res,200,{ok:true,...result});}
 
       if(req.method==='GET'&&u.pathname==='/favicon.ico')return send(res,204,'','image/x-icon');
-      const rel=u.pathname==='/'?'index.html':decodeURIComponent(u.pathname.slice(1));
+      const rel=u.pathname==='/'?'reality-graph.html':decodeURIComponent(u.pathname.slice(1));
       const p=path.resolve(root,'web',rel);
       if(p.startsWith(path.resolve(root,'web'))&&fs.existsSync(p)&&fs.statSync(p).isFile())return send(res,200,fs.readFileSync(p),mime[path.extname(p)]??'application/octet-stream');
       return send(res,404,{error:'not found'});
     }catch(e){send(res,500,{error:{code:e.code??'ERROR',message:e.message,details:e.details??{}}});}
   });
   await new Promise(r=>server.listen(port,host,r));
-  return{server,url:`http://${host}:${server.address().port}`,runtime,behaviorSessions,unifiedSessions,assetForgeSessions,animeForgeSessions,characterGenomeSessions,nativeCharacterSurgery};
+  return{server,url:`http://${host}:${server.address().port}`,runtime,behaviorSessions,unifiedSessions,realityStudioSessions,assetForgeSessions,animeForgeSessions,characterGenomeSessions,nativeCharacterSurgery};
 }

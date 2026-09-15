@@ -7,7 +7,7 @@
       "id": "style",
       "type": "json",
       "source": "examples/simulation-assets/render-style.json",
-      "sourceHash": "262e373e10684287127d340945e48752882a632b92802335ada07ae660245822",
+      "sourceHash": "5f364d3ac9fbcc5dc12e1ec93b5798b3cabaf52a7385c433c668d7434a50ef91",
       "contentHash": "1945ecab26adb4ccca7bab901cd268d1463f17b09a5a646d70078ae490565aa6",
       "byteLength": 182,
       "compiledPath": "cache/1945ecab26adb4ccca7bab901cd268d1463f17b09a5a646d70078ae490565aa6.json",
@@ -19,12 +19,12 @@
       "id": "world",
       "type": "json",
       "source": "examples/simulation-assets/falling-box.world.json",
-      "sourceHash": "abaa6cc268a82bac9d5a00a65fb9f213963a56ba801fc9cf3950d116b6fa512d",
+      "sourceHash": "a0c723e2eb46610a0783bc3490b86cef459cfd70c1665f92b689df4d71d2b774",
       "contentHash": "549bc641bc9b8f427760ec9f106bef7cb953d96acaef66a81640a4ca40fa22d0",
       "byteLength": 565,
       "compiledPath": "cache/549bc641bc9b8f427760ec9f106bef7cb953d96acaef66a81640a4ca40fa22d0.json",
       "dependencies": []
     }
   ],
-  "buildRoot": "fnv1a64:0d1294cf48a33c9b"
+  "buildRoot": "fnv1a64:10e2cdfc322367b1"
 }

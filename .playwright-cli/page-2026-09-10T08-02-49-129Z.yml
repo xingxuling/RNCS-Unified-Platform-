@@ -1,0 +1,25 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: UI输入候选
+      - generic [ref=e6]: 进入冰境试炼
+    - generic [ref=e7]: 状态 WebGPU 启动中 · State 17f1d4bb09a6e3cf
+  - generic [ref=e8]:
+    - generic "游戏界面":
+      - button "界面根" [ref=e10] [cursor=pointer]
+      - generic "HUD"
+      - generic "标题": 冰境试炼：场景—资产—行为统一项目
+      - generic "生命底板"
+      - progressbar "生命"
+      - generic "分数": 分数 0
+      - generic "目标": 进入冰境试炼
+      - generic "暂停面板"
+      - generic "暂停文字"
+      - generic "触摸控制"
+      - button "向左" [ref=e11] [cursor=pointer]
+      - button "向右" [ref=e12] [cursor=pointer]
+      - button "攻击" [ref=e13] [cursor=pointer]
+    - generic "3D spatial viewport" [ref=e14]
+  - generic [ref=e15]:
+    - generic [ref=e16]: A/D 移动 J/Space 攻击 R 重置 P 暂停
+    - generic [ref=e17]: Reality Build Fabric v0.1
