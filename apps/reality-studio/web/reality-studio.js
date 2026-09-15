@@ -175,7 +175,7 @@ async function createSession() {
     viewportDataUrl = null;
     setState(next);
     await refreshViewportImage();
-    notify('Reality Graph 已连接到本地原生运行时。');
+    notify('Game World Graph 已连接到本地原生运行时。');
   } catch (error) {
     showUnavailable(error);
   }
@@ -257,15 +257,15 @@ function renderShell() {
   $('#runtimePill .status-dot').className = `status-dot ${dot}`;
   $('#projectTitle').textContent = project.title ?? 'Reality Studio';
   $('#projectId').textContent = project.project_id ?? 'Native Runtime';
-  $('#workspaceHeading').textContent = project.title ? `${project.title} / Reality Graph` : 'Reality Graph';
-  $('#workspaceMeta').textContent = `${project.format ?? '—'} · ${shortRoot(project.project_root)} · ${runtime.protocol ?? 'native runtime'}`;
+  $('#workspaceHeading').textContent = project.title ? `${project.title} / Game World Graph` : 'Game World Graph';
+  $('#workspaceMeta').textContent = `${project.format ?? '—'} · ${shortRoot(project.project_root)} · ${runtime.protocol ?? 'native runtime'} · Product Body projection`;
   const badge = $('#liveBadge');
   badge.className = `live-badge ${dot}`;
   badge.innerHTML = `<span class="status-dot ${dot}"></span>${esc(statusText(status))}`;
   $('#adapterVersion').textContent = `${state.version ?? '—'}`;
   const sidebarStatus = $('#sidebarStatus');
   sidebarStatus.innerHTML = `<span class="status-dot ${dot}"></span><span>${esc(runtime.status === 'healthy' ? '原生运行时健康' : statusText(status))}</span>`;
-  $('#graphHint').textContent = `${graph.nodes?.length ?? 0} 个后端节点 · 状态来自真实 roots`;
+  $('#graphHint').textContent = `${graph.nodes?.length ?? 0} backend nodes · ${runtime.server?.players ?? '—'} players · tick ${runtime.tick ?? '—'} · status from roots`;
   $('#statusRuntimeValue').textContent = statusText(runtime.status);
   $('#statusRuntimeValue').className = `status-signal-value ${dotClass(runtime.status)}`;
   $('#statusRuntimeMeta').textContent = `${runtime.protocol ?? '—'} · ${shortRoot(runtime.state_root)}`;
@@ -274,7 +274,18 @@ function renderShell() {
   $('#statusControlMeta').textContent = `tick ${runtime.tick ?? '—'} · ${runtime.server?.players ?? '—'} players · epoch ${integration.entry_count ?? 0} · replay ${statusText(replay.status)}`;
   $('#statusWorldValue').textContent = project.title ?? '—';
   $('#statusWorldValue').className = 'status-signal-value';
-  $('#statusWorldMeta').textContent = `${shortRoot(state.session_id)} · ${shortRoot(project.project_root)}`;
+  $('#statusWorldMeta').textContent = `session ${shortRoot(state.session_id)} · scene ${project.active_scene_id ?? '—'}`;
+  const tick = runtime.tick ?? '—';
+  const players = runtime.server?.players ?? '—';
+  $('#statusTickPlayersValue').textContent = `${tick} · ${players}`;
+  $('#statusTickPlayersValue').className = 'status-signal-value';
+  $('#statusTickPlayersMeta').textContent = `authoritative server · ${runtime.server?.authoritative_world_instances ?? '—'} world(s)`;
+  const tickAligned = state.integration?.tick_aligned;
+  const syncValue = tickAligned === true ? 'ALIGNED' : tickAligned === false ? 'CHECK' : 'UNAVAILABLE';
+  const syncClass = tickAligned === true ? 'is-ready' : tickAligned === false ? 'is-candidate' : 'is-failed';
+  $('#statusSyncValue').textContent = syncValue;
+  $('#statusSyncValue').className = `status-signal-value ${syncClass}`;
+  $('#statusSyncMeta').textContent = `behavior ${state.inspector?.properties?.behavior_tick ?? '—'} · network ${runtime.server?.tick ?? '—'}`;
   $('#statusBranchValue').textContent = branchId;
   $('#statusBranchValue').className = `status-signal-value ${graph.recommended_branch_id ? 'is-candidate' : ''}`;
   $('#statusBranchMeta').textContent = `comparison ${shortRoot(roots.branch_comparison_root)}`;
@@ -308,7 +319,11 @@ function applyGraphView() {
   const edges = $('#graphEdges');
   const nodes = $('#graphNodes');
   if (!canvas || !edges || !nodes) return;
-  const transform = `scale(${graphZoom})`;
+  // Keep the Adapter-provided desktop coordinates intact. On a narrow
+  // viewport this is only a Product Body fit transform so every real node
+  // remains inspectable without changing the graph state or hiding nodes.
+  const fitScale = window.innerWidth <= 900 ? 0.74 : 1;
+  const transform = `scale(${(graphZoom * fitScale).toFixed(2)})`;
   edges.style.transform = transform;
   nodes.style.transform = transform;
   edges.style.transformOrigin = '50% 50%';
@@ -331,7 +346,7 @@ function renderGraphBranchRail() {
     rail.innerHTML = '<span class="graph-rail-empty">当前没有后端 Branch Evaluation</span>';
     return;
   }
-  rail.innerHTML = `<div class="graph-rail-header"><span>REALITY BRANCH EVALUATION</span><span>${rows.length} evaluated</span></div><div class="graph-branch-list">${rows.map(row => {
+  rail.innerHTML = `<div class="graph-rail-header"><span>CANDIDATE BRANCH EVALUATION</span><span>${rows.length} evaluated</span></div><div class="graph-branch-list">${rows.map(row => {
     const isRecommended = row.branch_id === recommended;
     const eligibility = row.eligible ? 'ELIGIBLE' : 'INELIGIBLE';
     return `<div class="graph-branch-chip${isRecommended ? ' is-recommended' : ''}${row.eligible ? '' : ' is-ineligible'}" title="${esc(`${row.branch_id} · simulation ${row.simulation_root ?? '—'} · state ${row.candidate_state_root ?? '—'}`)}"><span class="graph-branch-name">${esc(branchDisplayName(row.branch_id))}</span><strong>${esc(row.score ?? '—')}</strong><small>${eligibility}${isRecommended ? ' · RECOMMENDED' : ''}</small></div>`;
@@ -518,13 +533,13 @@ function renderViewport() {
   image.hidden = !hasImage;
   empty.hidden = hasImage;
   if (hasImage && image.src !== viewportDataUrl) image.src = viewportDataUrl;
-  if (!hasImage) empty.textContent = viewport.available ? '等待真实 VSR 投影图像' : 'VSR Projection unavailable';
-  $('#viewportSource').textContent = viewport.frame_root ? `frame ${shortRoot(viewport.frame_root)}` : '等待投影';
+  if (!hasImage) empty.textContent = viewport.available ? '等待真实 VSR 世界投影' : 'VSR World Projection unavailable';
+  $('#viewportSource').textContent = viewport.frame_root ? `LIVE FRAME ${shortRoot(viewport.frame_root)}` : '等待真实世界投影';
   $('#viewportRoot').textContent = `viewport_root ${shortRoot(viewport.viewport_root)}`;
   $('#viewportState').textContent = `source_state_root ${shortRoot(viewport.source_state_root)}`;
   $('#viewportStatus').textContent = viewport.frame_verified ? 'VERIFIED' : 'UNAVAILABLE';
   $('#viewportStatus').className = viewport.frame_verified ? '' : 'text-warn';
-  $('#viewportOverlay').textContent = viewport.frame_verified ? `VSR VERIFIED · tick ${state.runtime.tick ?? '—'} · ${viewport.asset_draw_count ?? '—'} asset draw(s)` : 'VSR UNAVAILABLE';
+  $('#viewportOverlay').textContent = viewport.frame_verified ? `VSR VERIFIED · tick ${state.runtime.tick ?? '—'} · ${viewport.asset_draw_count ?? '—'} asset draw(s)` : 'VSR WORLD PROJECTION UNAVAILABLE';
 }
 
 function renderCommitCard() {
@@ -532,8 +547,8 @@ function renderCommitCard() {
   $('#commitGateStatus').textContent = statusText(gate.status).toUpperCase();
   const missing = (gate.checks ?? []).filter(check => ['required', 'unavailable'].includes(check.status)).map(check => check.label);
   $('#commitGateReason').textContent = gate.status === 'candidate-committed'
-    ? '本地候选已记录；生产 promotion unavailable。'
-    : missing.length ? `等待：${missing.join('、')}。生产 promotion unavailable。` : 'Commit Gate 已就绪，但仍需独立确认。';
+    ? '本地候选已记录；生产 world promotion unavailable。'
+    : missing.length ? `等待：${missing.join('、')}。生产 world promotion unavailable。` : 'Commit Gate 已就绪，但仍需独立确认。';
   const button = $('#commitCard .commit-action');
   button.disabled = !(state.controls?.commit?.available);
   button.title = button.disabled ? '先提出并授权一个真实候选' : '明确提交当前本地候选';
@@ -544,7 +559,7 @@ function renderFooter() {
   const runtime = state.runtime ?? {};
   const dot = dotClass(runtime.status);
   $('#footerDot').className = `status-dot ${dot}`;
-  $('#footerRuntime').textContent = `Runtime: ${statusText(runtime.status)} · ${statusText(runtime.control_mode)}`;
+  $('#footerRuntime').textContent = `Game World Runtime: ${statusText(runtime.status)} · ${statusText(runtime.control_mode)}`;
   $('#footerTick').textContent = runtime.tick ?? '—';
   $('#footerStateRoot').textContent = shortRoot(runtime.state_root);
   $('#footerEvidenceRoot').textContent = shortRoot(state.evidence?.ledger_root);
@@ -579,7 +594,7 @@ document.addEventListener('click', event => {
     const name = action.dataset.action;
     if (name === 'new-session') { createSession(); return; }
     if (name === 'toggle-viewport') { viewportExpanded = !viewportExpanded; renderViewport(); return; }
-    if (name === 'focus-graph') { graphZoom = 1; applyGraphView(); notify('Reality Graph 已适配；当前操作只改变 Product Body 投影视图。'); return; }
+    if (name === 'focus-graph') { graphZoom = 1; applyGraphView(); notify('Game World Graph 已适配；当前操作只改变 Product Body 投影视图。'); return; }
     if (name === 'zoom-in') { graphZoom = Math.min(1.35, Number((graphZoom + .1).toFixed(2))); applyGraphView(); return; }
     if (name === 'zoom-out') { graphZoom = Math.max(.8, Number((graphZoom - .1).toFixed(2))); applyGraphView(); return; }
     if (name === 'toggle-grid') { graphGridVisible = !graphGridVisible; applyGraphView(); notify(graphGridVisible ? '已显示 Reality Graph 投影网格。' : '已隐藏 Reality Graph 投影网格。'); return; }
@@ -609,5 +624,6 @@ document.addEventListener('input', event => {
 
 window.addEventListener('error', event => notify(`页面错误：${event.message}`, true));
 window.addEventListener('unhandledrejection', event => notify(`请求错误：${event.reason?.message ?? event.reason}`, true));
+window.addEventListener('resize', applyGraphView);
 
 createSession();
