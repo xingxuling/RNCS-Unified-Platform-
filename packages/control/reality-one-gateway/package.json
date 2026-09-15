@@ -13,6 +13,7 @@
   "files": [
     "src",
     "runtimes",
+    "capabilities",
     "web",
     "examples",
     "docs",
@@ -29,7 +30,8 @@
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",
     "smoke": "node scripts/smoke.mjs",
     "demo": "node src/cli.mjs pipeline --config examples/input/pipeline.json --out output/demo",
-    "benchmark": "node scripts/benchmark.mjs"
+    "benchmark": "node scripts/benchmark.mjs",
+    "validate:capabilities": "node scripts/validate-agent-capability-registry.mjs"
   },
   "dependencies": {
     "@taowind/rncs-core-contract": "*",
