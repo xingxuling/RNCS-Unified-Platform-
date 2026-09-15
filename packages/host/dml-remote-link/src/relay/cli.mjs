@@ -54,6 +54,25 @@ if (command === 'create-login-code') {
   process.exit(0);
 }
 
+if (command === 'create-mobile-login-code') {
+  const sessionId = arg('--session');
+  if (!sessionId) throw new Error('--session is required');
+  const ttlMinutes = Number(arg('--ttl-minutes', 10));
+  const result = store.createLoginCode(sessionId, {
+    ttlMs: ttlMinutes * 60 * 1000,
+    scopes: ['dml.read', 'dml.goal.*', 'dml.device.*'],
+    riskLimit: arg('--risk', 'high'),
+    label: arg('--label', 'Tao Mobile OS'),
+  });
+  print({
+    session_id: sessionId,
+    ...result,
+    origin_required: 'https://tao.mobile',
+    warning: '此连接码允许请求 dml.device.*；是否执行仍由电脑本地 Host Policy 决定。只显示一次并且只能使用一次。',
+  });
+  process.exit(0);
+}
+
 if (command === 'devices') {
   const sessionId = arg('--session');
   if (!sessionId) throw new Error('--session is required');
@@ -93,5 +112,5 @@ if (command === 'serve') {
   process.on('SIGINT', stop);
   process.on('SIGTERM', stop);
 } else {
-  process.stdout.write(`DML Secure Relay v0.3\n\nCommands:\n  create-session [--name NAME] [--state DIR]\n  create-login-code --session ID [--ttl-minutes 10] [--risk high] [--scopes LIST] [--label NAME]\n  devices --session ID [--state DIR]\n  revoke-device --session ID --device ID [--state DIR]\n  serve [--host HOST] [--port PORT] [--origins LIST] [--grant-ttl-ms MS] [--state DIR]\n  status --session ID [--state DIR]\n`);
+  process.stdout.write(`DML Secure Relay v0.4\n\nCommands:\n  create-session [--name NAME] [--state DIR]\n  create-login-code --session ID [--ttl-minutes 10] [--risk high] [--scopes LIST] [--label NAME]\n  create-mobile-login-code --session ID [--ttl-minutes 10] [--risk high] [--label NAME]\n  devices --session ID [--state DIR]\n  revoke-device --session ID --device ID [--state DIR]\n  serve [--host HOST] [--port PORT] [--origins LIST] [--grant-ttl-ms MS] [--state DIR]\n  status --session ID [--state DIR]\n`);
 }
