@@ -3,7 +3,7 @@
 Recorded: 2026-09-15
 Checkout: `C:\Users\User\Documents\RCL\_worktrees\rncs-visual-factory-v01`
 Branch: `codex/rncs-engine-stack-archaeology-v01`
-Baseline before this pass: `bfca1107b3d733802c315df15d2fc4479d4b9bce`
+Baseline before this pass: `3177646d feat(reality-studio): position shell as game world engine`
 GitHub Actions used: `false`
 
 ## Visual baseline and honest generation status
@@ -41,6 +41,30 @@ Position the product as a deterministic multiplayer game world engine and its au
 - Preserved the truthful unavailable states for Agent Hub, external transport, runtime resource metrics, persistence, production promotion and other unimplemented capabilities.
 - Added mobile-only fit scaling for real graph nodes and edges. It changes only the Product Body projection and does not hide nodes or mutate runtime state.
 
+## Game capability pass — real seams exposed
+
+This pass adds a small Adapter projection for game-world seams that already exist in the Unified Manufacturing Session and Network Runtime. It does not create a parallel game engine.
+
+| Existing seam | Decision | Product surface and truth boundary |
+| --- | --- | --- |
+| `InputActionRuntime` / `session.sampleInput(raw)` | REUSE + ADAPT | Game Systems shows the real profile, action/binding counts and last input-frame root. Player Test samples one real frame; it does not claim a held device state. |
+| `SpatialStudioSession` / RSR embodiment | REUSE + KEEP SEPARATE | Spatial Bodies and Character Control expose real body/controller/frame roots. `spatial-step` advances authoring preview only; Network RSR remains the multiplayer authority. |
+| Network RSR player slots and `submitInput` | REUSE | `move`, `jump` and `impulse` are sent through the existing joined compiled player slots and advance the real server tick. Player IDs come from the runtime, not the UI. |
+| Existing Sequencer animation track | REUSE + KEEP SEPARATE | Animation Tracks is visible as `experimental` when the session has a track but zero authored clips. No clip success is inferred. |
+| `session.assetStreaming({ request })` | REUSE | Asset Streaming can issue the real cache request and display the resulting catalog/receipt roots. A failed payload remains `failed`; verified VSR drawing is not treated as cache residency. |
+
+Adapter contract added: `taowind.reality-studio-game-capabilities.v0.1`. The UI only renders `game_capabilities`, `controls` and `evidence` returned by the Adapter. The five system cards and Player Test buttons are disabled when their returned control is unavailable.
+
+Observed local runtime evidence from the real Studio fixture:
+
+- Input profile: `12` actions, `34` bindings, profile root present; a `KeyD` sample produced a real frame root and `move_right` action.
+- Spatial preview: `6` bodies and `3` character controllers; preview tick advances independently from the Network RSR tick.
+- Network player command: joined `blue` and `red` slots; `jump` and `move` travel through the existing Network Runtime path and clients converge to `synchronized`.
+- Animation: `1` animation track and `0` clips, therefore `experimental`.
+- Asset stream: the real embedded asset request returned `failed` with `ASSET_STREAM_PAYLOAD_MISSING`, `ready=0`, `failed=1`, `bytesLoaded=0`; no cache residency is claimed.
+
+The corresponding evidence entries are `game-input-profile`, `game-spatial-preview`, `game-character-controllers`, `game-animation-sequence` and `game-asset-streaming`. The spatial and animation entries are explicitly non-canonical/presentation or preview evidence.
+
 ## Browser evidence
 
 Verifier: local Python Playwright Chromium fallback; built-in Browser channel was unavailable.
@@ -50,6 +74,10 @@ Screenshots:
 - `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio\game-world-engine-runtime-path-committed-fit.png`
 - `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio\game-world-engine-mobile-fit.png`
 - `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio\game-world-engine-native-reference-size.png`
+- `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-game-capabilities\game-capabilities-initial.png`
+- `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-game-capabilities\game-capabilities-after-player-input.png`
+- `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-game-capabilities\game-capabilities-asset-stream-failed.png`
+- `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-game-capabilities\game-capabilities-browser-verified.png`
 
 Observed at 1680×946:
 
@@ -59,6 +87,8 @@ Observed at 1680×946:
 - Selecting `RSR Runtime` changes the real Inspector selection and related-edge emphasis.
 - Run 6 ticks, isolated Behavior + Network Replay, propose candidate, authorize, then local commit all completed through the live Adapter path.
 - After local commit, Gate reads `本地候选已提交`; production promotion remains `production promotion unavailable`.
+- The real Game Systems rail exposes Input, Spatial Bodies, Character Control, Animation Tracks and Asset Streaming. Player Test `D` advanced the authoritative Network RSR tick from `0` to `1`; the Input Inspector showed the real frame root.
+- Asset Streaming was opened through the real Inspector action and reported `失败` with `GAP_GAME_ASSET_STREAM_PAYLOAD_CACHE`; no ready/cache success was rendered.
 - Page errors during the verified path: `0`.
 
 Observed at 390×844:
@@ -75,7 +105,7 @@ Observed at 2880×1800 (reference-image native canvas size):
 ## Verification
 
 - `node --check apps/reality-studio/web/reality-studio.js`: PASS
-- Focused web, adapter and server tests: **18/18 PASS**
+- Focused web, adapter and server tests: **19/19 PASS**
 - `git diff --check`: PASS; only existing LF→CRLF normalization warnings.
 - No GitHub Actions run.
 
@@ -89,6 +119,7 @@ Observed at 2880×1800 (reference-image native canvas size):
 | Product navigation | The left rail reads as World Project / Game World / Gameplay & Branches / Multiplayer / Evidence & Authority / World Projection rather than a generic IDE tree. | Adapted IA labels only. |
 | Runtime truth | Tick, players, sync alignment, branch, Gate, Replay, node status, roots and viewport verification are response-backed; unavailable capabilities remain visible. | No fake metrics or success states introduced. |
 | Viewport role | The VSR/RSR panel has a larger visual role and contains the real verified image and roots. | Kept; richer game-world imagery remains a runtime/provider gap. |
+| Game workflow | Five real capability cards and Player Test controls make Input, spatial preview, character controllers, animation readiness and asset receipts inspectable from the main path. | Added as Adapter projection; preview/cache boundaries remain explicit. |
 
 Intentional deviations: the generated future-style concept could not be produced because the Image Gen service returned network errors and no local API key is configured; the current VSR projection remains the real adapter-provided 640×360 output rather than a fabricated cinematic scene; mobile retains vertical scrolling because this is a desktop-density authoring surface.
 
@@ -97,10 +128,12 @@ Intentional deviations: the generated future-style concept could not be produced
 - New generated future-style reference image: `NOT_AVAILABLE` because Image Gen network calls failed and no local key is configured.
 - Current real Studio path is a local deterministic loopback runtime; public WAN/WebSocket/UDP/QUIC/WebRTC/TLS/relay transport remains unavailable.
 - Production deployment and external authority/key custody remain unavailable.
+- Cross-workflow `game-dev` orchestration is not claimed: the local `game-dev` CLI is not installed (`NOT_FOUND`).
 - CPU, memory, GPU and FPS provider metrics are unavailable from the current Adapter API.
 - Agent Hub, global search, open/save persistence and independent graph camera APIs remain unavailable.
 - Canonical combined Behavior + Network tick/receipt ownership remains an RCL/RNCS gap; current integrated replay is isolated candidate evidence.
-- A broader game-engine product still needs explicit runtime-owned coverage and evidence for physics/collision, player input, character controller/animation, asset/scene streaming and production server scale.
+- Animation clips remain experimental until real clips are authored and bound; asset cache streaming currently has a real failed payload receipt and remains an open gap.
+- Authoring spatial preview is not multiplayer authority; Network RSR is the current authoritative path. A broader game-engine product still needs runtime-owned evidence for production physics/collision, scene streaming and server scale.
 - The broader gateway health report remains degraded where the sparse checkout lacks `@taowind/rncs-asset-cache`; this pass did not change or conceal that condition.
 
 ## RCL stress mapping
@@ -112,4 +145,4 @@ Candidate absorption: not proposed.
 
 ## Next highest-leverage pass
 
-Audit the existing game-specific runtime surfaces for real input, spatial bodies, character/controller and asset-streaming contracts; expose only the smallest already-owned capabilities through the Studio Adapter, then add a real player/entity workflow with positive, negative and replay evidence. Keep production networking and promotion explicitly unavailable until their external owners and receipts exist.
+Add negative/replay evidence to the exposed player workflow, then close the asset-cache payload gap only through the existing cache owner. Keep production networking and promotion explicitly unavailable until their external owners and receipts exist.

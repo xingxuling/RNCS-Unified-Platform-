@@ -11,6 +11,7 @@ let toastTimer = null;
 let stateRevision = 0;
 let graphZoom = 1;
 let graphGridVisible = true;
+let activeGameCapability = null;
 
 const STATUS_TEXT = {
   initializing: '初始化中',
@@ -24,6 +25,7 @@ const STATUS_TEXT = {
   'awaiting-explicit-confirmation': '等待明确确认',
   'candidate-committed': '本地候选已提交',
   'committed-local-candidate': '本地候选已提交',
+  experimental: '实验性',
   locked: '已锁定',
   unavailable: '不可用',
   failed: '失败',
@@ -90,7 +92,7 @@ function statusText(value) {
 function dotClass(value) {
   const normalized = statusClass(value);
   if (['ready', 'running', 'healthy', 'verified'].includes(normalized)) return 'is-ready';
-  if (['candidate', 'candidate-verified', 'simulated', 'authorized', 'awaiting-explicit-confirmation', 'candidate-committed', 'committed-local-candidate', 'open', 'recorded', 'required'].includes(normalized)) return 'is-candidate';
+  if (['candidate', 'candidate-verified', 'simulated', 'authorized', 'awaiting-explicit-confirmation', 'candidate-committed', 'committed-local-candidate', 'experimental', 'open', 'recorded', 'required'].includes(normalized)) return 'is-candidate';
   if (['failed'].includes(normalized)) return 'is-failed';
   return '';
 }
@@ -214,7 +216,7 @@ async function sendCommand(command, payload = {}) {
   try {
     const next = await post('/api/reality-studio/session/command', { session_id: sessionId, command, ...payload });
     setState(next);
-    if (['step', 'run', 'reset', 'candidate-commit'].includes(command)) await refreshViewportImage();
+    if (['step', 'run', 'reset', 'candidate-commit', 'game-input', 'player-command'].includes(command)) await refreshViewportImage();
     if (command === 'candidate-propose') notify('候选 Reality 已由 Behavior Fabric 实际模拟，尚未授权。');
     if (command === 'candidate-authorize') notify('候选已获得本地明确授权，仍需单独提交确认。');
     if (command === 'candidate-commit') notify('本地候选已提交到当前 Studio Session；生产 promotion 仍不可用。');
@@ -233,6 +235,7 @@ function render() {
   $('#studioShell')?.classList.remove('runtime-unavailable');
   renderShell();
   renderSidebar();
+  renderGameSurfaces();
   renderGraph();
   renderInspector();
   renderConsole();
@@ -292,6 +295,49 @@ function renderShell() {
   $('#statusGateValue').textContent = statusText(gate.status);
   $('#statusGateValue').className = `status-signal-value ${dotClass(gate.status)}`;
   $('#statusGateMeta').textContent = gate.production_promotion_permitted === true ? 'production promotion available' : 'production promotion unavailable';
+}
+
+function gameMetric(capability, key) {
+  const value = capability?.metrics?.[key];
+  return value === null || value === undefined ? '—' : json(value);
+}
+
+function renderGameSurfaces() {
+  const rail = $('#gameSystemsRail');
+  const playtest = $('#gamePlaytestBar');
+  if (!rail || !playtest) return;
+  const game = state?.game_capabilities ?? {};
+  const systems = Array.isArray(game.systems) ? game.systems : [];
+  if (!systems.length) {
+    rail.innerHTML = '<span class="game-systems-empty">等待真实 Game Systems 状态…</span>';
+  } else {
+    rail.innerHTML = `<span class="game-systems-label">GAME SYSTEMS</span>${systems.map(capability => {
+      const active = capability.id === activeGameCapability ? ' is-active' : '';
+      const status = statusClass(capability.status);
+      const metricText = capability.id === 'input'
+        ? `${gameMetric(capability, 'actions')} actions · ${gameMetric(capability, 'bindings')} bindings`
+        : capability.id === 'spatial'
+          ? `${gameMetric(capability, 'bodies')} bodies · ${gameMetric(capability, 'characters')} chars`
+          : capability.id === 'character'
+            ? `${gameMetric(capability, 'controllers')} controllers · ${gameMetric(capability, 'grounded')} grounded`
+            : capability.id === 'animation'
+              ? `${gameMetric(capability, 'animation_tracks')} tracks · ${gameMetric(capability, 'clips')} clips`
+              : `${gameMetric(capability, 'ready')} ready · ${gameMetric(capability, 'failed')} failed`;
+      return `<button class="game-system-chip status-${esc(status)}${active}" data-game-capability="${esc(capability.id)}" title="${esc(`${capability.authority} · ${capability.source}`)}"><span class="game-system-chip-icon">${esc(GAME_SYSTEM_ICONS[capability.id] ?? '◇')}</span><span class="game-system-chip-copy"><strong>${esc(capability.title)}</strong><small>${esc(statusText(capability.status))} · ${esc(metricText)}</small></span></button>`;
+    }).join('')}`;
+  }
+  const controls = state?.controls ?? {};
+  const input = controls.game_input ?? game.controls?.game_input ?? {};
+  const player = controls.player_command ?? game.controls?.player_command ?? {};
+  const playerId = player.default_player_id ?? input.default_player_id ?? null;
+  const playerCount = Array.isArray(player.player_ids) ? player.player_ids.length : 0;
+  const canInput = input.available === true;
+  const canCommand = player.available === true;
+  if (!canInput && !canCommand) {
+    playtest.innerHTML = '<span class="game-playtest-label">PLAYER TEST</span><span class="game-playtest-empty">Network player command unavailable</span>';
+    return;
+  }
+  playtest.innerHTML = `<span class="game-playtest-label">PLAYER TEST</span><span class="game-playtest-session">${esc(playerId ? `player ${playerId}` : 'player unavailable')} · ${esc(playerCount)} joined</span><button class="game-playtest-button" data-game-input-code="KeyA" ${canInput ? '' : 'disabled'} title="One real input frame: move_left">A</button><button class="game-playtest-button" data-game-input-code="KeyD" ${canInput ? '' : 'disabled'} title="One real input frame: move_right">D</button><button class="game-playtest-button game-playtest-jump" data-game-command-type="jump" ${canCommand ? '' : 'disabled'} title="Dispatch a real Network RSR jump command">JUMP</button><span class="game-playtest-boundary">Network RSR</span>`;
 }
 
 function renderSidebar() {
@@ -424,16 +470,100 @@ function inspectorSummary(selected) {
   </section>`;
 }
 
+const GAME_SYSTEM_ICONS = Object.freeze({
+  input: '⌁',
+  spatial: '◈',
+  character: '◉',
+  animation: '✦',
+  assets: '▤',
+});
+
+function capabilityRoot(capability) {
+  return Object.values(capability?.roots ?? {}).find(Boolean) ?? null;
+}
+
+function gameCapabilitySummary(capability) {
+  const metrics = Object.entries(capability.metrics ?? {}).filter(([, value]) => value !== null && value !== undefined).slice(0, 4);
+  const metricMarkup = metrics.length
+    ? metrics.map(([key, value]) => `<div class="summary-metric"><span>${esc(key)}</span><strong>${esc(json(value))}</strong></div>`).join('')
+    : '<div class="empty-state summary-empty">No exposed capability metrics</div>';
+  const refs = (capability.evidence_refs ?? []).filter(Boolean);
+  const receipt = refs.at(-1) ?? capabilityRoot(capability);
+  return `<section class="inspector-summary game-capability-summary" id="inspectorSummary">
+    <div class="inspector-summary-top"><span class="inspector-summary-kicker">GAME SYSTEM</span><span class="summary-status ${dotClass(capability.status)}"><span class="status-dot ${dotClass(capability.status)}"></span>${esc(statusText(capability.status))}</span></div>
+    <div class="inspector-summary-title">${esc(capability.title ?? 'Game System')}</div>
+    <div class="inspector-summary-subtitle">${esc(capability.owner ?? '—')} · ${esc(capability.subtitle ?? '—')}</div>
+    <div class="game-capability-summary-copy">${esc(capability.summary ?? '—')}</div>
+    <div class="inspector-metrics">${metricMarkup}</div>
+    <div class="inspector-provenance"><div><span>API</span><code>${esc(capability.api ?? 'unavailable')}</code></div><div><span>ROOT</span><code title="${esc(capabilityRoot(capability) ?? '')}">${esc(shortRoot(capabilityRoot(capability)))}</code></div><div><span>RECEIPT</span><code title="${esc(receipt ?? '')}">${esc(shortRoot(receipt))}</code></div></div>
+  </section>`;
+}
+
+function gameCapabilityAction(capability) {
+  const controls = state.controls ?? {};
+  if (capability.id === 'input') {
+    const control = controls.input_sample ?? {};
+    return `<div class="game-capability-action"><button class="inspector-action" data-command="input-sample" data-control="input-sample" ${control.available ? '' : 'disabled'}>采样真实输入帧</button><small>${esc(control.available ? '写入 Unified InputActionRuntime；不会推进网络 tick。' : 'input profile unavailable')}</small></div>`;
+  }
+  if (capability.id === 'spatial' || capability.id === 'character') {
+    const control = controls.spatial_preview_step ?? {};
+    return `<div class="game-capability-action"><button class="inspector-action" data-command="spatial-step" data-control="spatial-preview-step" ${control.available ? '' : 'disabled'}>推进 authoring preview tick</button><small>${esc(control.available ? 'authoring-preview-only · 仅推进 SpatialStudioSession；不改写 Network RSR 权威状态。' : 'authoring-preview unavailable')}</small></div>`;
+  }
+  if (capability.id === 'assets') {
+    const control = controls.asset_stream ?? {};
+    return `<div class="game-capability-action"><button class="inspector-action" data-command="asset-stream" data-control="asset-stream" ${control.available ? '' : 'disabled'}>${control.available ? '请求真实缓存流' : '缓存流 unavailable'}</button><small>${esc(control.reason ?? '结果将由真实 Asset Streaming receipt 决定；VSR 画面不等于缓存驻留。')}</small></div>`;
+  }
+  if (capability.id === 'animation') {
+    return '<div class="game-capability-action is-note"><span>当前没有可驱动的真实 animation clips。</span><small>experimental · presentation-only</small></div>';
+  }
+  return '';
+}
+
+function gameCapabilityInspector(capability, roots) {
+  const summary = gameCapabilitySummary(capability);
+  const capabilityGaps = (capability.gaps ?? []).map(code => state.gaps?.find(gap => gap.code === code) ?? { code, status: capability.status, severity: 'low', detail: 'Capability reported this gap.' });
+  const details = `<details class="inspector-details" open><summary>Capability details <span>▾</span></summary><section class="inspector-section">${propertyRows([
+    ['System ID', capability.id], ['Owner', capability.owner], ['Status', statusText(capability.status)], ['Authority', capability.authority], ['Source', capability.source], ['API', capability.api], ['Reason', capability.reason],
+  ])}</section><section class="inspector-section"><div class="inspector-section-title">Exposed runtime properties</div>${propertyRows(Object.entries(capability.metrics ?? {}))}</section></details>`;
+  const evidence = `<details class="inspector-details" open><summary>Roots & receipts <span>▾</span></summary><section class="inspector-section"><div class="inspector-section-title">Capability Roots</div>${rootsBlock(capability.roots ?? roots)}</section><section class="inspector-section"><div class="inspector-section-title">Evidence refs</div>${(capability.evidence_refs ?? []).filter(Boolean).map(ref => `<div class="root-line"><span>receipt</span><span title="${esc(ref)}">${esc(shortRoot(ref))}</span></div>`).join('') || '<div class="empty-state">暂无 evidence refs</div>'}</section></details>`;
+  const authority = `<details class="inspector-details" open><summary>Authority boundary <span>▾</span></summary><section class="inspector-section">${propertyRows([
+    ['System', capability.title], ['Owner', capability.owner], ['Authority', capability.authority], ['Canonical mutation', 'not granted by Product Body'], ['Status', statusText(capability.status)],
+  ])}</section></details>`;
+  const eventNeedles = {
+    input: ['game.input', 'input.'],
+    spatial: ['game.spatial', 'spatial.'],
+    character: ['game.player', 'spatial.'],
+    animation: ['sequence.'],
+    assets: ['game.asset', 'asset.'],
+  }[capability.id] ?? [`${capability.id}.`];
+  const events = (state.event_tail ?? []).filter(event => eventNeedles.some(needle => String(event.type ?? '').includes(needle))).slice(-20).reverse();
+  const logs = `<details class="inspector-details" open><summary>System events <span>▾</span></summary><section class="inspector-section">${events.map(event => `<div class="console-card"><div class="console-card-head"><span>${esc(event.type)}</span><small>#${esc(event.sequence)}</small></div><div class="console-card-body">${esc(eventSummary(event))}<br>${esc(shortRoot(event.event_root))}</div></div>`).join('') || '<div class="empty-state">当前系统暂无匹配事件</div>'}</section></details>`;
+  const gaps = `<details class="inspector-details"><summary>Backend gaps <span>▾</span></summary><section class="inspector-section">${gapsBlock(capabilityGaps.length ? capabilityGaps : state.gaps)}</section></details>`;
+  if (activeInspectorTab === 'status') return summary + details + gaps;
+  if (activeInspectorTab === 'authority') return summary + authority + gaps;
+  if (activeInspectorTab === 'logs') return summary + logs + gaps;
+  if (activeInspectorTab === 'evidence') return summary + evidence + gaps;
+  return summary + gameCapabilityAction(capability) + details + evidence + gaps;
+}
+
 function renderInspector() {
   const selected = state.inspector?.selected_node ?? state.graph?.nodes?.[0];
-  if (!selected) return;
-  $('#inspectorIcon').textContent = NODE_ICONS[selected.id] ?? '◇';
-  $('#inspectorTitle').textContent = selected.title ?? 'Node';
-  $('#inspectorSubtitle').textContent = selected.subtitle ?? 'Backend-driven inspector';
+  const capability = (state.game_capabilities?.systems ?? []).find(system => system.id === activeGameCapability) ?? null;
+  if (activeGameCapability && !capability) activeGameCapability = null;
+  const inspected = capability ?? selected;
+  if (!inspected) return;
+  $('#inspectorIcon').textContent = capability ? (GAME_SYSTEM_ICONS[capability.id] ?? '◇') : (NODE_ICONS[selected.id] ?? '◇');
+  $('#inspectorTitle').textContent = inspected.title ?? 'Node';
+  $('#inspectorSubtitle').textContent = capability ? inspected.subtitle : (inspected.subtitle ?? 'Backend-driven inspector');
   const statusNode = $('#inspectorStatus');
-  statusNode.textContent = statusText(selected.status);
-  statusNode.className = `inspector-status ${dotClass(selected.status)}`;
+  statusNode.textContent = statusText(inspected.status);
+  statusNode.className = `inspector-status ${dotClass(inspected.status)}`;
   const roots = state.inspector?.source_roots ?? {};
+  if (capability) {
+    $('#inspectorContent').innerHTML = gameCapabilityInspector(capability, roots);
+    $$('.inspector-tab').forEach(tab => tab.classList.toggle('is-active', tab.dataset.inspectorTab === activeInspectorTab));
+    return;
+  }
   const summary = inspectorSummary(selected);
   const technicalDetails = `<details class="inspector-details"><summary>Technical details <span>▾</span></summary><section class="inspector-section">${propertyRows([
     ['节点 ID', selected.id], ['Owner', selected.owner], ['状态', statusText(selected.status)], ['Format', selected.format], ['Version', selected.version], ['API', selected.api], ['Source', selected.source], ['Root', selected.root],
@@ -579,11 +709,29 @@ function syncControls() {
     replay.disabled = !Boolean(state?.controls?.replay?.available);
     replay.title = state?.controls?.replay?.reason ?? '在隔离运行时重放当前 Behavior + Network integration epoch';
   }
+  const controlAvailability = (name, fallback = false) => Boolean(state?.controls?.[name]?.available ?? fallback);
+  $$('[data-control="input-sample"]').forEach(button => { button.disabled = !controlAvailability('input_sample'); });
+  $$('[data-control="game-input"]').forEach(button => { button.disabled = !controlAvailability('game_input'); });
+  $$('[data-control="player-command"]').forEach(button => { button.disabled = !controlAvailability('player_command'); });
+  $$('[data-control="spatial-preview-step"]').forEach(button => { button.disabled = !controlAvailability('spatial_preview_step'); });
+  $$('[data-control="asset-stream"]').forEach(button => { button.disabled = !controlAvailability('asset_stream'); });
+  $$('[data-game-input-code]').forEach(button => { button.disabled = !controlAvailability('game_input'); });
+  $$('[data-game-command-type]').forEach(button => { button.disabled = !controlAvailability('player_command'); });
   $$('[data-unavailable]').forEach(button => { button.disabled = true; });
 }
 
 function handleNodeSelection(nodeId) {
+  activeGameCapability = null;
   return sendCommand('select', { node_id: nodeId });
+}
+
+function sendGameInput(code) {
+  return sendCommand('game-input', { raw: { keys: [String(code)] } });
+}
+
+function sendPlayerCommand(command) {
+  const playerId = state?.game_capabilities?.controls?.player_command?.default_player_id ?? state?.controls?.player_command?.default_player_id ?? null;
+  return sendCommand('player-command', { player_id: playerId, command });
 }
 
 document.addEventListener('click', event => {
@@ -603,6 +751,23 @@ document.addEventListener('click', event => {
   if (consoleTab) { activeConsole = consoleTab.dataset.console; renderConsole(); return; }
   const inspectorTab = event.target.closest('[data-inspector-tab]');
   if (inspectorTab) { activeInspectorTab = inspectorTab.dataset.inspectorTab; renderInspector(); return; }
+  const capability = event.target.closest('[data-game-capability]');
+  if (capability) {
+    activeGameCapability = capability.dataset.gameCapability;
+    renderGameSurfaces();
+    renderInspector();
+    return;
+  }
+  const inputButton = event.target.closest('[data-game-input-code]');
+  if (inputButton) {
+    if (!inputButton.disabled) sendGameInput(inputButton.dataset.gameInputCode);
+    return;
+  }
+  const playerCommandButton = event.target.closest('[data-game-command-type]');
+  if (playerCommandButton) {
+    if (!playerCommandButton.disabled) sendPlayerCommand({ type: playerCommandButton.dataset.gameCommandType });
+    return;
+  }
   const node = event.target.closest('[data-node]');
   if (node) { event.preventDefault(); handleNodeSelection(node.dataset.node); return; }
   const commandButton = event.target.closest('[data-command]');
