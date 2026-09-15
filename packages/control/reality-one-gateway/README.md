@@ -81,3 +81,50 @@ Gateway 会自动扫描，不需要修改中央运行时列表。
 - ICAR v0.5仍保留内部基础权限检查，AAF作为外部权威门再次裁决。
 - 当前批准服务为本地收据，不是在线多人审批服务器。
 - 不提供内置Node二进制，运行环境必须已有Node.js 20+。
+
+## Agent Capability Contract v0.1（候选）
+
+本候选版本在 Runtime Manifest 之上增加 AI/Agent 可直接消费的能力语义层，不改变既有 Gateway 运行时发现与调用模型。
+
+新增四个高层接口：
+
+```text
+listCapabilities(filters?)
+describeCapability(capability_id)
+matchCapabilities(query)
+invokeCapability(capability_id, invocation)
+```
+
+默认能力目录位于：
+
+```text
+capabilities/capabilities.v0.1.json
+```
+
+CLI 示例：
+
+```bash
+node src/cli.mjs capabilities
+node src/cli.mjs capability --id reality.branch.simulate
+node src/cli.mjs match --text "candidate reality simulation"
+node src/cli.mjs invoke-capability --id reality.branch.simulate --invocation invocation.json
+npm run validate:capabilities
+```
+
+HTTP 示例：
+
+```text
+GET  /api/capabilities
+GET  /api/capabilities/:capability_id
+POST /api/capabilities/match
+POST /api/capabilities/invoke
+```
+
+### 安全边界
+
+- `SIMULATION`、`PROVISIONAL`、`PROJECTION` 的成功不得被提升为 `AUTHORITATIVE` 成功。
+- `scope` 能力在 Gateway 预检阶段检查 actor scopes。
+- `experimental` / `partial` 能力默认拒绝直接调用，必须显式 `allow_unstable: true`。
+- `dry_run: true` 只生成能力预检结果，不调用底层 runtime。
+- 实际调用继续经过原有 `gateway.invoke`，并返回 `reality-one.invocation-receipt.v0.3`。
+- v0.1 尚未自动构造 AAF policy payload；高影响能力仍应由上层显式提供批准或 Commit Gate 证据。

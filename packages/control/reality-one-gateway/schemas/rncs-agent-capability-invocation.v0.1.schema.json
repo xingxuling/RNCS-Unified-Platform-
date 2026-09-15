@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/rncs-agent-capability-invocation.v0.1.schema.json",
+  "title": "RNCS Agent Capability Invocation v0.1",
+  "type": "object",
+  "required": ["format", "capability_id", "actor", "inputs"],
+  "properties": {
+    "format": {"const": "rncs.agent-capability-invocation.v0.1"},
+    "capability_id": {"type": "string"},
+    "actor": {
+      "type": "object",
+      "required": ["subject_id", "scopes"],
+      "properties": {
+        "subject_id": {"type": "string"},
+        "scopes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "additionalProperties": true
+    },
+    "goal_ref": {"type": ["string", "null"]},
+    "inputs": {"type": "object"},
+    "constraints": {"type": "array"},
+    "dry_run": {"type": "boolean"},
+    "allow_unstable": {"type": "boolean"},
+    "request_id": {"type": "string"},
+    "idempotency_key": {"type": "string"},
+    "expected_effect": {"type": "string"},
+    "approval": {"type": "object"},
+    "commit_gate": {"type": "object"},
+    "timeout_ms": {"type": "integer", "minimum": 1}
+  },
+  "additionalProperties": true
+}
