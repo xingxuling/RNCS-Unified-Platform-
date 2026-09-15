@@ -1,5 +1,5 @@
 {
-  "format": "dml.local-host-policy.v0.3",
+  "format": "dml.local-host-policy.v0.4",
   "allowed_actions": [
     "dml.goal.create",
     "dml.goal.pause",
@@ -16,14 +16,45 @@
     "dml.system.pause",
     "dml.system.resume",
     "dml.message.send",
-    "dml.project.select"
+    "dml.project.select",
+    "dml.device.inspect",
+    "dml.device.process.list",
+    "dml.device.app.launch",
+    "dml.device.command.run",
+    "dml.device.url.open"
   ],
   "max_risk": "high",
   "require_reversible_above": "medium",
   "strip_remote_identity": true,
   "allow_unmapped_project_inspection": false,
+  "allow_process_list": true,
+  "allow_open_url": true,
   "project_roots": {
     "project:vsr": "C:/Your/Projects/VSR",
     "project:reality-studio": "C:/Your/Projects/RealityStudio"
+  },
+  "allowed_apps": {
+    "vscode": {
+      "executable": "C:/Users/YOU/AppData/Local/Programs/Microsoft VS Code/Code.exe",
+      "args": []
+    },
+    "terminal": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": []
+    }
+  },
+  "command_profiles": {
+    "rncs-status": {
+      "executable": "C:/Program Files/nodejs/node.exe",
+      "args": ["C:/Your/Projects/RNCS/scripts/status.mjs"],
+      "cwd": "C:/Your/Projects/RNCS",
+      "timeout_ms": 30000
+    },
+    "build-current-project": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": ["-NoProfile", "-File", "C:/Your/Scripts/build-current-project.ps1"],
+      "cwd": "C:/Your/Projects",
+      "timeout_ms": 120000
+    }
   }
 }
