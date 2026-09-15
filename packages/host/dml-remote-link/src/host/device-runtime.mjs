@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn, execFile } from 'node:child_process';
@@ -10,20 +11,15 @@ function finite(value, fallback = 0) {
   return Number.isFinite(Number(value)) ? Number(value) : fallback;
 }
 
-function cpuSnapshot() {
+function cpuTotals() {
   const cpus = os.cpus() || [];
-  const total = cpus.reduce((acc, cpu) => {
-    for (const value of Object.values(cpu.times || {})) acc += finite(value);
-    return acc;
-  }, 0);
-  const idle = cpus.reduce((acc, cpu) => acc + finite(cpu.times?.idle), 0);
-  return {
-    logical_count: cpus.length,
-    model: cpus[0]?.model || null,
-    average_mhz: cpus.length ? Math.round(cpus.reduce((a, c) => a + finite(c.speed), 0) / cpus.length) : null,
-    cumulative_busy_ratio: total > 0 ? Math.max(0, Math.min(1, 1 - idle / total)) : null,
-    load_average: os.loadavg(),
-  };
+  let total = 0;
+  let idle = 0;
+  for (const cpu of cpus) {
+    for (const value of Object.values(cpu.times || {})) total += finite(value);
+    idle += finite(cpu.times?.idle);
+  }
+  return { total, idle, cpus };
 }
 
 function networkSummary() {
@@ -35,16 +31,48 @@ function networkSummary() {
   return out;
 }
 
+function storageSummary() {
+  try {
+    const root = path.parse(process.cwd()).root || '/';
+    const info = fs.statfsSync(root);
+    const blockSize = finite(info.bsize, 1);
+    const total = finite(info.blocks) * blockSize;
+    const available = finite(info.bavail) * blockSize;
+    return {
+      root,
+      total_bytes: total,
+      available_bytes: available,
+      used_bytes: Math.max(0, total - available),
+      used_ratio: total > 0 ? Math.max(0, Math.min(1, (total - available) / total)) : null,
+    };
+  } catch (error) {
+    return { status: 'unavailable', error: error?.code || error?.name || 'STATFS_FAILED' };
+  }
+}
+
 export class DesktopDeviceRuntime {
   constructor(policy = {}) {
     this.policy = policy;
     this.startedAt = Date.now();
+    this.lastCpu = cpuTotals();
+    this.cachedSnapshot = null;
+    this.cachedAt = 0;
   }
 
   snapshot() {
+    const nowMs = Date.now();
+    if (this.cachedSnapshot && nowMs - this.cachedAt < 500) return this.cachedSnapshot;
+
+    const cpuNow = cpuTotals();
+    const deltaTotal = Math.max(0, cpuNow.total - this.lastCpu.total);
+    const deltaIdle = Math.max(0, cpuNow.idle - this.lastCpu.idle);
+    const busyRatio = deltaTotal > 0 ? Math.max(0, Math.min(1, 1 - deltaIdle / deltaTotal)) : null;
+    this.lastCpu = cpuNow;
+
     const total = os.totalmem();
     const free = os.freemem();
-    return {
+    const cpus = cpuNow.cpus;
+    const snapshot = {
       format: 'dml.device-projection.v0.4',
       captured_at: now(),
       platform: process.platform,
@@ -60,7 +88,15 @@ export class DesktopDeviceRuntime {
         used_bytes: Math.max(0, total - free),
         used_ratio: total > 0 ? Math.max(0, Math.min(1, (total - free) / total)) : null,
       },
-      cpu: cpuSnapshot(),
+      storage: storageSummary(),
+      cpu: {
+        logical_count: cpus.length,
+        model: cpus[0]?.model || null,
+        average_mhz: cpus.length ? Math.round(cpus.reduce((a, c) => a + finite(c.speed), 0) / cpus.length) : null,
+        busy_ratio: busyRatio,
+        load_average: os.loadavg(),
+        sampling: busyRatio === null ? 'warming' : 'delta-since-previous-snapshot',
+      },
       network_interfaces: networkSummary(),
       capabilities: {
         inspect: true,
@@ -70,6 +106,9 @@ export class DesktopDeviceRuntime {
         open_url: this.policy.allow_open_url === true,
       },
     };
+    this.cachedSnapshot = snapshot;
+    this.cachedAt = nowMs;
+    return snapshot;
   }
 
   async execute(action) {

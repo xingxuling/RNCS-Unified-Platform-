@@ -1,0 +1,14 @@
+{
+  "schema": "dml.tao-mobile-device-profile.v0.4",
+  "mobile_scopes": ["dml.read", "dml.goal.*", "dml.device.*"],
+  "device_actions": [
+    "dml.device.inspect",
+    "dml.device.process.list",
+    "dml.device.app.launch",
+    "dml.device.command.run",
+    "dml.device.url.open"
+  ],
+  "policy": "Relay grant permits request; local Host Policy remains final authority.",
+  "forbidden": ["raw shell from model text", "unmapped executable", "non-http URL", "identity escalation"],
+  "evidence": ["signed queued action", "host execution receipt", "projection"]
+}
