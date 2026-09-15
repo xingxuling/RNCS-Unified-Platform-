@@ -7,6 +7,7 @@ import { now, sleep } from '../shared/canonical.mjs';
 import { HostState } from './state.mjs';
 import { enforceHostPolicy, loadHostPolicy } from './policy.mjs';
 import { pairHost, signedHostRequest } from './transport.mjs';
+import { DesktopDeviceRuntime } from './device-runtime.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(here, '../..');
@@ -23,6 +24,7 @@ export class DMLLocalHost {
     this.policy = loadHostPolicy(policyFile);
     this.dmlStateDir = path.resolve(dmlStateDir || path.join(this.state.root, 'dml-core'));
     this.runtime = new DMLRuntime({ stateDir: this.dmlStateDir });
+    this.deviceRuntime = new DesktopDeviceRuntime(this.policy);
     this.pollWaitSeconds = pollWaitSeconds;
     this.heartbeatMs = heartbeatMs;
     this.running = false;
@@ -40,8 +42,9 @@ export class DMLLocalHost {
       hostId: resolvedHostId,
       publicKeyPem: state.keys.publicKeyPem,
       metadata: {
-        runtime: 'dml.local-host.v0.3',
+        runtime: 'dml.local-host.v0.4',
         hnac_execution_fabric: '0.8.0',
+        device_runtime: 'dml.desktop-device-runtime.v0.4',
         platform: process.platform,
         arch: process.arch,
         hostname: os.hostname(),
@@ -49,7 +52,7 @@ export class DMLLocalHost {
       },
     });
     state.saveConfig({
-      format: 'dml.local-host-config.v0.3',
+      format: 'dml.local-host-config.v0.4',
       relay_url: relayUrl,
       session_id: sessionId,
       host_id: resolvedHostId,
@@ -76,12 +79,22 @@ export class DMLLocalHost {
     });
   }
 
+  project() {
+    return {
+      format: 'dml.remote-host-projection.v0.4',
+      projected_at: now(),
+      dml: this.runtime.project(),
+      device: this.deviceRuntime.snapshot(),
+    };
+  }
+
   health() {
     return {
       status: this.running ? 'online' : 'idle',
-      protocol: 'dml.local-host.v0.3',
+      protocol: 'dml.local-host.v0.4',
       hnac_execution_fabric: '0.8.0',
       dml_core: this.runtime.health(),
+      device: this.deviceRuntime.snapshot(),
       state_dir: this.state.root,
       dml_state_dir: this.dmlStateDir,
       package_root: packageRoot,
@@ -95,10 +108,10 @@ export class DMLLocalHost {
     return this.signed('/host/heartbeat', {
       method: 'POST',
       body: {
-        format: 'dml.remote-heartbeat.v0.3',
+        format: 'dml.remote-heartbeat.v0.4',
         sent_at: now(),
         health: this.health(),
-        projection: this.runtime.project(),
+        projection: this.project(),
       },
     });
   }
@@ -114,10 +127,15 @@ export class DMLLocalHost {
     let execution;
     let projection;
     try {
-      execution = this.runtime.execute(envelope.action, envelope.options || {});
-      projection = execution.projection || this.runtime.project();
+      if (String(envelope.action?.type || '').startsWith('dml.device.')) {
+        execution = await this.deviceRuntime.execute(envelope.action);
+      } else {
+        execution = await this.runtime.execute(envelope.action, envelope.options || {});
+      }
+      projection = this.project();
+      execution = { ...execution, projection };
     } catch (error) {
-      projection = this.runtime.project();
+      projection = this.project();
       execution = {
         status: 'error',
         error: { code: error.code || 'DML_EXECUTION_FAILED', message: error.message || String(error) },
