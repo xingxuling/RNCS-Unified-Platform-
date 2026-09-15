@@ -1,0 +1,36 @@
+reality RncsAgentCapabilityGate {
+  facet request.capability_id : Text = "unselected"
+  facet request.readiness : Text = "blocked"
+  facet request.expected_effect : Text = "READ_ONLY"
+  facet request.authorized : Truth = false
+  facet result.status : Text = "idle"
+  facet result.authoritative_changed : Truth = false
+
+  subject agent {
+    warrant rncs.capability.invoke on gateway
+  }
+
+  knowledge contract {
+    claim simulation_is_not_commit : Truth = true
+      confidence 1.0
+      evidence "rncs-agent-capability-contract:v0.1"
+      source "gateway:capability-registry"
+      scope "rncs"
+      status observed
+    preserve supported(contract.simulation_is_not_commit, 1.0)
+  }
+
+  emergence invoke_capability {
+    cause agent
+    when request.capability_id != "unselected" and request.readiness == "ready" and request.authorized
+    needs rncs.capability.invoke on gateway
+    alter result.status <- "invoked"
+    preserve request.expected_effect != "AUTHORITATIVE" or result.authoritative_changed
+    witness "reality-one.invocation-receipt.v0.3"
+    witness "rncs.agent-capability-result.v0.1"
+  }
+
+  learn contract
+  foresee invoke_capability
+  realize invoke_capability
+}
