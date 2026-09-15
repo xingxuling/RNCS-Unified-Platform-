@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/rncs-agent-capability.v0.1.schema.json",
+  "title": "RNCS Agent Capability Contract v0.1",
+  "type": "object",
+  "required": [
+    "format", "capability_id", "runtime_id", "action", "standard_verb",
+    "effect_class", "readiness", "authority", "evidence", "reversibility"
+  ],
+  "properties": {
+    "format": {"const": "rncs.agent-capability.v0.1"},
+    "capability_id": {"type": "string", "minLength": 3},
+    "runtime_id": {"type": "string", "pattern": "^rncs\\."},
+    "runtime_version": {"type": "string"},
+    "action": {"type": "string", "minLength": 1},
+    "title": {"type": "string"},
+    "semantic_role": {"type": "string"},
+    "standard_verb": {
+      "enum": ["inspect", "discover", "validate", "simulate", "compare", "propose", "authorize", "execute", "commit", "project", "replay", "reconcile", "rollback"]
+    },
+    "effect_class": {
+      "enum": ["READ_ONLY", "SIMULATION", "PROVISIONAL", "AUTHORIZED", "AUTHORITATIVE", "PROJECTION", "NETWORK_STATE"]
+    },
+    "readiness": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["ready", "experimental", "partial", "unavailable", "blocked"]},
+        "reason": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "authority": {
+      "type": "object",
+      "required": ["mode"],
+      "properties": {
+        "mode": {"enum": ["none", "scope", "explicit-approval", "commit-gate"]},
+        "required_scopes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "approval_roles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "policy_runtime": {"type": "string"},
+        "decision_action": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["gateway_receipt"],
+      "properties": {
+        "gateway_receipt": {"type": "boolean"},
+        "domain_receipts": {"type": "array", "items": {"type": "string"}},
+        "required_roots": {"type": "array", "items": {"type": "string"}},
+        "ledger_target": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "reversibility": {
+      "type": "object",
+      "required": ["class"],
+      "properties": {
+        "class": {"enum": ["none-needed", "replayable", "rollback-supported", "irreversible", "unknown"]},
+        "rollback_capability_id": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "dependencies": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "aliases": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "input_schema_ref": {"type": ["string", "null"]},
+    "output_schema_ref": {"type": ["string", "null"]},
+    "preconditions": {"type": "array", "items": {"type": "string"}},
+    "postconditions": {"type": "array", "items": {"type": "string"}},
+    "failure_modes": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
