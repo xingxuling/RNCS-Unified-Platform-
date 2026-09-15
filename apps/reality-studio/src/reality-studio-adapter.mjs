@@ -1476,7 +1476,7 @@ export class RealityStudioAdapter {
 
   async _dispatchPlayerCommand(payload = {}) {
     const playerId = this._requireJoinedPlayer(payload.player_id);
-    const command = clone(payload.command ?? {});
+    const command = clone(payload.player_command ?? payload.network_command ?? payload.command ?? {});
     const commandType = String(command.type ?? '');
     if (!['move', 'jump', 'impulse'].includes(commandType)) {
       fail('STUDIO_PLAYER_COMMAND_UNSUPPORTED', `Network RSR accepts move, jump, or impulse; received ${commandType || 'empty command'}`, {

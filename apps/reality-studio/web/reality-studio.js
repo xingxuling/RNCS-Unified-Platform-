@@ -731,7 +731,7 @@ function sendGameInput(code) {
 
 function sendPlayerCommand(command) {
   const playerId = state?.game_capabilities?.controls?.player_command?.default_player_id ?? state?.controls?.player_command?.default_player_id ?? null;
-  return sendCommand('player-command', { player_id: playerId, command });
+  return sendCommand('player-command', { player_id: playerId, player_command: command });
 }
 
 document.addEventListener('click', event => {

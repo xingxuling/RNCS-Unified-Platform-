@@ -3,7 +3,7 @@
 Recorded: 2026-09-15
 Checkout: `C:\Users\User\Documents\RCL\_worktrees\rncs-visual-factory-v01`
 Branch: `codex/rncs-engine-stack-archaeology-v01`
-Baseline before this pass: `3177646d feat(reality-studio): position shell as game world engine`
+Baseline before this pass: `12bfa8fc feat(reality-studio): expose real game capability surfaces`
 GitHub Actions used: `false`
 
 ## Visual baseline and honest generation status
@@ -65,6 +65,15 @@ Observed local runtime evidence from the real Studio fixture:
 
 The corresponding evidence entries are `game-input-profile`, `game-spatial-preview`, `game-character-controllers`, `game-animation-sequence` and `game-asset-streaming`. The spatial and animation entries are explicitly non-canonical/presentation or preview evidence.
 
+## Usability correction — formal entry point and player command wire path
+
+The first browser check against the user's normal `http://127.0.0.1:17608/` entry found two concrete problems:
+
+- The long-running 17608 Node process had loaded the previous Adapter module, so the updated UI rendered `Network player command unavailable` even though the source had the new projection. The process was restarted on the same official port; no alternate port is required for the current source.
+- The Player Test jump button originally serialized the nested player command under the same JSON key as the outer Adapter command selector. The server therefore received an object as its Adapter command name and returned `500 STUDIO_ADAPTER_COMMAND_UNKNOWN`. The nested wire field is now `player_command`, while the outer field remains `command`.
+
+Regression coverage now posts `{ command: 'player-command', player_command: { type: 'jump' } }` through the actual HTTP server route and requires HTTP `200`, Tick `2` and a synchronized client after a preceding move. This keeps the failure visible as a test rather than relying on visual inspection alone.
+
 ## Browser evidence
 
 Verifier: local Python Playwright Chromium fallback; built-in Browser channel was unavailable.
@@ -78,6 +87,11 @@ Screenshots:
 - `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-game-capabilities\game-capabilities-after-player-input.png`
 - `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-game-capabilities\game-capabilities-asset-stream-failed.png`
 - `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-game-capabilities\game-capabilities-browser-verified.png`
+- `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-debug\17608-stale-adapter-before-fix.png`
+- `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-debug\17608-final-initial.png`
+- `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-debug\17608-final-player-controls.png`
+- `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-debug\17608-final-asset-failure.png`
+- `C:\Users\User\.codex\visualizations\2026\09\15\rncs-reality-studio-debug\17608-final-mobile.png`
 
 Observed at 1680×946:
 
@@ -88,6 +102,7 @@ Observed at 1680×946:
 - Run 6 ticks, isolated Behavior + Network Replay, propose candidate, authorize, then local commit all completed through the live Adapter path.
 - After local commit, Gate reads `本地候选已提交`; production promotion remains `production promotion unavailable`.
 - The real Game Systems rail exposes Input, Spatial Bodies, Character Control, Animation Tracks and Asset Streaming. Player Test `D` advanced the authoritative Network RSR tick from `0` to `1`; the Input Inspector showed the real frame root.
+- On the formal 17608 entry, Player Test `JUMP` returned HTTP `200` and advanced the authoritative Tick from `1` to `2`; the previous `500 STUDIO_ADAPTER_COMMAND_UNKNOWN` wire collision is no longer reproducible.
 - Asset Streaming was opened through the real Inspector action and reported `失败` with `GAP_GAME_ASSET_STREAM_PAYLOAD_CACHE`; no ready/cache success was rendered.
 - Page errors during the verified path: `0`.
 
@@ -129,6 +144,7 @@ Intentional deviations: the generated future-style concept could not be produced
 - Current real Studio path is a local deterministic loopback runtime; public WAN/WebSocket/UDP/QUIC/WebRTC/TLS/relay transport remains unavailable.
 - Production deployment and external authority/key custody remain unavailable.
 - Cross-workflow `game-dev` orchestration is not claimed: the local `game-dev` CLI is not installed (`NOT_FOUND`).
+- The current Studio fixture is now interactive through the exposed real control path, but it is still not a complete game authoring/runtime product: keyboard hold loop, scene/project persistence, broader game content authoring, asset cache payload availability and production server transport remain open work.
 - CPU, memory, GPU and FPS provider metrics are unavailable from the current Adapter API.
 - Agent Hub, global search, open/save persistence and independent graph camera APIs remain unavailable.
 - Canonical combined Behavior + Network tick/receipt ownership remains an RCL/RNCS gap; current integrated replay is isolated candidate evidence.

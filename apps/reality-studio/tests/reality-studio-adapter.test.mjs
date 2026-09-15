@@ -159,7 +159,7 @@ test('Reality Studio exposes real game input, player commands, preview stepping,
   assert.ok(input.event_tail.some(event => event.type === 'game.input-dispatched' && event.details.active_actions.includes('move_right')));
   assert.ok(input.runtime.transport.sent > 0);
 
-  const player = await session.command('player-command', { player_id: 'blue', command: { type: 'jump' } });
+  const player = await session.command('player-command', { player_id: 'blue', player_command: { type: 'jump' } });
   assert.equal(player.runtime.tick, 2);
   assert.equal(player.runtime.clients.blue.syncStatus, 'synchronized');
   assert.ok(player.runtime.transport.sent > input.runtime.transport.sent);
