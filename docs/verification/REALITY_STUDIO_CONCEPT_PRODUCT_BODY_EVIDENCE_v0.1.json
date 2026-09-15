@@ -48,6 +48,16 @@
       "area": "reference palette and short desktop fit",
       "outcome": "reference-image navy/cyan palette, a height-aware desktop composition, and full-frame VSR contain sizing",
       "truth_source": "CSS-only Product Body projection; status semantic colors and VSR pixels remain Adapter/runtime supplied"
+    },
+    {
+      "area": "graph interaction and branch context",
+      "outcome": "real Reality Branch rows are rendered as an evaluated candidate rail; typed SVG arrows and related-edge emphasis make the existing graph path legible; zoom, fit and grid controls are explicitly projection-only",
+      "truth_source": "Adapter graph.edges, graph.branch_rows, recommended_branch_id and commit_gate; local controls never write Runtime state"
+    },
+    {
+      "area": "auditable console",
+      "outcome": "backend event rows use concise data-derived summaries and a real local filter while raw details remain available for traceability",
+      "truth_source": "Adapter event_tail and event.details; no synthesized log entries"
     }
   ],
   "runtime_probe": {
@@ -56,6 +66,9 @@
       "runtime_status": "healthy",
       "replay_control_disabled": true,
       "node_count": 14,
+      "branch_evaluation_rows": 3,
+      "graph_edge_count": 16,
+      "graph_edge_markers": 16,
       "vsr_viewport_natural_size": [640, 360],
       "viewport_status": "VERIFIED"
     },
@@ -73,10 +86,15 @@
       "viewport": [1680, 946],
       "http_status": 200,
       "graph_nodes": 14,
-      "graph_bounds": {"width": 1066, "height": 421},
+      "graph_bounds": {"width": 1066, "height": 447},
       "inspector_bounds": {"width": 388, "height": 846},
-      "viewport_bounds": {"width": 672.609375, "height": 260},
+      "viewport_bounds": {"width": 672.609375, "height": 258},
       "expanded_viewport_bounds": {"width": 1074, "height": 806},
+      "branch_evaluation_cards": 3,
+      "graph_edge_count": 16,
+      "graph_edge_markers": 16,
+      "console_summary": true,
+      "console_search": "PASS",
       "console_page_request_errors": 0
     },
     "mobile": {
@@ -110,21 +128,25 @@
       "target_url": "http://127.0.0.1:17608/",
       "meaning": "A raw HTML file does not create or imitate an RNCS Runtime session."
     },
-    "screenshots": [
+      "screenshots": [
       "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\concept-product-body-desktop.png",
       "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\concept-product-body-desktop-after-replay.png",
       "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\concept-product-body-desktop-expanded.png",
       "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\concept-product-body-mobile.png",
       "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\file-entry-guidance.png",
       "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\reference-palette-desktop-final-fit.png",
-      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\reference-palette-short-desktop-final-fit.png"
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\reference-palette-short-desktop-final-fit.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\product-pass-console-summary.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\product-pass-short-desktop.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\product-pass-mobile.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\product-pass-runtime-path-committed-local.png"
     ]
   },
   "verification": [
     {
       "name": "Reality Studio adapter/server/web focused tests",
       "result": "PASS",
-      "passed": 16,
+      "passed": 17,
       "failed": 0
     },
     {
@@ -164,5 +186,5 @@
       "geometric-truth evidence directory"
     ]
   },
-  "ledger_payload_root": "a2742bfd2323b994b92b161b095fea722d1ad6260e9f2897cafab31611e78d4d"
+  "ledger_payload_root": "9bed1507b200cb90d45887b17a09187a66f06a464f1be31645aa6df4a1669db7"
 }

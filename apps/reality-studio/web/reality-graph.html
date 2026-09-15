@@ -98,7 +98,7 @@
               <div><h1 id="workspaceHeading">Reality Graph</h1><p id="workspaceMeta">请通过 http://127.0.0.1:17608/ 打开；file:// 无法连接 Runtime API。</p></div>
               <span class="live-badge is-candidate" id="liveBadge"><span class="status-dot is-candidate"></span>需要服务</span>
             </div>
-            <div class="workspace-header-actions"><button class="square-button" aria-label="刷新" data-command="refresh">↻</button><button class="square-button" aria-label="聚焦图" data-command="focus">⌗</button><button class="zoom-readout">100%</button></div>
+            <div class="workspace-header-actions"><button class="square-button" aria-label="刷新真实状态" data-command="refresh">↻</button><button class="square-button" aria-label="适配 Reality Graph 投影视图" data-action="focus-graph" title="仅调整 Product Body 画布，不改写 RNCS 状态">⌗</button><span class="projection-badge">PROJECTION</span></div>
           </div>
           <div class="workspace-status-strip" id="workspaceStatusStrip" aria-label="Reality status summary">
             <div class="status-signal"><span class="status-signal-label">RUNTIME</span><strong id="statusRuntimeValue">—</strong><small id="statusRuntimeMeta">—</small></div>
@@ -112,7 +112,7 @@
         <section class="graph-panel panel-surface">
           <div class="panel-toolbar graph-toolbar">
             <div class="graph-toolbar-left"><div class="graph-context"><span class="graph-context-kicker">REALITY GRAPH</span><strong>Authoritative → Candidate → Promotion</strong></div><div class="panel-tabs"><button class="panel-tab is-active">Reality Graph</button><button class="panel-tab is-muted" data-unavailable>场景视图</button><button class="panel-tab is-muted" data-unavailable>仿真配置</button><button class="panel-tab is-muted" data-unavailable>代码编辑器</button><button class="panel-tab panel-tab-add" data-unavailable>＋</button></div></div>
-            <div class="graph-toolbar-actions"><span class="tool-hint" id="graphHint">节点位置是产品投影；节点状态来自后端</span><button class="square-button" data-command="refresh">⌁</button><button class="square-button" data-command="focus">⌖</button></div>
+            <div class="graph-toolbar-actions"><span class="tool-hint" id="graphHint">节点位置是产品投影；节点状态来自后端</span><div class="graph-view-controls" aria-label="Reality Graph 投影视图控制"><button class="square-button" data-action="zoom-out" aria-label="缩小画布" title="仅调整 Product Body 画布">−</button><span class="zoom-readout" id="graphZoomReadout" aria-label="当前画布缩放">100%</span><button class="square-button" data-action="zoom-in" aria-label="放大画布" title="仅调整 Product Body 画布">＋</button><button class="square-button" data-action="toggle-grid" aria-label="切换网格" title="仅调整 Product Body 网格显示">▦</button><button class="square-button" data-command="refresh" aria-label="刷新真实状态">⌁</button><button class="square-button" data-action="focus-graph" aria-label="适配画布" title="仅调整 Product Body 画布，不改写 RNCS 状态">⌖</button></div></div>
           </div>
           <div class="graph-canvas" id="graphCanvas">
             <div class="graph-grid"></div>
@@ -120,8 +120,19 @@
             <div class="graph-zone graph-zone-output"><span>OUTPUT &amp; APPLICATION</span><small>verified projection</small></div>
             <div class="graph-layer graph-layer-authoritative"><span class="graph-layer-label">Authoritative Reality</span><small>RNCS Runtime · RSR authority</small></div>
             <div class="graph-layer graph-layer-candidate"><span class="graph-layer-label">Candidate Reality</span><small>Behavior Fabric · branch evaluation</small></div>
-            <div class="graph-layer graph-layer-promotion"><span class="graph-layer-label">Commit / Promotion Path</span><small>Explicit authority · production unavailable unless connected</small></div>
-            <svg class="graph-edges" id="graphEdges" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+            <div class="graph-layer graph-layer-promotion"><span class="graph-layer-label">Commit / Promotion Path</span><small>Explicit authority · production unavailable unless connected</small><div class="graph-promotion-status" id="graphPromotionStatus">等待真实 Gate 状态…</div></div>
+            <div class="graph-branch-rail" id="graphBranchRail" aria-label="后端 Reality Branch 评估"><span class="graph-rail-empty">等待真实 Branch Evaluation…</span></div>
+            <svg class="graph-edges" id="graphEdges" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <marker id="graph-arrow-source" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 10 5 L 0 10 z" fill="#56b6e4"></path></marker>
+                <marker id="graph-arrow-projection" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 10 5 L 0 10 z" fill="#55caf6"></path></marker>
+                <marker id="graph-arrow-runtime" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5eecc7"></path></marker>
+                <marker id="graph-arrow-candidate" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f1b35c"></path></marker>
+                <marker id="graph-arrow-authority" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b595f2"></path></marker>
+                <marker id="graph-arrow-evidence" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 10 5 L 0 10 z" fill="#d1a2ff"></path></marker>
+                <marker id="graph-arrow-unavailable" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 10 5 L 0 10 z" fill="#536e79"></path></marker>
+              </defs>
+            </svg>
             <div class="graph-nodes" id="graphNodes"><div class="graph-loading graph-loading-entry"><strong>需要本地 Reality Studio 服务</strong><span>直接打开 HTML 不包含 Runtime API，也不会显示假节点或假状态。</span><a href="http://127.0.0.1:17608/">打开 http://127.0.0.1:17608/</a></div></div>
             <div class="graph-legend"><span><i class="legend-line legend-source"></i>数据流</span><span><i class="legend-line legend-runtime"></i>运行时</span><span><i class="legend-line legend-candidate"></i>候选</span><span><i class="legend-line legend-evidence"></i>Evidence</span><span><i class="legend-line legend-unavailable"></i>Unavailable</span></div>
           </div>
@@ -130,7 +141,7 @@
         <section class="lower-grid">
           <div class="console-panel panel-surface">
             <div class="panel-toolbar console-toolbar"><div class="panel-tabs console-tabs"><button class="panel-tab is-active" data-console="logs">运行日志</button><button class="panel-tab" data-console="events">事件流</button><button class="panel-tab" data-console="issues">问题</button><button class="panel-tab" data-console="performance">性能分析</button><button class="panel-tab" data-console="receipts">Receipts</button></div><button class="square-button" data-command="refresh">↻</button></div>
-            <div class="console-filter"><span class="filter-chip">后端事件</span><span class="filter-chip">全部模块</span><span class="filter-search">⌕ <span>搜索真实日志…</span></span></div>
+            <div class="console-filter"><span class="filter-chip">后端事件</span><span class="filter-chip">全部模块</span><label class="filter-search" for="consoleSearch"><span aria-hidden="true">⌕</span><input id="consoleSearch" type="search" placeholder="搜索真实日志…" aria-label="搜索真实后端日志"></label></div>
             <div class="console-content" id="consoleContent"><div class="empty-state">等待后端事件…</div></div>
           </div>
           <div class="viewport-panel panel-surface">

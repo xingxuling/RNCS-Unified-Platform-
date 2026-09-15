@@ -257,3 +257,43 @@ RNCS Unified Session
 本地 Playwright `1920×680` 证据：HTTP `200`、14 个 Adapter 节点、`scrollHeight=680`、无纵向溢出、Viewport `826×175`、Frame `814×106`、真实 verified 图像 box 在 frame 内、无 console/page error。标准桌面 `1680×946` 同样通过，真实 VSR 图像完整可见。截图：[标准桌面](C:/Users/User/.codex/visualizations/2026/09/15/rncs-reality-studio/reference-palette-desktop-final-fit.png)、[短屏桌面](C:/Users/User/.codex/visualizations/2026/09/15/rncs-reality-studio/reference-palette-short-desktop-final-fit.png)。
 
 回归：`node --check web/reality-studio.js`、Adapter / Server / Web focused suite `16/16 PASS`、`git diff --check PASS`（只输出既有 CRLF 提示）。这轮没有修改任何 Runtime、Canonical owner 或真实 API；未接入能力仍保持 unavailable/experimental 边界。
+
+## 13. 概念图级交互与审计窗产品化（2026-09-15）
+
+本轮继续以参考概念图作为 Product Body 的 UI/UX 基线，但只消费当前 Adapter 的真实响应。重点不是增加一批“像节点”的装饰，而是让现有真实路径在产品界面中可读、可操作、可追溯。
+
+### 变化与真实来源
+
+| 区域 | 改动 | 真实性边界 |
+| --- | --- | --- |
+| Reality Graph | `projection` edges 增加类型颜色与 SVG 箭头；选中节点时由真实 `graph.edges` 推导相关链路高亮；候选区直接显示 `graph.branch_rows` 的 3 条 Reality Branch 评估与推荐分支 | 不新增 graph node，不复制 Branch Fabric；卡片 score/eligibility/recommended 全来自 Adapter |
+| Commit / Promotion | 图层内增加 Gate 摘要，显示真实 Gate 状态、待处理 check 数和 local/production 边界 | production promotion 仍由后端明确返回 unavailable，不因视觉状态变成可用 |
+| 投影视图控制 | 增加 zoom in/out、fit、grid toggle；状态只保存在浏览器 Product Body projection，按钮 tooltip 明确“不改写 RNCS 状态” | 不修改 canonical state、Runtime tick、selection 或 Evidence root |
+| Logs | 后端事件由完整 JSON 改为关键标量 + 短 root 摘要；完整 `event.details` 保留在 row title，其他 Evidence/Inspector 仍可追溯 | 没有压缩或篡改事件事实；没有新增日志 |
+| Logs search | `consoleSearch` 对真实 `event_tail` 做本地筛选 | 仅筛选当前 Session 已返回的数据，不冒充跨资源/全局索引 |
+
+### 浏览器证据
+
+- 本地 Python Playwright（Browser plugin 不可用）桌面 `1680×946`：HTTP `200`、14 nodes、16 edges、16 edge markers、3 branch cards、真实 VSR `VERIFIED`、无 page/console error。
+- 交互路径：zoom `100%→110%`、grid off、fit 回 `100%`、点击 `RSR Runtime` 后真实 Inspector/导航同步，Run 到 tick `6`，Replay `verified` 且 `active runtime unchanged=true` / `canonical state mutated=false`；Candidate propose → authorize → local commit 后 Gate 为 `candidate-committed`，production promotion 仍 `UNAVAILABLE`。
+- 日志摘要首行高度 `38px`，真实搜索 `viewport` 将日志过滤到 2 行；没有把完整 JSON 挤成不可读的长列。
+- 短桌面 `1920×680`：document `scrollHeight=680`、无纵向溢出、Graph `1308×326`、Viewport `826×175`、Frame `814×106`、真实帧仍在 frame 内。
+- 移动 `390×844`：document/body `scrollWidth=390`、单列 lower layout、14 nodes、真实 VSR VERIFIED、无横向溢出。
+- 截图：[产品化图与真实分支](C:/Users/User/.codex/visualizations/2026/09/15/rncs-reality-studio/product-pass-console-summary.png)、[短屏桌面](C:/Users/User/.codex/visualizations/2026/09/15/rncs-reality-studio/product-pass-short-desktop.png)、[移动](C:/Users/User/.codex/visualizations/2026/09/15/rncs-reality-studio/product-pass-mobile.png)、[真实本地提交路径](C:/Users/User/.codex/visualizations/2026/09/15/rncs-reality-studio/product-pass-runtime-path-committed-local.png)。参考图仍为视觉基线：[reference](C:/Users/User/Downloads/ChatGPT%20Image%202026%E5%B9%B49%E6%9C%8815%E6%97%A5%20%E4%B8%8A%E5%8D%8801_27_59.png)。
+
+### 本轮验证与缺口
+
+- `node --check apps/reality-studio/web/reality-studio.js`：`PASS`。
+- Adapter / Server / Web focused suite：`17/17 PASS`。
+- `@taowind/reality-network-runtime`：`31/31 PASS`（已有能力回归）。
+- `@taowind/reality-studio-native` 与 `world-body-studio-bridge` 的既有 sparse worktree / geometric-truth evidence blockers 未触碰、未伪装成通过。
+- 未完成：真实全局 search index、open/save persistence、独立 camera state、Agent Hub、CPU/memory/GPU/FPS provider、外部 transport、production authority，以及 Canonical combined-tick owner。
+
+### REUSE / ADAPT / KEEP_SEPARATE 裁决
+
+- `REUSE`：Reality Branch rows、Commit Gate、VSR/RSR viewport、event/evidence roots 和所有现有 Runtime command API。
+- `ADAPT`：Reality Studio JS 只把真实 edge/branch/event payload 投影成可读的产品层交互。
+- `KEEP_SEPARATE`：zoom/grid/fit、搜索过滤、摘要排版、SVG marker 与 canonical RNCS semantics。
+- No Silent RCL Bypass：没有新增 primitive 或迁移 owner；本轮压力样本继续映射 `CORRECT / ROBUST / EVIDENCE`，不自行宣布 K400 总体 PASS。
+
+下一轮最高杠杆仍是：在不复制 Runtime 的前提下，等待/取得真实 camera/search/persistence owner contract；并继续保持 `unavailable / experimental` 的缺口可见。

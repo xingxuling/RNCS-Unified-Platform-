@@ -6,8 +6,11 @@ let viewportDataUrl = null;
 let viewportExpanded = false;
 let activeConsole = 'logs';
 let activeInspectorTab = 'properties';
+let consoleQuery = '';
 let toastTimer = null;
 let stateRevision = 0;
+let graphZoom = 1;
+let graphGridVisible = true;
 
 const STATUS_TEXT = {
   initializing: '初始化中',
@@ -46,6 +49,16 @@ const NODE_ICONS = {
   'authority-fabric': '⬢',
   'agent-hub': '♙',
 };
+
+const EDGE_MARKERS = Object.freeze({
+  source: 'graph-arrow-source',
+  projection: 'graph-arrow-projection',
+  runtime: 'graph-arrow-runtime',
+  candidate: 'graph-arrow-candidate',
+  authority: 'graph-arrow-authority',
+  evidence: 'graph-arrow-evidence',
+  unavailable: 'graph-arrow-unavailable',
+});
 
 function esc(value) {
   return String(value === undefined || value === null ? '—' : value)
@@ -290,15 +303,66 @@ function graphEdgePath(from, to) {
   return `M ${x1} ${y1} C ${x1} ${y1 + bend}, ${x2} ${y2 - bend}, ${x2} ${y2}`;
 }
 
+function applyGraphView() {
+  const canvas = $('#graphCanvas');
+  const edges = $('#graphEdges');
+  const nodes = $('#graphNodes');
+  if (!canvas || !edges || !nodes) return;
+  const transform = `scale(${graphZoom})`;
+  edges.style.transform = transform;
+  nodes.style.transform = transform;
+  edges.style.transformOrigin = '50% 50%';
+  nodes.style.transformOrigin = '50% 50%';
+  canvas.classList.toggle('is-grid-muted', !graphGridVisible);
+  const readout = $('#graphZoomReadout');
+  if (readout) readout.textContent = `${Math.round(graphZoom * 100)}%`;
+}
+
+function branchDisplayName(value) {
+  return String(value ?? 'branch').replace(/^branch:/, '').replaceAll('-', ' ');
+}
+
+function renderGraphBranchRail() {
+  const rail = $('#graphBranchRail');
+  if (!rail) return;
+  const rows = state.graph?.branch_rows ?? [];
+  const recommended = state.graph?.recommended_branch_id;
+  if (!rows.length) {
+    rail.innerHTML = '<span class="graph-rail-empty">当前没有后端 Branch Evaluation</span>';
+    return;
+  }
+  rail.innerHTML = `<div class="graph-rail-header"><span>REALITY BRANCH EVALUATION</span><span>${rows.length} evaluated</span></div><div class="graph-branch-list">${rows.map(row => {
+    const isRecommended = row.branch_id === recommended;
+    const eligibility = row.eligible ? 'ELIGIBLE' : 'INELIGIBLE';
+    return `<div class="graph-branch-chip${isRecommended ? ' is-recommended' : ''}${row.eligible ? '' : ' is-ineligible'}" title="${esc(`${row.branch_id} · simulation ${row.simulation_root ?? '—'} · state ${row.candidate_state_root ?? '—'}`)}"><span class="graph-branch-name">${esc(branchDisplayName(row.branch_id))}</span><strong>${esc(row.score ?? '—')}</strong><small>${eligibility}${isRecommended ? ' · RECOMMENDED' : ''}</small></div>`;
+  }).join('')}</div>`;
+}
+
+function renderGraphPromotionStatus() {
+  const element = $('#graphPromotionStatus');
+  if (!element) return;
+  const gate = state.commit_gate ?? {};
+  const productionReady = gate.production_promotion_permitted === true;
+  const localReady = gate.local_candidate_commit_ready === true;
+  const pending = (gate.checks ?? []).filter(check => ['required', 'unavailable'].includes(check.status)).length;
+  const status = productionReady ? 'PROMOTION READY' : localReady ? 'LOCAL COMMIT READY · PRODUCTION UNAVAILABLE' : `GATE ${statusText(gate.status).toUpperCase()}`;
+  const detail = productionReady ? 'external authority connected' : `${pending} gate check(s) pending · ${localReady ? 'local candidate path available' : 'local candidate path unavailable'}`;
+  element.innerHTML = `<span class="promotion-status-dot ${dotClass(gate.status)}"></span><strong>${esc(status)}</strong><small>${esc(detail)}</small>`;
+}
+
 function renderGraph() {
   const nodes = state.graph?.nodes ?? [];
   const edges = state.graph?.edges ?? [];
   const byId = new Map(nodes.map(node => [node.id, node]));
+  const selectedId = state.graph?.selected_node_id;
   $('#graphEdges').innerHTML = edges.map(edge => {
     const from = byId.get(edge.from)?.position;
     const to = byId.get(edge.to)?.position;
     if (!from || !to) return '';
-    return `<path class="graph-edge graph-edge-${esc(edge.kind)}" d="${graphEdgePath(from, to)}"></path>`;
+    const related = selectedId && (edge.from === selectedId || edge.to === selectedId);
+    const emphasis = related ? ' is-related' : selectedId ? ' is-dimmed' : '';
+    const marker = EDGE_MARKERS[edge.kind];
+    return `<path class="graph-edge graph-edge-${esc(edge.kind)}${emphasis}" data-from="${esc(edge.from)}" data-to="${esc(edge.to)}" d="${graphEdgePath(from, to)}"${marker ? ` marker-end="url(#${marker})"` : ''}></path>`;
   }).join('');
   $('#graphNodes').innerHTML = nodes.map(node => {
     const status = statusClass(node.status);
@@ -310,6 +374,9 @@ function renderGraph() {
       <span class="node-root">${esc(metrics || shortRoot(node.root))}</span>
     </button>`;
   }).join('');
+  renderGraphBranchRail();
+  renderGraphPromotionStatus();
+  applyGraphView();
 }
 
 function propertyRows(rows) {
@@ -390,13 +457,22 @@ function eventLevel(event) {
   return 'info';
 }
 
+function eventSummary(event) {
+  const details = event?.details ?? {};
+  const scalarEntries = Object.entries(details).filter(([, value]) => value === null || ['string', 'number', 'boolean'].includes(typeof value));
+  const simple = scalarEntries.filter(([key]) => !key.endsWith('_root') && !key.includes('hash')).slice(0, 3).map(([key, value]) => `${key}:${json(value)}`);
+  const rootEntry = scalarEntries.find(([key]) => key.endsWith('_root') || key.includes('hash'));
+  if (rootEntry) simple.push(`${rootEntry[0]}:${shortRoot(rootEntry[1])}`);
+  return simple.join(' · ') || 'backend event';
+}
+
 function logRows(events) {
   if (!events?.length) return '<div class="empty-state">暂无后端事件</div>';
   return [...events].reverse().map(event => {
     const level = eventLevel(event);
     const time = String(event.time ?? '—').slice(11, 19);
     const module = String(event.type ?? 'event').split('.')[0];
-    return `<div class="console-row"><span class="console-time">${esc(time)}</span><span class="console-level ${level}">${level.toUpperCase()}</span><span class="console-module">${esc(module)}</span><span class="console-message">${esc(event.type)} · ${esc(json(event.details))} · ${esc(shortRoot(event.event_root))}</span></div>`;
+    return `<div class="console-row" title="${esc(json(event.details))}"><span class="console-time">${esc(time)}</span><span class="console-level ${level}">${level.toUpperCase()}</span><span class="console-module">${esc(module)}</span><span class="console-message"><strong>${esc(event.type)}</strong><span>${esc(eventSummary(event))}</span></span></div>`;
   }).join('');
 }
 
@@ -416,11 +492,15 @@ function receiptCards() {
 
 function renderConsole() {
   let content = '';
-  if (activeConsole === 'logs' || activeConsole === 'events') content = logRows(state.event_tail);
-  else if (activeConsole === 'issues') content = issueCards(state.gaps);
+  const query = consoleQuery.trim().toLowerCase();
+  const matches = value => !query || JSON.stringify(value ?? '').toLowerCase().includes(query);
+  if (activeConsole === 'logs' || activeConsole === 'events') content = logRows((state.event_tail ?? []).filter(matches));
+  else if (activeConsole === 'issues') content = issueCards((state.gaps ?? []).filter(matches));
   else if (activeConsole === 'performance') content = performanceCards();
   else if (activeConsole === 'receipts') content = receiptCards();
   $('#consoleContent').innerHTML = content;
+  const search = $('#consoleSearch');
+  if (search && search.value !== consoleQuery) search.value = consoleQuery;
   $$('.console-tabs .panel-tab').forEach(tab => tab.classList.toggle('is-active', tab.dataset.console === activeConsole));
 }
 
@@ -499,6 +579,10 @@ document.addEventListener('click', event => {
     const name = action.dataset.action;
     if (name === 'new-session') { createSession(); return; }
     if (name === 'toggle-viewport') { viewportExpanded = !viewportExpanded; renderViewport(); return; }
+    if (name === 'focus-graph') { graphZoom = 1; applyGraphView(); notify('Reality Graph 已适配；当前操作只改变 Product Body 投影视图。'); return; }
+    if (name === 'zoom-in') { graphZoom = Math.min(1.35, Number((graphZoom + .1).toFixed(2))); applyGraphView(); return; }
+    if (name === 'zoom-out') { graphZoom = Math.max(.8, Number((graphZoom - .1).toFixed(2))); applyGraphView(); return; }
+    if (name === 'toggle-grid') { graphGridVisible = !graphGridVisible; applyGraphView(); notify(graphGridVisible ? '已显示 Reality Graph 投影网格。' : '已隐藏 Reality Graph 投影网格。'); return; }
   }
   const consoleTab = event.target.closest('[data-console]');
   if (consoleTab) { activeConsole = consoleTab.dataset.console; renderConsole(); return; }
@@ -515,6 +599,12 @@ document.addEventListener('click', event => {
   if (command === 'run') { sendCommand('run', { ticks: 6 }); return; }
   if (command === 'candidate-commit') { sendCommand('candidate-commit', { confirmed: true }); return; }
   sendCommand(command);
+});
+
+document.addEventListener('input', event => {
+  if (event.target?.id !== 'consoleSearch') return;
+  consoleQuery = event.target.value ?? '';
+  renderConsole();
 });
 
 window.addEventListener('error', event => notify(`页面错误：${event.message}`, true));

@@ -163,6 +163,10 @@
       "interaction_path": ["run tick=6", "snapshot recorded", "replay deterministic", "candidate simulated", "local authority authorized", "confirmed local candidate commit"],
       "commit_gate_final": "candidate-committed",
       "production_promotion": "UNAVAILABLE",
+      "branch_evaluation_cards": 3,
+      "graph_edge_markers": 16,
+      "console_summary": true,
+      "console_search": "PASS",
       "inspector_summary": true,
       "inspector_details": 3,
       "horizontal_overflow": false,
@@ -189,19 +193,23 @@
       "verified_vsr_image_inside_frame": true,
       "console_page_request_errors": 0
     },
-    "screenshots": [
+      "screenshots": [
       "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\productization-after-initial.png",
       "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\productization-after-expanded.png",
       "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\productization-after-final.png",
       "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\productization-after-mobile.png",
       "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\reference-palette-desktop-final-fit.png",
-      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\reference-palette-short-desktop-final-fit.png"
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\reference-palette-short-desktop-final-fit.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\product-pass-console-summary.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\product-pass-short-desktop.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\product-pass-mobile.png",
+      "C:\\Users\\User\\.codex\\visualizations\\2026\\09\\15\\rncs-reality-studio\\product-pass-runtime-path-committed-local.png"
     ]
   },
   "tests": [
     {"name": "reality-studio-adapter", "result": "PASS", "passed": 3, "failed": 0},
     {"name": "reality-studio-server", "result": "PASS", "passed": 1, "failed": 0},
-    {"name": "web-structure", "result": "PASS", "passed": 12, "failed": 0},
+    {"name": "web-structure", "result": "PASS", "passed": 13, "failed": 0},
     {"name": "@taowind/reality-network-runtime", "result": "PASS", "passed": 31, "failed": 0},
     {"name": "@taowind/reality-studio-native", "result": "FAIL_WITH_PREEXISTING_BLOCKERS", "total": 253, "passed": 249, "failed": 3, "skipped": 1, "blockers": ["missing evidence/anime-forge-phase6-3-geometric-truth-v0.1", "sparse worktree missing @taowind/rncs-asset-cache/src/index.mjs"]},
     {"name": "@taowind/world-body-studio-bridge", "result": "BLOCKED", "passed": 0, "failed": 1, "blocker": "sparse worktree missing @taowind/rncs-asset-cache/src/index.mjs"}
