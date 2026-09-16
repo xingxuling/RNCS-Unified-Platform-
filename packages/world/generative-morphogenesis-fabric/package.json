@@ -1,0 +1,11 @@
+{
+  "name": "@taowind/generative-morphogenesis-fabric",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "description": "RNCS candidate-only universal generative morphogenesis fabric: text-to-graph translation, multi-quantity five-dimensional attributes, adaptive representation complexity and bounded distributed generative diffusion.",
+  "license": "Apache-2.0",
+  "exports": {".": "./src/index.mjs"},
+  "files": ["src", "schemas", "tests", "rcl", "examples", "README.md", "CHANGELOG.md"],
+  "scripts": {"test": "node --test --test-concurrency=1 tests/*.test.mjs"},
+  "engines": {"node": ">=20"}
+}

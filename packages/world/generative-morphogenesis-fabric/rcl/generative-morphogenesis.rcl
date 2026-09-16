@@ -1,0 +1,32 @@
+reality GenerativeMorphogenesisFabricDraft {
+  facet draft.version : Text = "0.1.0-alpha.1"
+  facet draft.status : Text = "candidate"
+  facet translation.text_to_graph : Truth = true
+  facet attributes.five_dimensions_exact : Truth = true
+  facet attributes.multi_quantity : Truth = true
+  facet complexity.dynamic_expand_contract : Truth = true
+  facet complexity.dynamic_contract_contract : Truth = true
+  facet diffusion.distributed_bounded : Truth = true
+  facet diffusion.graph_acyclic : Truth = true
+  facet projection.urrf_candidate_only : Truth = true
+  facet authority.owned_by_rncs : Truth = true
+  facet generation.authoritative : Truth = false
+  facet generation.canonical_state_mutated : Truth = false
+  subject generator {
+    facet evidence : Number = 0
+    warrant world.verify on world
+  }
+  emergence verify_candidate_generation {
+    cause generator
+    when translation.text_to_graph == true and attributes.five_dimensions_exact == true and attributes.multi_quantity == true and complexity.dynamic_expand_contract == true and diffusion.distributed_bounded == true and diffusion.graph_acyclic == true and projection.urrf_candidate_only == true and authority.owned_by_rncs == true and generation.authoritative == false and generation.canonical_state_mutated == false
+    needs world.verify on world
+    alter draft.status <- "reference-verified"
+    alter generator.evidence <- generator.evidence + 1
+    preserve authority.owned_by_rncs == true
+    preserve generation.authoritative == false
+    preserve generation.canonical_state_mutated == false
+    witness "rcl:generative-morphogenesis-fabric:v0.1"
+  }
+  foresee verify_candidate_generation
+  realize verify_candidate_generation
+}
