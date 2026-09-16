@@ -5,7 +5,8 @@
   "description": "Generic RNCS reality-representation registry, materialization planner, provider execution boundary, and reversible transition runtime.",
   "license": "Apache-2.0",
   "exports": {
-    ".": "./src/index.mjs"
+    ".": "./src/index.mjs",
+    "./2d": "./src/two-dimensional-runtime.mjs"
   },
   "files": [
     "src",
