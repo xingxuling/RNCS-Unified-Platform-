@@ -1,0 +1,69 @@
+{
+  "protocol": "dwac.north-star-self-development.v0.1",
+  "goal": "Make URRF-2D a first-class RNCS two-dimensional reality representation fabric where DVG structure and PPD diffusion can be selected, budgeted, resident, materialized, composed, evidenced, and never acquire canonical world-state authority.",
+  "north_star": {
+    "cycle_id": "NSC-eb3c88ecfd45b2f81a2c",
+    "selected": "urrf2d-contract",
+    "mode": "WHOLE_ARTIFACT",
+    "reason": "multiple high-pressure domains remain coupled; expand the system graph before local optimization"
+  },
+  "north_star_burst": {
+    "policy": {
+      "max_portfolio_size": 6,
+      "relative_score_floor": 0.68,
+      "absolute_score_floor": 0.45
+    },
+    "portfolio": [
+      "urrf2d-contract",
+      "urrf2d-runtime",
+      "urrf2d-evidence",
+      "dvg-provider",
+      "ppd-provider",
+      "urrf2d-docs"
+    ]
+  },
+  "whole_artifact": {
+    "cycle_id": "NSC-eb3c88ecfd45b2f81a2c",
+    "mode": "WHOLE_ARTIFACT",
+    "portfolio": [
+      "urrf2d-contract",
+      "urrf2d-runtime",
+      "urrf2d-evidence",
+      "dvg-provider",
+      "ppd-provider",
+      "urrf2d-docs"
+    ]
+  },
+  "deep_development": {
+    "cycle_id": "NSC-d3402988895f72f79a06",
+    "mode": "DEEP_DEVELOPMENT",
+    "portfolio": [
+      "urrf2d-contract",
+      "urrf2d-runtime",
+      "urrf2d-evidence",
+      "dvg-provider",
+      "ppd-provider",
+      "urrf2d-docs"
+    ]
+  },
+  "invariants": [
+    "RNCS canonical authority retained",
+    "providers candidate-only",
+    "failure remains explicit",
+    "evidence/receipt sealed",
+    "rollback-friendly additive package surface"
+  ],
+  "execution": {
+    "target": "packages/world/reality-representation-fabric",
+    "native_modes": [
+      "WHOLE_ARTIFACT",
+      "DEEP_DEVELOPMENT"
+    ],
+    "user_modes": [
+      "NORTH_STAR",
+      "NORTH_STAR_BURST",
+      "WHOLE_ARTIFACT",
+      "DEEP_DEVELOPMENT"
+    ]
+  }
+}
