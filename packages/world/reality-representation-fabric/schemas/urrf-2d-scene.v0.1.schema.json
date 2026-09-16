@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/urrf-2d-scene.v0.1.schema.json",
+  "title": "URRF 2D Scene v0.1",
+  "type": "object",
+  "required": ["format", "version", "scene_id", "canvas", "objects", "authority", "candidate_only", "authoritative", "commit_status", "scene_root"],
+  "properties": {
+    "format": {"const": "urrf.2d-scene.v0.1"},
+    "version": {"const": "0.1.0"},
+    "scene_id": {"type": "string", "minLength": 1},
+    "canvas": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "number"}},
+    "objects": {"type": "array", "minItems": 1},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "scene_root": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}
+  },
+  "additionalProperties": true
+}

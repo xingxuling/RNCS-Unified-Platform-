@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/urrf-2d-composition-receipt.v0.1.schema.json",
+  "title": "URRF 2D Composition Receipt v0.1",
+  "type": "object",
+  "required": ["format", "version", "scene_id", "scene_root", "working_set_plan_root", "layers", "status", "authority", "canonical_state_mutated", "candidate_only", "authoritative", "commit_status", "receipt_root"],
+  "properties": {
+    "format": {"const": "urrf.2d-composition-receipt.v0.1"},
+    "version": {"const": "0.1.0"},
+    "status": {"enum": ["EXECUTED", "PARTIAL", "FAILED"]},
+    "canonical_state_mutated": {"const": false},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "receipt_root": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}
+  },
+  "additionalProperties": true
+}

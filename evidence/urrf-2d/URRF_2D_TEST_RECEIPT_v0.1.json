@@ -1,0 +1,57 @@
+{
+  "format": "taowind.integration-court-evidence.v0.1",
+  "feature": "URRF-2D v0.1 / DVG + PPD",
+  "target": "packages/world/reality-representation-fabric",
+  "north_star": "二维视觉成为 RNCS/URRF 的一等 candidate-only reality representation，而非扁平图片文件。",
+  "dwac_modes": [
+    "NORTH_STAR",
+    "NORTH_STAR_BURST",
+    "WHOLE_ARTIFACT",
+    "DEEP_DEVELOPMENT"
+  ],
+  "tests": [
+    {
+      "suite": "@taowind/reality-representation-fabric",
+      "result": "PASS",
+      "passed": 25,
+      "failed": 0
+    },
+    {
+      "suite": "@taowind/rncs-core-contract",
+      "result": "PASS",
+      "passed": 48,
+      "failed": 0
+    },
+    {
+      "suite": "DWAC north-star self-development",
+      "result": "PASS",
+      "passed": 10,
+      "failed": 0
+    }
+  ],
+  "integration_court": {
+    "authority_boundary": "PASS",
+    "candidate_only": "PASS",
+    "explicit_partial_failure": "PASS",
+    "viewport_working_set": "PASS",
+    "dvg_ppd_hybrid_materialization": "PASS",
+    "canonical_state_mutated": false
+  },
+  "known_boundaries": [
+    "v0.1 providers are contracts/reference adapters; production SVG/Canvas/WebGPU renderers are not included",
+    "no 2D-to-3D representation transition yet",
+    "no network-distributed tile transport yet",
+    "visual quality is not claimed by contract tests"
+  ],
+  "files_sha256": {
+    "packages/world/reality-representation-fabric/src/two-dimensional-runtime.mjs": "24303dc511cc53c59a8e56895ca3612831b8ab47ab4fabc4974d0684ee60980b",
+    "packages/world/reality-representation-fabric/tests/two-dimensional-runtime.test.mjs": "38e4bb8d64050fb0672e40456226210e4c377d6041de92807589700045b83d00",
+    "packages/world/reality-representation-fabric/schemas/urrf-2d-scene.v0.1.schema.json": "cd8df8610ce731c7719cb7acc0f524bbe8b5393a80459e05f5726efce0359512",
+    "packages/world/reality-representation-fabric/schemas/urrf-2d-composition-receipt.v0.1.schema.json": "2e0512a5062e3775f639f7a265f6b8732428720f68a6f60d85d32f3728b09908",
+    "packages/world/reality-representation-fabric/package.json": "a89fc8e4c3bc2e515aa70bb49ba3449b5ce6d6c795a9cc1f2426320794fa7517",
+    "packages/world/reality-representation-fabric/README.md": "600510dc84fc6c0c210bfa68aebf29fb378422db2563bf878c66b2dda9c50c76",
+    "packages/world/reality-representation-fabric/CHANGELOG.md": "8b97bf10b151beb07a9fd3a1475a34964939b6cd35f4bfee88de3ed315f6ffe9",
+    "docs/URRF_2D_V0_1.md": "9e3d23a728c8c961dbdd43e1d518cd66551dc26ff7b7596833c297121b3a3b2f",
+    "evidence/urrf-2d/DWAC_URRF2D_MODE_ROUTING_v0.1.json": "35b8795abba48180d64cc3cc5c51e67e4caa1d06b1db8fca1003e7864b7cc385"
+  }
+}

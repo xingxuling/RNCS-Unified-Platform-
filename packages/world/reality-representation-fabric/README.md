@@ -31,3 +31,7 @@ RealityObject registration now accepts RNCS-owned `property_set` and `law_bindin
 Materialization requests may carry a v0.3 `detail_vector`; its nine axes are kept independent and sealed in the plan/receipt. Objects with `query_index` metadata can be selected through `createHorizon()`, `createInterestGraph()`, `queryReality()`, and `createCognitiveWorkingSet()`. Query results are deterministic candidates with permission/horizon filters and `canonical_revalidation_required=true`; they never mutate RealityObject state.
 
 This is an executable candidate slice: it proves the generic registry/planning/receipt/transition path, not production GPU coverage, distributed residency, or canonical authority promotion.
+
+## URRF-2D v0.1
+
+URRF now exposes an executable two-dimensional representation slice. `DVG` (`vector-2d-dvg`) is the structural vector provider and `PPD` (`point-diffusion-2d`) is the procedural diffusion-field provider. `createUrrf2DScene()` registers candidate-only 2D composition intent; `planUrrf2DWorkingSet()` selects the viewport working set and splits vector-node / point budgets; `materializeUrrf2DScene()` delegates each layer to the existing URRF materialization boundary and seals a candidate-only composition receipt. No 2D provider receives canonical RNCS authority.
