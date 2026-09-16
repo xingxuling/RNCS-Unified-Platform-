@@ -1,0 +1,1 @@
+{"text":"未来城市悬浮在云海上，轨道围绕主塔，人物仰望主塔。 CentralTower supports WorldTree.","entities":["未来城市","云海","轨道","主塔","人物","CentralTower","WorldTree"],"constraints":[{"id":"c.visual-center","expression":"CentralTower.visual_salience > 0.9","kind":"composition"},{"id":"c.authority","expression":"generated_geometry.authoritative == false","kind":"authority"}]}
