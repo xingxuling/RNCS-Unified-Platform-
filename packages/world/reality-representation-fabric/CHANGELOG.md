@@ -1,5 +1,6 @@
 # Changelog
 
+- Added URRF-2D v0.1 with first-class DVG structural-vector and PPD procedural point-diffusion providers, viewport working-set planning, independent vector/point budgets, layered candidate composition receipts, and fail-closed canonical authority boundaries.
 - Added URRF `createRepresentationFlow()` / `sampleRepresentationFlow()` for RNCS v0.3 identity-preserving temporal representation candidates, bounded interpolation/extrapolation, prediction/safety/stale-state gates, and snapshot evidence without canonical mutation.
 - Added v0.3 `RealityTransportFabric` runtime for profile-rooted Fiber/WiFi/Bluetooth propagation candidates, node discovery/association/roaming, and authority-gated low-power Organ Links.
 - Added v0.3 `RealityResourceGovernor` runtime for power/thermal-aware resource budgeting, fault-aware load shedding, and Minimum Viable Reality recovery candidates.
