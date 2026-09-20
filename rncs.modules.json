@@ -229,6 +229,31 @@
       "test": "npm test --workspace @taowind/visual-state-runtime"
     },
     {
+      "id": "animation-fabric",
+      "name": "RNCS Animation Fabric",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/world/animation-fabric",
+      "layer": "world",
+      "runtime": "rncs.animation-fabric",
+      "dependsOn": [
+        "urrf",
+        "vsr"
+      ],
+      "test": "npm test --workspace @taowind/animation-fabric",
+      "capabilities": [
+        "studio-evaluated-sequence-ingress",
+        "unified-2d-3d-animation-routing",
+        "2d-bone-rig-fk",
+        "2d-linear-blend-skinning",
+        "2d-path-morph",
+        "2d-blend-shape",
+        "2d-bilinear-cage-deformation",
+        "deterministic-animation-curves",
+        "vsr-animation-layer-lowering",
+        "candidate-only-no-canonical-mutation"
+      ]
+    },
+    {
       "id": "digital-blue-sky",
       "name": "Digital Blue Sky Cognitive Runtime",
       "version": "0.5.0-alpha.1",

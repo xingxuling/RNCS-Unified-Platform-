@@ -1,0 +1,17 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.company/schemas/rncs-animation-fabric-frame-v0.1.schema.json",
+  "title":"RNCS Animation Fabric Frame v0.1",
+  "type":"object",
+  "required":["format","version","time","source_frame_root","two_d","three_d","candidate_only","authoritative","canonical_state_mutated","frameRoot"],
+  "properties":{
+    "format":{"const":"rncs.animation-fabric.frame.v0.1"},
+    "version":{"const":"0.1.0-alpha.1"},
+    "time":{"type":"number"},
+    "source_frame_root":{"type":"string"},
+    "candidate_only":{"const":true},
+    "authoritative":{"const":false},
+    "canonical_state_mutated":{"const":false},
+    "frameRoot":{"type":"string","pattern":"^[0-9a-f]{64}$"}
+  }
+}

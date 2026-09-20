@@ -1,0 +1,33 @@
+{
+  "format": "rncs.animation-fabric.evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "LOCAL_TECHNICAL_VERIFIED",
+  "tests": {
+    "command": "node --test tests/*.test.mjs",
+    "passed": 18,
+    "failed": 0
+  },
+  "demo": {
+    "command": "node examples/mixed-2d-3d-frame.mjs",
+    "status": "PASS",
+    "mixed_2d_3d": true,
+    "canonical_state_mutated": false
+  },
+  "contracts": {
+    "studio_sequence_owner": "reality-studio.sequence.v1.7",
+    "studio_frame_ingress": "reality-studio.sequence-frame.v1.6",
+    "urrf_2d_projection": "rncs.animation-fabric.urrf2d-projection.v0.1",
+    "vsr_3d_projection": "rncs.animation-fabric.vsr3d-projection.v0.1"
+  },
+  "rcl": {
+    "file": "rcl/animation_fabric_contract.rcl",
+    "status": "PRESENT_NOT_EXECUTED_IN_THIS_LOCAL_SLICE"
+  },
+  "boundaries": [
+    "No second authored timeline owner",
+    "No canonical world-state mutation",
+    "No target-side full Sequence playback claim",
+    "No full commercial 2D authoring UI claim",
+    "No Motion Matching/Blend Space/Motion Warping claim"
+  ]
+}

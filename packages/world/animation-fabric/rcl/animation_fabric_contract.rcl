@@ -1,0 +1,20 @@
+reality AnimationFabricV01Contract {
+  facet animation.phase : Text = "evaluated-sequence-ingress"
+  facet animation.timeline_owner_is_studio : Truth = true
+  facet animation.supports_2d_rig_skinning : Truth = true
+  facet animation.supports_2d_path_morph : Truth = true
+  facet animation.supports_3d_vsr_lowering : Truth = true
+  facet animation.canonical_state_mutation : Truth = false
+  subject runtime { warrant animation.write on animation }
+  emergence lowerPresentationFrame {
+    cause runtime
+    when animation.phase == "evaluated-sequence-ingress"
+    needs animation.write on animation
+    alter animation.phase <- "unified-2d-3d-presentation-ready"
+    preserve animation.timeline_owner_is_studio == true
+    preserve animation.canonical_state_mutation == false
+    witness "rncs:animation-fabric:v0.1:unified-presentation"
+  }
+  foresee lowerPresentationFrame
+  realize lowerPresentationFrame
+}
