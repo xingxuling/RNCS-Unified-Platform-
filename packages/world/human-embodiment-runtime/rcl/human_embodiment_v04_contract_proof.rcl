@@ -1,0 +1,42 @@
+reality HumanEmbodimentV04AnatomicalContract {
+  facet body.phase : Text = "ready"
+  facet body.isb_frame_ready : Truth = true
+  facet body.segment_frames_ready : Truth = true
+  facet body.landmarks_ready : Truth = true
+  facet body.professional_skeleton_ready : Truth = true
+  facet body.joint_coordinate_systems_ready : Truth = true
+  facet body.biomechanics_ready : Truth = true
+
+  subject practitioner { warrant body.write on body }
+
+  emergence establishAnatomy {
+    cause practitioner
+    when body.phase == "ready"
+    needs body.write on body
+    alter body.phase <- "anatomy-ready"
+    preserve body.isb_frame_ready == true
+    preserve body.landmarks_ready == true
+    preserve body.professional_skeleton_ready == true
+    witness "rncs:human-embodiment:v0.4:anatomy"
+  }
+
+  emergence establishBiomechanics {
+    cause practitioner
+    when body.phase == "anatomy-ready"
+    needs body.write on body
+    alter body.phase <- "biomechanics-ready"
+    preserve body.segment_frames_ready == true
+    preserve body.joint_coordinate_systems_ready == true
+    preserve body.biomechanics_ready == true
+    witness "rncs:human-embodiment:v0.4:biomechanics"
+  }
+
+  emergence publishProfessionalBody {
+    cause practitioner
+    when body.phase == "biomechanics-ready"
+    needs body.write on body
+    alter body.phase <- "ready"
+    preserve body.professional_skeleton_ready == true
+    witness "rncs:human-embodiment:v0.4:publish"
+  }
+}

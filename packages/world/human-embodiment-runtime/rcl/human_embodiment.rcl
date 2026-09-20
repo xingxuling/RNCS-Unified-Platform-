@@ -1,0 +1,30 @@
+module human_embodiment
+import behavior
+require behavior rule.deterministic : Truth
+require behavior state.transition : Truth
+require behavior effect.evidenced : Truth
+facet module.id : Text = "human-embodiment-runtime"
+facet module.version : Text = "0.3.0-alpha.1"
+facet module.ready : Truth = true
+facet skeleton.canonical : Truth = true
+facet skeleton.local_quaternion : Truth = true
+facet pose.forward_kinematics : Truth = true
+facet pose.inverse_kinematics : Truth = true
+facet pose.full_body_constraint_solve : Truth = true
+facet pose.deterministic : Truth = true
+facet support.fail_closed : Truth = true
+facet joint_limits.swing_twist : Truth = true
+facet joint_limits.enforced : Truth = true
+facet motion.retargetable : Truth = true
+facet motion.root_motion : Truth = true
+facet contact.foot_plant : Truth = true
+facet mocap.mediapipe_import : Truth = true
+facet mocap.bvh_parse : Truth = true
+facet calibration.reference_compare : Truth = true
+facet gltf.rig_binding : Truth = true
+facet gltf.skin_palette : Truth = true
+facet vsr.skinned_mesh_frame : Truth = true
+facet world_body_ir.human : Truth = true
+facet rsr.spatial_embodiment_bridge : Truth = true
+facet vsr.visual_pose_bridge : Truth = true
+facet evidence.per_frame : Truth = true

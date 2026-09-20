@@ -1,0 +1,284 @@
+{
+  "format": "rncs.human-embodiment.evidence.v0.3",
+  "runtime": "rncs.human-embodiment",
+  "version": "0.3.0-alpha.1",
+  "tests": {
+    "command": "npm test",
+    "total": 20,
+    "passed": 20,
+    "failed": 0,
+    "output_file": "/mnt/data/her_v03_test_output.txt"
+  },
+  "demo": {
+    "command": "npm run demo:v3",
+    "protocol": "rncs.human-embodiment.v0.3",
+    "fullBodyOk": true,
+    "maxResidual": 3.0782422462153946e-16,
+    "poseGate": true,
+    "worldBody": "rncs.world-body-ir.human.v0.3"
+  },
+  "rcl": {
+    "compiler": "@taowind/rcl-reality-forge 0.94.0-alpha.1",
+    "program": "HumanEmbodimentV03ContractProof",
+    "ok": true,
+    "rbc_bytes": 708,
+    "instruction_count": 20,
+    "bytecode_sha256": "874f04a73dfb5f7dd362e1912c079fc3effb6be93b81745b348aeafff1991287",
+    "source_root": "3e84c115cd951f811e72e6bb0fbbaedefbe7b8cc1f70ce85c1dacf92b799887e"
+  },
+  "mobile_demo": {
+    "file": "/mnt/data/RNCS_HER_v0.3_手机版_单文件.html",
+    "javascript_syntax_check": true
+  },
+  "tree_root_sha256": "6659b911acb313a86c3c141cd3b693db7f1f039645fbf528c1cbbd5568c658b9",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 8027,
+      "sha256": "68ce074e11d1d4e1ebb7a5b119b5704c527a36c8cbc25e8d214ad0b033242bee"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "bytes": 1140,
+      "sha256": "4256c03001e80b01ab876bbd01b12d154ac3f22dcfb0572d3969e4eb5c278ce4"
+    },
+    {
+      "path": "docs/RNCS_MERGE_PLAN.md",
+      "bytes": 876,
+      "sha256": "12b0e2df94510a564809705812e504ed8259701361478a0dade0d30a804c21bc"
+    },
+    {
+      "path": "examples/fullbody-footplant-demo.mjs",
+      "bytes": 699,
+      "sha256": "95c17142d37972efb3a2a49fd0aa0c61e6600bad2f5e944ae12be4eea3b0da46"
+    },
+    {
+      "path": "examples/quaternion-ik-demo.mjs",
+      "bytes": 815,
+      "sha256": "b4ad6de454c61c05bdf4f14aa833bd87d373e7079b7e5cb811deda21f21b457f"
+    },
+    {
+      "path": "examples/wanfeng-diagonal-step.mjs",
+      "bytes": 992,
+      "sha256": "a44e743d61f16f185d7f9e8cc449b31a0433d9eb4c7b3296591fc5f3e8e1de5f"
+    },
+    {
+      "path": "integration/rncs-control-plane/rcl/human_embodiment.rcl",
+      "bytes": 640,
+      "sha256": "1c61a24e0cfd8adc852b81dfcf061855f46765ecde3045100815e234cb2fcc67"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1515,
+      "sha256": "9e21787f6732f5445d6ef65dbf0c0ec46c33deef94910fb9d01a862295f89467"
+    },
+    {
+      "path": "rcl/human_embodiment.rcl",
+      "bytes": 1250,
+      "sha256": "ae3612567b7f15600b7380559c164d7a09e26f8803041d8eb7be4a1da7447c43"
+    },
+    {
+      "path": "rcl/human_embodiment_contract_proof.rcl",
+      "bytes": 1470,
+      "sha256": "af3c168ef070d299c1cf5896f4b1f7cde8ff6b3514ab946aa8831d956377a356"
+    },
+    {
+      "path": "runtime/runtime.json",
+      "bytes": 2109,
+      "sha256": "d52e32332f36090a09346e0f09a386b12de2417f0586529ba441d520b8b6e8b3"
+    },
+    {
+      "path": "schemas/motion.schema.json",
+      "bytes": 1363,
+      "sha256": "92df811f0465b990a1f0154b201e3afddb4971fad88a42339d5259c95d34b92e"
+    },
+    {
+      "path": "src/animation-v2.mjs",
+      "bytes": 1294,
+      "sha256": "b72a1eb7f6a2ca45cb823b13e22ba6decc6d8b0eacf140f7122c763309f49320"
+    },
+    {
+      "path": "src/biomechanics.mjs",
+      "bytes": 839,
+      "sha256": "b030a8c22f25a3b8e3b3f36c43ea52be431f234f79803a471d2562c0b95eb662"
+    {
+      "path": "src/bridges/human-embodiment.bridge.mjs",
+      "bytes": 10190,
+      "sha256": "e509e3e2f7a8e49a1b098d7f31731052e06c6fa7b15f5039702661cf5279b05b"
+    },
+    {
+      "path": "src/calibration-v3.mjs",
+      "bytes": 2241,
+      "sha256": "1b7e05faeab8b0ade82010747b76469f78e2b16ce1e10a419501796b517d5947"
+    },
+    {
+      "path": "src/constraints-v2.mjs",
+      "bytes": 3310,
+      "sha256": "870d43b1d376e011c966dd70373edcd06ce60376c229184de39bbae218de57ad"
+    },
+    {
+      "path": "src/constraints.mjs",
+      "bytes": 2265,
+      "sha256": "ba6c66b43efd474cdfd8bde3ec819e9f91811728ab1c584d6e88416480b67391"
+    {
+      "path": "src/foot-plant-v3.mjs",
+      "bytes": 3553,
+      "sha256": "ce9166a4506abbdd6f95f54f31a47f728be035cf6469ea0b70b29cffb276bc1b"
+    },
+    {
+      "path": "src/fullbody-ik-v3.mjs",
+      "bytes": 3229,
+      "sha256": "7f716a311f3c2f47b1c79e54344757196f75eda7a29539ca5df0fdce839bd294"
+    },
+    {
+      "path": "src/geometry.mjs",
+      "bytes": 1597,
+      "sha256": "be10bdba9c89e3ee443fc9f85d5440d7ac407f1a1947d4d396fe296e2b85e699"
+    },
+    {
+      "path": "src/gltf-rig.mjs",
+      "bytes": 2492,
+      "sha256": "923d013f4d1c0e787791f8614968335dd72d049a6b0c7edbad5eeba9ecb896e2"
+    },
+    {
+      "path": "src/human-runtime-v2.mjs",
+      "bytes": 1313,
+      "sha256": "53e6b5ab2cdbf68ef6621e3abc86927505996f3dcfb5f885200c57ba3313199a"
+    },
+    {
+      "path": "src/human-runtime-v3.mjs",
+      "bytes": 2835,
+      "sha256": "782aa0a9601a61a0856279eb5b29673f88f5465264c9ca6435c62402e8f77185"
+    },
+    {
+      "path": "src/ik.mjs",
+      "bytes": 2643,
+      "sha256": "1af6aa048097485da6b1c6483af4f769e4e9b966f457e5234ad332a6ccaec73f"
+    },
+    {
+      "path": "src/joint-limits-v3.mjs",
+      "bytes": 3513,
+      "sha256": "78975a25271eb4b38d18d10fcc6f330a02cc22d84c120da4825a7d942ec7969a"
+    },
+    {
+      "path": "src/legacy-motion-bridge.mjs",
+      "bytes": 873,
+      "sha256": "adf8c803c4310f78271fae8bd627b4af6a2cd786eef224900a03b502af039bfc"
+    },
+    {
+      "path": "src/math.mjs",
+      "bytes": 1530,
+      "sha256": "60068c82ada1e92320f548a68993beef90eb9ef647b10c9f07f3a434056f5839"
+    },
+    {
+      "path": "src/matrix4.mjs",
+      "bytes": 1036,
+      "sha256": "aaf4753761225a2dcffe2a7a6f1a954b1236970baebfc63443cf523e313e5f2a"
+    },
+    {
+      "path": "src/mocap-import-v3.mjs",
+      "bytes": 6519,
+      "sha256": "89943c237852bf6e67f55707dc0aef463f3965949ef49f4007ec3f7b21b47cef"
+    },
+    {
+      "path": "src/motion.mjs",
+      "bytes": 1145,
+      "sha256": "b7638f3023983b1a3cf771129c7ca87838cd009145e46fe240a9837f34ed5c63"
+    },
+    {
+      "path": "src/quaternion.mjs",
+      "bytes": 2150,
+      "sha256": "a21727d7e81ff7a4c4958682d03d8454d0b6ebe52652710de2052f87c2549be3"
+    },
+    {
+      "path": "src/retarget-v2.mjs",
+      "bytes": 1851,
+      "sha256": "478f95820327c3e9d3c53ed58cb24d84fa61e6a4de777cbbc892811c3aa30701"
+    },
+    {
+      "path": "src/retarget.mjs",
+      "bytes": 779,
+      "sha256": "e275a601626d10ba78b0d6eca2165b4b4e770ec1675df6133289f65c3cb091c9"
+    },
+    {
+      "path": "src/root-motion-v3.mjs",
+      "bytes": 1823,
+      "sha256": "74ed3095b2c51fa852516a7f9878b23fbab36ce3095aa63dc0cc6d189a9dadd0"
+    },
+    {
+      "path": "src/rsr-adapter-v2.mjs",
+      "bytes": 1506,
+      "sha256": "567b1bbdfa0936356d5d591b6375a012d3435f9425f195e6183eae673caf0f72"
+    },
+    {
+      "path": "src/rsr-adapter.mjs",
+      "bytes": 1423,
+      "sha256": "c15238ed92cf466b6d2348fcdf32eb777e1f3ea6810af5375dac21e410a4af58"
+    },
+    {
+      "path": "src/skeleton-v2.mjs",
+      "bytes": 3673,
+      "sha256": "a29229f41f8d4d769bf34a652a2d865f68cd3290ff7eac6c6f7774b500375b0a"
+    },
+    {
+      "path": "src/skeleton.mjs",
+      "bytes": 2139,
+      "sha256": "7590bbe7a486bc8603cddff0b2c9e24e6617feab406ec025b8856532c2baa54f"
+    },
+    {
+      "path": "src/support.mjs",
+      "bytes": 996,
+      "sha256": "5684e4dbf6ea1453a3fa6efffa657b1f83f6450de21fd592d9f81761e2438ef2"
+    },
+    {
+      "path": "src/unified-index.mjs",
+      "bytes": 1230,
+      "sha256": "a283e7f371216b9e3a18768a0669c0c058ba7f45c07e5a06e47e511b441d1f8a"
+    },
+    {
+      "path": "src/validator.mjs",
+      "bytes": 966,
+      "sha256": "610ea9042314fd2f8856370c380c395326132827a65518001040c63107eb3a2e"
+    },
+    {
+      "path": "src/vsr-adapter-v2.mjs",
+      "bytes": 703,
+      "sha256": "7fa6296e96dc0f0e5c4c2bedf28a40cf9ddda4dcf62a12b69c8424fc3fc6f480"
+    },
+    {
+      "path": "src/vsr-adapter.mjs",
+      "bytes": 857,
+      "sha256": "e6c772720126fe54812b842fb4f80526448d61cb0192df3fb03dcc299c39614f"
+    },
+    {
+      "path": "src/vsr-skinned-mesh-v3.mjs",
+      "bytes": 1036,
+      "sha256": "6bae9321dc9978758ea36e7dcf470573f082e5fee3bc8ddba24cc3c242e389d0"
+    },
+    {
+      "path": "src/world-body-ir-v3.mjs",
+      "bytes": 514,
+      "sha256": "542dbbf9c93800ddaf1ebf747c3ff857799696181bf1c8645bc6202d96c6fd9a"
+    },
+    {
+      "path": "src/world-pose-v3.mjs",
+      "bytes": 1326,
+      "sha256": "7fab8f3666cf3c8055f77fd1c6d51fcf837d87ba79a5ef95d96b13c70e1242b"
+    },
+    {
+      "path": "tests/human-embodiment-v2.test.mjs",
+      "bytes": 4125,
+      "sha256": "c78051b808dd8640fb42701cb389496c55c97e2475ca060fe8d0c536d2af5100"
+    },
+    {
+      "path": "tests/human-embodiment-v3.test.mjs",
+      "bytes": 7508,
+      "sha256": "08efb2b2657385073b5783cf485cab6303656ea448cd317455d74df041652268"
+    },
+    {
+      "path": "tests/human-embodiment.test.mjs",
+      "bytes": 1414,
+      "sha256": "d3c740a5baeb4436b2933882575b4cd03bf8e280f70e83f4beefa8486ab372ce"
+    }
+  ]
+}

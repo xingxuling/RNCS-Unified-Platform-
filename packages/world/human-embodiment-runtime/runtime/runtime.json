@@ -1,0 +1,88 @@
+{
+  "format": "reality-one.runtime-manifest.v0.3",
+  "gateway_protocol_versions": [
+    "0.3.0"
+  ],
+  "runtime_id": "rncs.human-embodiment",
+  "runtime_version": "0.4.0-alpha.1",
+  "display_name": "RNCS Human Embodiment Runtime",
+  "transport": {
+    "kind": "node-module",
+    "package": "@taowind/human-embodiment-runtime"
+  },
+  "bridge": "../src/bridges/human-embodiment.bridge.mjs",
+  "actions": [
+    "health",
+    "loadSkeleton",
+    "evaluatePose",
+    "evaluateMotion",
+    "retargetMotion",
+    "buildSpatialEmbodiment",
+    "buildVisualPose",
+    "createCanonicalSkeleton",
+    "forwardKinematics",
+    "solveLimbIK",
+    "solveMultiTargetIK",
+    "evaluatePoseV2",
+    "retargetPoseV2",
+    "retargetClipV2",
+    "sampleClipV2",
+    "bindGltfRig",
+    "buildGltfPosePatch",
+    "buildSpatialEmbodimentV2",
+    "buildVisualPoseV2",
+    "solveFullBodyIKV3",
+    "enforceJointLimitsV3",
+    "inspectJointLimitsV3",
+    "extractRootMotionV3",
+    "detectFootContactsV3",
+    "solveFootPlantV3",
+    "importMediaPipeV3",
+    "parseBvhV3",
+    "importBvhV3",
+    "calibrateMediaPipeV3",
+    "buildVsrSkinnedFrameV3",
+    "buildWorldBodyIRV3",
+    "createProfessionalSkeletonV4",
+    "analyzeProfessionalPoseV4"
+  ],
+  "protocols": [
+    "her.skeleton.v0.1",
+    "her.pose.v0.1",
+    "her.motion.v0.1",
+    "her.motion-validation.v0.1",
+    "her.skeleton.v0.2",
+    "her.pose-state.v0.2",
+    "her.motion-clip.v0.2",
+    "her.ik-evidence.v0.1",
+    "her.gltf-rig-binding.v0.2",
+    "her.fullbody-ik.v0.3",
+    "her.joint-limits.v0.3",
+    "her.root-motion.v0.3",
+    "her.foot-plant.v0.3",
+    "rncs.mocap.mediapipe.v0.3",
+    "rncs.mocap.bvh.v0.3",
+    "rncs.motion-calibration.v0.3",
+    "rncs.world-body-ir.human.v0.3",
+    "her.skinned-mesh-frame.v0.3",
+    "rsr.spatial-embodiment.v0.6",
+    "vsr.spatial-reality-3d.v0.7",
+    "vsr.temporal-presentation.v0.6",
+    "vsr.gltf-import.v0.2",
+    "her.anatomical-rig.v0.4",
+    "her.isb-jcs.v0.4"
+  ],
+  "requires": [
+    {
+      "runtime_id": "rncs.rsr",
+      "version_range": ">=0.7.0-alpha.1 <0.10.0",
+      "optional": true
+    },
+    {
+      "runtime_id": "rncs.vsr",
+      "version_range": ">=0.7.0-alpha.1 <0.9.0",
+      "optional": true
+    }
+  ],
+  "priority": 86
+}

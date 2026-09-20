@@ -1,0 +1,14 @@
+{
+  "version": "0.4.0-alpha.1",
+  "test_result": {"passed":25,"failed":0},
+  "professional_skeleton": {
+    "joint_node_count": 38,
+    "coordinate_frame": "+X anterior, +Y superior, +Z subject-right",
+    "spine_levels": ["L5","L3","L1","T12","T8","T4","C7","C3"],
+    "shoulder_complex": ["SC","AC","scapula","GH"],
+    "forearm": ["elbow","radioulnar","wrist"],
+    "foot": ["ankle","subtalar","heel","MTP1","MTP5","hallux"],
+    "anatomical_landmarks": 34
+  },
+  "rcl": {"program":"HumanEmbodimentV04AnatomicalContract","rbc_bytes":640,"instructions":16,"sha256":"cf6b1abe3c89bf0786fc73835c32999fa26be2e7b60360b245624e942ec8a970"}
+}

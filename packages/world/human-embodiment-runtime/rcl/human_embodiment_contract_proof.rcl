@@ -1,0 +1,46 @@
+reality HumanEmbodimentV03ContractProof {
+  facet body.phase : Text = "ready"
+  facet body.fullbody_ik_ok : Truth = true
+  facet body.joint_limits_ok : Truth = true
+  facet body.foot_plant_ok : Truth = true
+  facet body.mocap_evidenced : Truth = true
+  facet body.skin_stream_ready : Truth = true
+  facet body.world_body_ir_ready : Truth = true
+  facet body.com_safe : Truth = true
+  facet body.guard_recovered : Truth = true
+
+  subject practitioner { warrant body.write on body }
+
+  emergence solveFullBody {
+    cause practitioner
+    when body.phase == "ready"
+    needs body.write on body
+    alter body.phase <- "solved"
+    preserve body.fullbody_ik_ok == true
+    preserve body.joint_limits_ok == true
+    preserve body.com_safe == true
+    witness "rncs:human-embodiment:v0.3:fullbody"
+  }
+
+  emergence stabilizeContact {
+    cause practitioner
+    when body.phase == "solved"
+    needs body.write on body
+    alter body.phase <- "contact-stable"
+    preserve body.foot_plant_ok == true
+    preserve body.mocap_evidenced == true
+    witness "rncs:human-embodiment:v0.3:foot-plant"
+  }
+
+  emergence presentBody {
+    cause practitioner
+    when body.phase == "contact-stable"
+    needs body.write on body
+    alter body.phase <- "ready"
+    alter body.guard_recovered <- true
+    preserve body.skin_stream_ready == true
+    preserve body.world_body_ir_ready == true
+    preserve body.guard_recovered == true
+    witness "rncs:human-embodiment:v0.3:present"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.company/schemas/rncs/human-embodiment/motion.v0.1.schema.json",
+  "title":"RNCS Human Embodiment Motion v0.1",
+  "type":"object","required":["id","keyframes"],
+  "properties":{
+    "id":{"type":"string"},"name":{"type":"string"},"category":{"type":"string"},"duration":{"type":"number","exclusiveMinimum":0},
+    "keyframes":{"type":"array","minItems":2,"items":{"type":"object","required":["t","control"],"properties":{"t":{"type":"number","minimum":0,"maximum":1},"label":{"type":"string"},"control":{"$ref":"#/$defs/control"}}}}
+  },
+  "$defs":{"vec3":{"type":"array","prefixItems":[{"type":"number"},{"type":"number"},{"type":"number"}],"minItems":3,"maxItems":3},
+    "control":{"type":"object","required":["pelvis","leftFoot","rightFoot","leftHand","rightHand","torsoYaw","torsoPitch"],"properties":{
+      "pelvis":{"$ref":"#/$defs/vec3"},"leftFoot":{"$ref":"#/$defs/vec3"},"rightFoot":{"$ref":"#/$defs/vec3"},"leftHand":{"$ref":"#/$defs/vec3"},"rightHand":{"$ref":"#/$defs/vec3"},
+      "torsoYaw":{"type":"number"},"torsoPitch":{"type":"number"},"leftFootYaw":{"type":"number"},"rightFootYaw":{"type":"number"},"headYaw":{"type":"number"},
+      "contacts":{"type":"array","prefixItems":[{"type":"boolean"},{"type":"boolean"}],"minItems":2,"maxItems":2}
+    }}
+  }
+}

@@ -1,0 +1,16 @@
+module human_embodiment
+import behavior
+require behavior rule.deterministic : Truth
+require behavior state.transition : Truth
+require behavior effect.evidenced : Truth
+facet module.id : Text = "human-embodiment-runtime"
+facet module.version : Text = "0.1.0-alpha.1"
+facet module.ready : Truth = true
+facet skeleton.canonical : Truth = true
+facet pose.deterministic : Truth = true
+facet support.fail_closed : Truth = true
+facet joint_limits.enforced : Truth = true
+facet motion.retargetable : Truth = true
+facet rsr.spatial_embodiment_bridge : Truth = true
+facet vsr.visual_pose_bridge : Truth = true
+facet evidence.per_frame : Truth = true
