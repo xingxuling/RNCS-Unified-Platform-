@@ -1,0 +1,23 @@
+{
+  "format": "rncs.module.v0.1",
+  "id": "human-embodiment",
+  "name": "RNCS Human Embodiment Runtime",
+  "version": "0.5.0-alpha.1",
+  "path": "packages/world/human-embodiment-runtime",
+  "layer": "world",
+  "runtime": "rncs.human-embodiment",
+  "dependsOn": ["rncs-core", "rsr", "vsr", "world-body-ir", "rcl"],
+  "test": "npm test --workspace @taowind/human-embodiment-runtime",
+  "capabilities": [
+    "professional-anatomical-rig",
+    "professional-fullbody-ik",
+    "scapulohumeral-rhythm",
+    "optional-knee-coupled-motion",
+    "foot-cop-pressure",
+    "segment-inertia",
+    "marker-calibration",
+    "anthropometry-calibration",
+    "opensim-trc-bridge-candidate",
+    "c3d-decoded-bridge-candidate"
+  ]
+}

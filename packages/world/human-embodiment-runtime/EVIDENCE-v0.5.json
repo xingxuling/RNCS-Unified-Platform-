@@ -1,0 +1,9 @@
+{
+  "format":"rncs.human-embodiment.evidence.v0.5",
+  "version":"0.5.0-alpha.1",
+  "status":"LOCAL_TECHNICAL_VERIFIED",
+  "tests":{"command":"npm test","passed":37,"failed":0},
+  "rcl":{"program":"HumanEmbodimentV05ProfessionalMotionContract","program_root":"bc8be5e555d5665441b135be85fd08a50d0c1f3dc4b258e5f0c7e20c39dd6717","realized_state_root":"b71885487c31659077f7d9099453cbf1576361db7a8533a42e6df46c5eb0df67","phase":"professional-motion-ready","foresee":1,"realize":1,"native_rbc":"UNVERIFIED_LOCAL_NATIVE_COMPILER_MISSING"},
+  "acceptance":{"professional_fullbody_ik":"PASS","scapulohumeral_rhythm":"PASS","knee_coupled_motion_optional":"PASS","foot_cop_pressure":"PASS","segment_inertia":"PASS","anthropometry_calibration":"PASS","marker_calibration":"PASS","trc_roundtrip":"PASS","opensim_marker_set_candidate":"PASS","c3d_decoded_bridge_boundary":"PASS","gateway_bridge_actions":"PASS"},
+  "claims_not_made":["clinical_diagnosis","force_plate_equivalence","full_binary_c3d_parser","opensim_musculoskeletal_model_equivalence","universal_human_joint_coupling_truth"]
+}

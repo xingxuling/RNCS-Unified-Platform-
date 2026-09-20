@@ -1,0 +1,28 @@
+reality HumanEmbodimentV05ProfessionalMotionContract {
+  facet body.phase : Text = "professional-anatomy-ready"
+  facet body.professional_fullbody_ik : Truth = true
+  facet body.scapulohumeral_rhythm : Truth = true
+  facet body.knee_coupled_motion_optional : Truth = true
+  facet body.foot_cop_pressure : Truth = true
+  facet body.segment_inertia : Truth = true
+  facet body.marker_calibration : Truth = true
+  facet body.anthropometry_calibration : Truth = true
+  facet body.trc_bridge : Truth = true
+  facet body.c3d_binary_parser_claimed : Truth = false
+  facet body.clinical_diagnostic_claimed : Truth = false
+  subject practitioner { warrant body.write on body }
+  emergence establishProfessionalMotion {
+    cause practitioner
+    when body.phase == "professional-anatomy-ready"
+    needs body.write on body
+    alter body.phase <- "professional-motion-ready"
+    preserve body.professional_fullbody_ik == true
+    preserve body.scapulohumeral_rhythm == true
+    preserve body.foot_cop_pressure == true
+    preserve body.c3d_binary_parser_claimed == false
+    preserve body.clinical_diagnostic_claimed == false
+    witness "rncs:human-embodiment:v0.5:professional-motion"
+  }
+  foresee establishProfessionalMotion
+  realize establishProfessionalMotion
+}
