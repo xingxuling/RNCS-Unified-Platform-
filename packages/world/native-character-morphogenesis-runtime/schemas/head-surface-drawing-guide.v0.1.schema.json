@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.head-surface-drawing-guide.v0.1",
+  "title": "RNCS Head Surface Drawing Guide v0.1",
+  "type": "object",
+  "required": ["format", "version", "posed_mesh_root", "visibility_root", "source_pixel_count", "stylization", "contour", "bounds", "contour_root", "guide_root"],
+  "properties": {
+    "format": {"const": "rncs.head-surface-drawing-guide.v0.1"},
+    "version": {"type": "string"},
+    "native_surface_root": {"type": ["string", "null"]},
+    "canonical_mesh_root": {"type": ["string", "null"]},
+    "weighted_mesh_root": {"type": ["string", "null"]},
+    "posed_mesh_root": {"type": "string", "minLength": 1},
+    "visibility_root": {"type": "string", "minLength": 1},
+    "surface_weighting_root": {"type": ["string", "null"]},
+    "view": {"type": "string"},
+    "source_pixel_count": {"type": "integer", "minimum": 1},
+    "raw_boundary_point_count": {"type": "integer", "minimum": 4},
+    "raw_silhouette_root": {"type": "string", "minLength": 1},
+    "stylization": {
+      "type": "object",
+      "required": ["method", "jaw_taper", "chin_taper"],
+      "properties": {
+        "method": {"const": "visible-skull-surface-plus-bounded-anime-jaw-taper"},
+        "jaw_taper": {"type": "number", "minimum": 0, "maximum": 0.5},
+        "chin_taper": {"type": "number", "minimum": 0, "maximum": 0.5}
+      }
+    },
+    "contour": {"type": "array", "minItems": 8, "items": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}], "minItems": 2, "maxItems": 2}},
+    "bounds": {
+      "type": "object",
+      "required": ["left", "right", "top", "bottom", "width", "height"],
+      "properties": {
+        "left": {"type": "number"}, "right": {"type": "number"}, "top": {"type": "number"}, "bottom": {"type": "number"},
+        "width": {"type": "number", "exclusiveMinimum": 0}, "height": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "contour_root": {"type": "string", "minLength": 1},
+    "guide_root": {"type": "string", "minLength": 1}
+  }
+}

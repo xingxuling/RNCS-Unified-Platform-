@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.cel-shading-drawing-guide.v0.1",
+  "title": "RNCS Cel Shading Drawing Guide v0.1",
+  "type": "object",
+  "required": ["format", "version", "visibility_root", "normal_buffer_root", "surface_id_buffer_root", "semantic_grammar_root", "lighting", "groups", "measurements", "guide_root"],
+  "properties": {
+    "format": {"const": "rncs.cel-shading-drawing-guide.v0.1"},
+    "version": {"type": "string"},
+    "native_surface_root": {"type": ["string", "null"]},
+    "posed_mesh_root": {"type": ["string", "null"]},
+    "visibility_root": {"type": "string", "minLength": 1},
+    "normal_buffer_root": {"type": "string", "minLength": 1},
+    "surface_id_buffer_root": {"type": "string", "minLength": 1},
+    "semantic_grammar_root": {"type": "string", "minLength": 1},
+    "lighting": {
+      "type": "object",
+      "required": ["model", "key_direction", "shadow_threshold", "highlight_threshold", "inset_pixels"],
+      "properties": {
+        "model": {"const": "three-band-cel-normal-ramp"},
+        "key_direction": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+        "shadow_threshold": {"type": "number"},
+        "highlight_threshold": {"type": "number"},
+        "inset_pixels": {"type": "integer", "minimum": 0}
+      }
+    },
+    "groups": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/group"}},
+    "measurements": {
+      "type": "object",
+      "required": ["visible_pixels", "shadow_pixels", "highlight_pixels", "shadow_parts", "highlight_parts", "visible_group_count", "shadow_group_count", "highlight_group_count"],
+      "properties": {
+        "visible_pixels": {"type": "integer", "minimum": 1},
+        "shadow_pixels": {"type": "integer", "minimum": 1},
+        "highlight_pixels": {"type": "integer", "minimum": 1},
+        "shadow_parts": {"type": "integer", "minimum": 1},
+        "highlight_parts": {"type": "integer", "minimum": 1},
+        "visible_group_count": {"type": "integer", "minimum": 1},
+        "shadow_group_count": {"type": "integer", "minimum": 1},
+        "highlight_group_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "guide_root": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "part": {
+      "type": "object",
+      "required": ["part_id", "group", "band", "contour", "bounds", "area", "part_root"],
+      "properties": {
+        "part_id": {"type": "string"},
+        "group": {"type": "string"},
+        "band": {"enum": ["shadow", "highlight"]},
+        "contour": {"type": "array", "minItems": 5, "items": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "number"}}},
+        "area": {"type": "number", "exclusiveMinimum": 0},
+        "part_root": {"type": "string", "minLength": 1}
+      }
+    },
+    "group": {
+      "type": "object",
+      "required": ["group", "material_class", "visible_pixels", "shadow_pixels", "highlight_pixels", "shadow_parts", "highlight_parts", "group_root"],
+      "properties": {
+        "group": {"type": "string"},
+        "material_class": {"enum": ["skin", "garment"]},
+        "visible_pixels": {"type": "integer", "minimum": 1},
+        "shadow_pixels": {"type": "integer", "minimum": 0},
+        "highlight_pixels": {"type": "integer", "minimum": 0},
+        "shadow_parts": {"type": "array", "items": {"$ref": "#/$defs/part"}},
+        "highlight_parts": {"type": "array", "items": {"$ref": "#/$defs/part"}},
+        "group_root": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

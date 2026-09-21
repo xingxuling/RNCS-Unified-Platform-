@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.garment-surface-drawing-guide.v0.1",
+  "title": "RNCS Garment Surface Drawing Guide v0.1",
+  "type": "object",
+  "required": ["format", "version", "mesh_silhouette_guide_root", "garment_attachment_root", "profile", "large_form_authority", "secondary_motion_authority", "torso", "sleeves", "collar", "measurements", "guide_root"],
+  "properties": {
+    "format": {"const": "rncs.garment-surface-drawing-guide.v0.1"},
+    "version": {"type": "string"},
+    "native_surface_root": {"type": ["string", "null"]},
+    "mesh_silhouette_guide_root": {"type": "string", "minLength": 1},
+    "semantic_target_root": {"type": ["string", "null"]},
+    "garment_attachment_root": {"type": "string", "minLength": 1},
+    "large_form_authority": {"const": "GarmentSurfaceDrawingGuide"},
+    "secondary_motion_authority": {"const": "DrawingMeshCage"},
+    "profile": {"type": "object"},
+    "torso": {"$ref": "#/$defs/section"},
+    "sleeves": {
+      "type": "object",
+      "required": ["left", "right"],
+      "properties": {"left": {"$ref": "#/$defs/section"}, "right": {"$ref": "#/$defs/section"}}
+    },
+    "collar": {
+      "type": "object",
+      "required": ["left", "right", "center_seam", "neckline_center", "apex"],
+      "properties": {
+        "left": {"type": "array", "minItems": 4},
+        "right": {"type": "array", "minItems": 4},
+        "center_seam": {"type": "object", "required": ["a", "b"]},
+        "neckline_center": {"type": "array", "minItems": 2, "maxItems": 2},
+        "apex": {"type": "array", "minItems": 2, "maxItems": 2}
+      }
+    },
+    "measurements": {
+      "type": "object",
+      "required": ["minimum_clearance_area_ratio", "maximum_clearance_area_ratio", "garment_panel_target_minimum", "source_panel_count"],
+      "properties": {
+        "minimum_clearance_area_ratio": {"type": "number", "exclusiveMinimum": 1},
+        "maximum_clearance_area_ratio": {"type": "number", "exclusiveMinimum": 1},
+        "garment_panel_target_minimum": {"type": "number", "minimum": 1},
+        "source_panel_count": {"type": "number", "minimum": 0}
+      }
+    },
+    "guide_root": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "section": {
+      "type": "object",
+      "required": ["source_mesh_guide_root", "source_group", "kind", "parts", "primary_contour", "section_root"],
+      "properties": {
+        "source_mesh_guide_root": {"type": "string", "minLength": 1},
+        "source_group": {"type": "string"},
+        "kind": {"enum": ["torso", "sleeve"]},
+        "parts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["source_part_root", "contour", "source_area", "garment_area", "clearance_area_ratio", "garment_part_root"],
+            "properties": {
+              "source_part_root": {"type": "string", "minLength": 1},
+              "contour": {"type": "array", "minItems": 6},
+              "source_area": {"type": "number", "exclusiveMinimum": 0},
+              "garment_area": {"type": "number", "exclusiveMinimum": 0},
+              "clearance_area_ratio": {"type": "number", "exclusiveMinimum": 1},
+              "garment_part_root": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "section_root": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

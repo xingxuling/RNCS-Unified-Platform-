@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.hair-surface-drawing-guide.v0.1",
+  "title": "RNCS Hair Surface Drawing Guide v0.1",
+  "type": "object",
+  "required": ["format", "version", "pose_root", "visibility_root", "scalp_attachment_root", "secondary_motion_authority", "scalp_roots", "masses", "roots_preserved", "crown", "fringe", "side_near", "side_far", "guide_root"],
+  "properties": {
+    "format": {"const": "rncs.hair-surface-drawing-guide.v0.1"},
+    "version": {"type": "string"},
+    "native_surface_root": {"type": ["string", "null"]},
+    "pose_root": {"type": "string", "minLength": 1},
+    "visibility_root": {"type": "string", "minLength": 1},
+    "scalp_attachment_root": {"type": "string", "minLength": 1},
+    "view": {"type": "string"},
+    "camera_yaw": {"type": "number"},
+    "hair_lag": {"type": "number"},
+    "secondary_motion_authority": {"const": "HairSurfaceDrawingGuide"},
+    "roots_preserved": {"const": true},
+    "near_side": {"enum": ["left", "right"]},
+    "far_side": {"enum": ["left", "right"]},
+    "scalp_roots": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["attachment_id", "screen_position", "entry_root"],
+        "properties": {
+          "attachment_id": {"type": "string"},
+          "screen_position": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}], "minItems": 2, "maxItems": 2},
+          "entry_root": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "masses": {"type": "array", "minItems": 2},
+    "crown": {"$ref": "#/$defs/contour"},
+    "fringe": {"$ref": "#/$defs/contour"},
+    "side_near": {"$ref": "#/$defs/contour"},
+    "side_far": {"$ref": "#/$defs/contour"},
+    "highlight": {"type": ["array", "null"]},
+    "guide_root": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "contour": {
+      "type": "object",
+      "required": ["contour", "contour_root"],
+      "properties": {
+        "contour": {"type": "array", "minItems": 3, "items": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}], "minItems": 2, "maxItems": 2}},
+        "contour_root": {"type": "string", "minLength": 1},
+        "root_attachment_ids": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

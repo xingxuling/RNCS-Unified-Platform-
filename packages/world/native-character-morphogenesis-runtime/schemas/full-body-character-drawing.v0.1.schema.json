@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.company/schemas/rncs/full-body-character-drawing.v0.1.schema.json",
+  "title": "RNCS Full Body Character Drawing v0.1",
+  "type": "object",
+  "required": ["format", "version", "identity_root", "drawing_root", "lower_body_status", "lower_body", "full_body_drawing_certificate", "full_body_drawing_certificate_root", "authority"],
+  "properties": {
+    "format": {"const": "rncs.full-body-character-drawing.v0.1"},
+    "version": {"type": "string"},
+    "identity_root": {"type": "string", "minLength": 1},
+    "drawing_root": {"type": "string", "minLength": 1},
+    "lower_body_status": {"const": "represented-in-canonical-morphology-v0.2-candidate"},
+    "lower_body": {
+      "type": "object",
+      "required": ["status", "legs", "bounds", "source_bones"],
+      "properties": {
+        "status": {"const": "represented-in-canonical-morphology-v0.2-candidate"},
+        "legs": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["side", "canonical_lengths", "full_contour", "foot"],
+            "properties": {
+              "side": {"enum": ["left", "right"]},
+              "canonical_lengths": {
+                "type": "object",
+                "required": ["thigh", "shin", "foot"],
+                "properties": {
+                  "thigh": {"type": "number", "exclusiveMinimum": 0},
+                  "shin": {"type": "number", "exclusiveMinimum": 0},
+                  "foot": {"type": "number", "exclusiveMinimum": 0}
+                }
+              },
+              "full_contour": {"type": "array", "minItems": 8},
+              "foot": {"type": "object", "required": ["width", "length", "contour"]}
+            }
+          }
+        },
+        "source_bones": {"type": "array", "minItems": 6},
+        "bounds": {"type": "object"}
+      }
+    },
+    "full_body_drawing_certificate": {"type": "object"},
+    "full_body_drawing_certificate_root": {"type": "string", "minLength": 1},
+    "authority": {
+      "type": "object",
+      "required": ["lower_body_geometry", "renderer_anatomy_authority"],
+      "properties": {
+        "renderer_anatomy_authority": {"const": false},
+        "lower_body_geometry": {"const": "Canonical Morphology Lower Body Extension"}
+      }
+    }
+  },
+  "additionalProperties": true
+}

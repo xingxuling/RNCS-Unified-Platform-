@@ -1,0 +1,58 @@
+phase: "6.5"
+name: "Character Drawing Compiler / Contour Rig"
+base: "main-95@dc7cc8c6963198adc1f0b802ea085d028cd3f4e6"
+intent: >-
+  Preserve the validated Canonical Morphology and Semantic Anatomy stack, but replace
+  primitive polygon/capsule final-character drawing with a view-conditioned character
+  drawing compiler that produces explicit head, face, hair, shoulder/armpit, torso,
+  limb, hand and garment contours.
+authority:
+  identity: "Character Genome"
+  geometry: "Canonical Morphology Field/Mesh"
+  semantic_anatomy: "Semantic Morphology Certificate"
+  drawing: "CharacterDrawingCompiler"
+  raster: "Renderer only; anatomy authority false"
+must_change:
+  - "Final Anime renderer consumes CharacterDrawingModel rather than primitive body capsules."
+  - "Front / 3/4 / profile have distinct drawing constructions."
+  - "Shoulder socket, armpit, ribcage-waist-pelvis hierarchy, limb taper and hand silhouette are first-class."
+  - "3/4 face uses bounded perspective construction; profile exposes one eye."
+  - "Every static gate and episode frame carries a CharacterDrawingCertificate root."
+must_not_change:
+  - "Do not replace Canonical Morphology, Mesh, Skinning, Visibility or Semantic Anatomy authority."
+  - "Do not use external visual generation models for acceptance."
+  - "Do not auto-set human_visual_acceptance=accepted."
+  - "Do not restore capsule primitives as the final character body path."
+red_regression:
+  evidence:
+    - "sha256:bcf0647a59c757db64d046632bb0155ab2845b2d21b60ee51aab638f256c3b53"
+    - "sha256:f2015f7239e47f37667772c9fe7fdfc2693ab272e0ea84fa560cda97bf849158"
+  status: "revision-requested"
+  observed_failures:
+    - "rigid trapezoid torso"
+    - "missing readable shoulder/armpit transition"
+    - "mechanical capsule-link arms"
+    - "underscaled terminal hands"
+    - "3/4 facial feature drift"
+verification:
+  required_gates:
+    - shoulder_socket_continuity
+    - armpit_contour_validity
+    - ribcage_waist_pelvis_hierarchy
+    - limb_taper_continuity
+    - hand_scale_validity
+    - face_feature_surface_containment
+    - three_quarter_asymmetry_validity
+    - profile_feature_visibility
+    - head_neck_shoulder_continuity
+    - garment_body_conformance
+    - whole_character_silhouette_plausibility
+  media:
+    seconds: 5
+    frames: 120
+    fps: 24
+    resolution: "640x360"
+  human_gate: "pending"
+rollback:
+  - "Revert Phase 6.5 branch; Phase 6.4 Semantic Anatomy remains a valid mainline baseline."
+  - "CharacterDrawingCompiler is downstream of Geometry/Semantic authority and can be removed independently."
