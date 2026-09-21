@@ -30,6 +30,7 @@ export const REALITY_STUDIO_EVIDENCE_FORMAT = 'taowind.reality-studio-evidence-l
 export const REALITY_STUDIO_GRAPH_FORMAT = 'taowind.reality-studio-reality-graph.v0.1';
 export const REALITY_STUDIO_INTEGRATED_TIMELINE_FORMAT = 'taowind.reality-studio-integrated-runtime-timeline.v0.1';
 export const REALITY_STUDIO_INTEGRATED_REPLAY_FORMAT = 'taowind.reality-studio-integrated-runtime-replay.v0.1';
+export const REALITY_STUDIO_GAME_CAPABILITIES_FORMAT = 'taowind.reality-studio-game-capabilities.v0.1';
 
 const FIXED_TIME = '2026-07-18T00:00:00.000Z';
 const ZERO_ROOT = '0'.repeat(64);
@@ -143,6 +144,7 @@ export class RealityStudioAdapter {
     this.last_replay = null;
     this.last_snapshot = null;
     this.last_viewport = null;
+    this.last_asset_streaming = null;
     this.joined_slots = [];
     this.network_runtime = null;
     this.network_session_id = null;
@@ -706,8 +708,15 @@ export class RealityStudioAdapter {
       network_world_config_root: this.compilation?.world_config_root ?? null,
       behavior_program_root: unified?.behavior?.program?.program_root ?? null,
       behavior_state_root: unified?.behavior?.runtime?.state_root ?? null,
+      input_profile_root: unified?.input?.profile?.input_root ?? null,
+      input_frame_root: unified?.input?.last_frame?.frame_root ?? null,
       unified_spatial_workspace_root: unified?.spatial?.workspace?.workspace_root ?? null,
       unified_spatial_state_root: unified?.spatial?.snapshot?.stateRoot ?? null,
+      unified_spatial_body_root: unified?.spatial?.snapshot?.bodyRoot ?? null,
+      unified_spatial_character_root: unified?.spatial?.snapshot?.characterRoot ?? null,
+      unified_spatial_frame_root: unified?.spatial?.frame?.frame_root ?? null,
+      asset_audit_root: unified?.assets?.audit?.audit_root ?? null,
+      sequence_root: unified?.sequence?.sequence?.sequence_root ?? null,
       rsr_state_root: this.network_snapshot?.stateRoot ?? null,
       rsr_body_root: this.network_snapshot?.bodyRoot ?? null,
       vsr_frame_root: this.last_viewport?.frame_root ?? null,
@@ -720,10 +729,235 @@ export class RealityStudioAdapter {
       integration_epoch_root: integration.epoch_root ?? null,
       integration_timeline_root: integration.timeline_root ?? null,
       integrated_replay_root: this.last_replay?.replay_root ?? null,
+      asset_streaming_catalog_root: this.last_asset_streaming?.catalog_root ?? null,
+      asset_streaming_receipt_root: this.last_asset_streaming?.receipt_root ?? null,
     };
   }
 
-  _buildGaps(unified) {
+  _gameCapabilitiesView(unified) {
+    const input = unified?.input ?? {};
+    const profile = input.profile ?? null;
+    const actionEntries = Object.entries(profile?.actions ?? {});
+    const bindingCount = actionEntries.reduce((total, [, action]) => total + (Array.isArray(action?.bindings) ? action.bindings.length : 0), 0);
+    const spatial = unified?.spatial ?? {};
+    const spatialSnapshot = spatial.snapshot ?? {};
+    const spatialValidation = spatial.validation ?? {};
+    const bodies = Array.isArray(spatialSnapshot.bodies) ? spatialSnapshot.bodies : [];
+    const characters = Array.isArray(spatialSnapshot.characters) ? spatialSnapshot.characters : [];
+    const sequence = unified?.sequence?.sequence ?? {};
+    const tracks = Array.isArray(sequence.tracks) ? sequence.tracks : [];
+    const animationTracks = tracks.filter(track => track?.type === 'animation');
+    const animationClipCount = animationTracks.reduce((total, track) => total + (Array.isArray(track?.clips) ? track.clips.length : 0), 0);
+    const assets = unified?.assets ?? {};
+    const assetItems = Array.isArray(assets.items) ? assets.items : [];
+    const assetAudit = assets.audit?.summary ?? {};
+    const stream = this.last_asset_streaming;
+    const streamReceipt = stream?.receipt ?? null;
+    const readyAssetCount = streamReceipt?.readyAssetIds?.length ?? 0;
+    const failedAssetCount = streamReceipt?.failedAssetIds?.length ?? 0;
+    const blockedAssetCount = streamReceipt?.blockedAssetIds?.length ?? 0;
+    const streamStatus = stream
+      ? failedAssetCount > 0
+        ? 'failed'
+        : readyAssetCount === assetItems.length && assetItems.length > 0
+          ? 'verified'
+          : readyAssetCount > 0
+            ? 'candidate-verified'
+            : 'unavailable'
+      : 'experimental';
+    const runtimeHealthy = this.network_health?.server?.status === 'healthy';
+    const playerIds = this.joined_slots.map(slot => slot.player_id).filter(Boolean);
+    const activeActions = input.last_frame
+      ? Object.entries(input.last_frame.actions ?? {}).filter(([, action]) => action?.pressed === true).map(([name]) => name)
+      : [];
+    const systems = [
+      {
+        id: 'input',
+        title: 'Player Input',
+        subtitle: 'InputActionRuntime / action map',
+        owner: 'UnifiedManufacturingSession',
+        status: profile ? 'ready' : 'unavailable',
+        authority: 'input profile projection',
+        source: 'session.input.profile',
+        api: 'session.sampleInput(raw)',
+        summary: profile ? `${actionEntries.length} actions · ${bindingCount} bindings` : 'input profile unavailable',
+        metrics: {
+          actions: actionEntries.length,
+          bindings: bindingCount,
+          devices: Object.values(profile?.devices ?? {}).filter(Boolean).length,
+          runtime_state: input.last_frame ? 'sampled' : 'configured',
+          active_actions: activeActions.length,
+        },
+        roots: {
+          profile_root: profile?.input_root ?? null,
+          last_frame_root: input.last_frame?.frame_root ?? null,
+        },
+        evidence_refs: [profile?.input_root, input.last_frame?.frame_root].filter(Boolean),
+        gaps: profile ? [] : ['GAP_GAME_INPUT_PROFILE'],
+      },
+      {
+        id: 'spatial',
+        title: 'Spatial Bodies',
+        subtitle: 'RSR spatial authoring preview',
+        owner: 'SpatialStudioSession / RSR',
+        status: spatialValidation.valid ? 'ready' : 'failed',
+        authority: 'authoring-preview; Network RSR remains authoritative',
+        source: 'session.spatial.inspect()',
+        api: 'session.spatialStep({ commands })',
+        summary: `${bodies.length} bodies · ${characters.length} characters · tick ${spatialSnapshot.tick ?? '—'}`,
+        metrics: {
+          tick: spatialSnapshot.tick ?? null,
+          bodies: bodies.length,
+          characters: characters.length,
+          contacts: spatialSnapshot.contacts?.length ?? 0,
+          joints: spatialSnapshot.joints?.length ?? 0,
+          frame_verified: spatial.frame?.verified === true,
+        },
+        roots: {
+          workspace_root: spatial.workspace?.workspace_root ?? null,
+          state_root: spatialSnapshot.stateRoot ?? null,
+          body_root: spatialSnapshot.bodyRoot ?? null,
+          character_root: spatialSnapshot.characterRoot ?? null,
+          frame_root: spatial.frame?.frame_root ?? null,
+        },
+        evidence_refs: [spatialSnapshot.stateRoot, spatialSnapshot.bodyRoot, spatialSnapshot.characterRoot, spatial.frame?.frame_root].filter(Boolean),
+        gaps: [],
+      },
+      {
+        id: 'character',
+        title: 'Character Control',
+        subtitle: 'Capsule controller / grounded state',
+        owner: 'RSR Spatial Embodiment',
+        status: characters.length > 0 ? 'ready' : 'unavailable',
+        authority: 'authoring-preview; player commands enter Network RSR separately',
+        source: 'session.spatial.snapshot.characters',
+        api: 'session.spatialStep({ commands })',
+        summary: characters.length > 0 ? `${characters.length} controllers · ${characters.filter(character => character.grounded).length} grounded` : 'no character controller',
+        metrics: {
+          controllers: characters.length,
+          bound_bodies: characters.filter(character => character?.bodyId).length,
+          grounded: characters.filter(character => character?.grounded === true).length,
+          tick: spatialSnapshot.tick ?? null,
+        },
+        roots: {
+          state_root: spatialSnapshot.stateRoot ?? null,
+          character_root: spatialSnapshot.characterRoot ?? null,
+        },
+        evidence_refs: [spatialSnapshot.characterRoot, spatialSnapshot.stateRoot].filter(Boolean),
+        gaps: [],
+      },
+      {
+        id: 'animation',
+        title: 'Animation Tracks',
+        subtitle: 'Sequencer presentation layer',
+        owner: 'Sequence Workbench',
+        status: animationClipCount > 0 ? 'ready' : animationTracks.length > 0 ? 'experimental' : 'unavailable',
+        authority: 'presentation only; no authoritative animation clip is inferred',
+        source: 'session.sequence',
+        api: 'session.sequenceView()',
+        summary: `${animationTracks.length} tracks · ${animationClipCount} clips`,
+        metrics: {
+          animation_tracks: animationTracks.length,
+          clips: animationClipCount,
+          authored_tracks: tracks.length,
+          state: animationClipCount > 0 ? 'authored' : 'no-clips-authored',
+        },
+        roots: {
+          sequence_root: sequence.sequence_root ?? null,
+          frame_root: unified?.sequence?.last_frame?.frame_root ?? null,
+        },
+        evidence_refs: [sequence.sequence_root, unified?.sequence?.last_frame?.frame_root].filter(Boolean),
+        gaps: animationClipCount > 0 ? [] : ['GAP_GAME_ANIMATION_CLIPS'],
+      },
+      {
+        id: 'assets',
+        title: 'Asset Streaming',
+        subtitle: 'VSR spatial asset cache',
+        owner: 'Asset Streaming Runtime',
+        status: streamStatus,
+        authority: 'cache residency evidence only; VSR embedded projection is not cache residency',
+        source: 'session.assetStreaming()',
+        api: 'session.assetStreaming({ request })',
+        summary: stream ? `${readyAssetCount} ready · ${failedAssetCount} failed · ${blockedAssetCount} blocked` : `${assetItems.length} assets · request not started`,
+        metrics: {
+          catalog_assets: assetItems.length,
+          ready: readyAssetCount,
+          failed: failedAssetCount,
+          blocked: blockedAssetCount,
+          bytes_resident: streamReceipt?.bytesLoaded ?? 0,
+          audit_warnings: assetAudit.warnings ?? 0,
+        },
+        roots: {
+          audit_root: assets.audit?.audit_root ?? null,
+          catalog_root: stream?.catalog_root ?? null,
+          receipt_root: stream?.receipt_root ?? null,
+        },
+        evidence_refs: [assets.audit?.audit_root, stream?.catalog_root, stream?.receipt_root].filter(Boolean),
+        gaps: streamStatus === 'experimental' ? ['GAP_GAME_ASSET_STREAMING_NOT_STARTED'] : streamStatus === 'failed' ? ['GAP_GAME_ASSET_STREAM_PAYLOAD_CACHE'] : [],
+        reason: stream
+          ? failedAssetCount > 0 ? 'The real cache request returned failed asset operations; no residency is claimed.' : null
+          : 'No stream request has been issued by this adapter session; cache residency is not inferred from the verified VSR projection.',
+      },
+    ];
+    const payload = {
+      format: REALITY_STUDIO_GAME_CAPABILITIES_FORMAT,
+      version: REALITY_STUDIO_ADAPTER_VERSION,
+      authority: 'product-body-projection-only',
+      source: 'UnifiedManufacturingSession.inspect()',
+      world: {
+        scene_id: unified?.project?.active_scene_id ?? null,
+        scene_nodes: unified?.scene?.nodes?.length ?? 0,
+        network_players: this.network_health?.server?.players ?? null,
+        network_bodies: this.network_snapshot?.bodies?.length ?? null,
+        active_world_id: spatial.workspace?.active_world_id ?? null,
+      },
+      systems,
+      controls: {
+        input_sample: {
+          available: Boolean(profile),
+          source: 'session.sampleInput(raw)',
+          status: input.last_frame ? 'recorded' : 'unavailable',
+          last_frame_root: input.last_frame?.frame_root ?? null,
+        },
+        game_input: {
+          available: runtimeHealthy && playerIds.length > 0 && Boolean(profile),
+          source: 'session.sampleInput + networkRuntime.submitInput + advanceServerTick',
+          player_ids: playerIds,
+          default_player_id: playerIds[0] ?? null,
+        },
+        player_command: {
+          available: runtimeHealthy && playerIds.length > 0,
+          source: 'networkRuntime.submitInput + advanceServerTick',
+          player_ids: playerIds,
+          default_player_id: playerIds[0] ?? null,
+          command_types: ['move', 'jump', 'impulse'],
+        },
+        spatial_preview_step: {
+          available: spatialValidation.valid === true,
+          source: 'session.spatialStep({ commands })',
+          authority: 'authoring-preview-only',
+        },
+        asset_stream: {
+          available: assetItems.length > 0,
+          source: 'session.assetStreaming({ request })',
+          status: streamStatus,
+          reason: stream ? null : 'request-on-demand; no cache request has been issued',
+        },
+      },
+      boundaries: [
+        'Network RSR snapshot is the current authoritative multiplayer state.',
+        'Unified spatial snapshot is an authoring-preview state and is not silently promoted to network authority.',
+        'Animation tracks remain presentation-only until real clips are authored and bound.',
+        'Asset streaming reports cache receipts only; verified VSR drawing does not imply cache residency.',
+      ],
+      root: null,
+    };
+    payload.root = root(payload);
+    return payload;
+  }
+
+  _buildGaps(unified, gameCapabilities = null) {
+    const game = gameCapabilities ?? this._gameCapabilitiesView(unified);
     const gaps = [
       {
         code: 'RCL_GAP_STUDIO_COMBINED_RUNTIME_TICK',
@@ -777,6 +1011,34 @@ export class RealityStudioAdapter {
         severity: 'medium',
         detail,
         evidence: [this.world_body_candidate?.manifest?.manifestRoot ?? null],
+      });
+    }
+    const animation = game.systems.find(system => system.id === 'animation');
+    if (animation?.status === 'experimental') {
+      gaps.push({
+        code: 'GAP_GAME_ANIMATION_CLIPS',
+        status: 'experimental',
+        severity: 'low',
+        detail: 'The existing Sequencer exposes an animation track, but this game-world session has no authored animation clips to drive.',
+        evidence: animation.evidence_refs,
+      });
+    }
+    const assets = game.systems.find(system => system.id === 'assets');
+    if (assets?.status === 'experimental') {
+      gaps.push({
+        code: 'GAP_GAME_ASSET_STREAMING_NOT_STARTED',
+        status: 'experimental',
+        severity: 'low',
+        detail: assets.reason,
+        evidence: assets.evidence_refs,
+      });
+    } else if (assets?.status === 'failed') {
+      gaps.push({
+        code: 'GAP_GAME_ASSET_STREAM_PAYLOAD_CACHE',
+        status: 'open',
+        severity: 'medium',
+        detail: assets.reason,
+        evidence: assets.evidence_refs,
       });
     }
     return gaps;
@@ -909,11 +1171,18 @@ export class RealityStudioAdapter {
     };
   }
 
-  _buildEvidenceLedger(unified, branchEvaluation, gaps) {
+  _buildEvidenceLedger(unified, branchEvaluation, gaps, gameCapabilities = null) {
     const sourceRoots = this._sourceRoots(unified, branchEvaluation);
     const compilationVerified = this.compilation_verification?.valid === true;
     const viewportVerified = this.last_viewport?.frame_verified === true;
     const integration = this._integrationEpochView();
+    const game = gameCapabilities ?? this._gameCapabilitiesView(unified);
+    const gameSystem = id => game.systems.find(system => system.id === id) ?? null;
+    const inputSystem = gameSystem('input');
+    const spatialSystem = gameSystem('spatial');
+    const characterSystem = gameSystem('character');
+    const animationSystem = gameSystem('animation');
+    const assetsSystem = gameSystem('assets');
     const entries = [
       { entry_id: 'source-project', kind: 'unified-project', status: unified.validation?.valid ? 'verified' : 'failed', root: sourceRoots.project_root, owner: 'UnifiedManufacturingSession' },
       { entry_id: 'network-compilation', kind: 'network-world-compilation', status: compilationVerified ? 'verified' : 'failed', root: sourceRoots.network_compilation_root, owner: 'Network World Compiler' },
@@ -924,6 +1193,11 @@ export class RealityStudioAdapter {
       { entry_id: 'behavior-runtime', kind: 'behavior-runtime', status: unified.behavior.validation?.valid ? 'verified' : 'failed', root: sourceRoots.behavior_state_root, program_root: sourceRoots.behavior_program_root, owner: 'Behavior Fabric' },
       { entry_id: 'integrated-runtime-timeline', kind: 'adapter-behavior-network-epoch', status: integration.status, root: integration.timeline_root, epoch_root: integration.epoch_root ?? null, owner: 'Reality Studio Adapter + existing runtime snapshots' },
       { entry_id: 'integrated-replay', kind: 'isolated-behavior-network-replay', status: this.last_replay?.status ?? 'unavailable', root: this.last_replay?.replay_root ?? null, timeline_root: integration.timeline_root, owner: 'BehaviorEditorSession + RealityNetworkRuntime checkpoint replay' },
+      { entry_id: 'game-input-profile', kind: 'game-input-profile', status: inputSystem?.status ?? 'unavailable', root: inputSystem?.roots?.profile_root ?? null, frame_root: inputSystem?.roots?.last_frame_root ?? null, owner: inputSystem?.owner ?? 'UnifiedManufacturingSession' },
+      { entry_id: 'game-spatial-preview', kind: 'spatial-authoring-preview', status: spatialSystem?.metrics?.frame_verified ? 'candidate-verified' : 'unavailable', root: spatialSystem?.roots?.frame_root ?? spatialSystem?.roots?.state_root ?? null, state_root: spatialSystem?.roots?.state_root ?? null, owner: spatialSystem?.owner ?? 'SpatialStudioSession / RSR' },
+      { entry_id: 'game-character-controllers', kind: 'character-controller-preview', status: characterSystem?.status ?? 'unavailable', root: characterSystem?.roots?.character_root ?? null, state_root: characterSystem?.roots?.state_root ?? null, owner: characterSystem?.owner ?? 'RSR Spatial Embodiment' },
+      { entry_id: 'game-animation-sequence', kind: 'animation-sequence-presentation', status: animationSystem?.status ?? 'unavailable', root: animationSystem?.roots?.sequence_root ?? null, owner: animationSystem?.owner ?? 'Sequence Workbench' },
+      { entry_id: 'game-asset-streaming', kind: 'asset-streaming-receipt', status: assetsSystem?.status ?? 'unavailable', root: assetsSystem?.roots?.receipt_root ?? assetsSystem?.roots?.catalog_root ?? null, catalog_root: assetsSystem?.roots?.catalog_root ?? null, owner: assetsSystem?.owner ?? 'Asset Streaming Runtime' },
       { entry_id: 'adapter-events', kind: 'adapter-event-head', status: this.events.length ? 'recorded' : 'unavailable', root: this.events.at(-1)?.event_root ?? null, owner: 'Reality Studio Adapter' },
       { entry_id: 'production-promotion', kind: 'production-promotion', status: 'unavailable', root: null, owner: 'External authority gate' },
     ];
@@ -944,6 +1218,12 @@ export class RealityStudioAdapter {
         behavior_replay: Boolean(this.last_replay?.deterministic),
         integrated_behavior_network_replay: Boolean(this.last_replay?.deterministic),
         integrated_replay_canonical_owner: false,
+        game_input_profile: inputSystem?.status === 'ready',
+        game_spatial_preview: spatialSystem?.metrics?.frame_verified === true,
+        game_spatial_preview_canonical_owner: false,
+        game_character_controllers: (characterSystem?.metrics?.controllers ?? 0) > 0,
+        game_animation_clips: (animationSystem?.metrics?.clips ?? 0) > 0,
+        game_asset_streaming_receipt: Boolean(assetsSystem?.roots?.receipt_root),
         production_runtime: false,
       },
     };
@@ -995,9 +1275,10 @@ export class RealityStudioAdapter {
     this._syncNetwork('inspect');
     const unified = this.session.inspect();
     const branchEvaluation = this._refreshBranchEvaluation();
-    const gaps = this._buildGaps(unified);
+    const gameCapabilities = this._gameCapabilitiesView(unified);
+    const gaps = this._buildGaps(unified, gameCapabilities);
     const gate = this._commitGate(branchEvaluation, gaps);
-    const evidence = this._buildEvidenceLedger(unified, branchEvaluation, gaps);
+    const evidence = this._buildEvidenceLedger(unified, branchEvaluation, gaps, gameCapabilities);
     const graph = this._buildGraph(unified, branchEvaluation, evidence, gate, gaps);
     const selected = graph.nodes.find(node => node.id === this.selected_node_id) ?? graph.nodes[0];
     const sourceRoots = this._sourceRoots(unified, branchEvaluation);
@@ -1017,6 +1298,7 @@ export class RealityStudioAdapter {
         validation: unified.validation,
       },
       runtime: this._runtimeView(),
+      game_capabilities: gameCapabilities,
       graph,
       inspector: {
         selected_node_id: selected.id,
@@ -1080,6 +1362,11 @@ export class RealityStudioAdapter {
         candidate: { available: true, source: 'session.proposeLiveUpdate' },
         commit: { available: gate.local_candidate_commit_ready, source: 'session.commitLiveUpdate', authority: 'local-candidate-only' },
         deploy: { available: false, status: 'unavailable', reason: 'No production deployment authority is connected.' },
+        input_sample: gameCapabilities.controls.input_sample,
+        game_input: gameCapabilities.controls.game_input,
+        player_command: gameCapabilities.controls.player_command,
+        spatial_preview_step: gameCapabilities.controls.spatial_preview_step,
+        asset_stream: gameCapabilities.controls.asset_stream,
       },
       event_tail: this.events.slice(-100).map(event => clone(event)),
       gaps,
@@ -1145,6 +1432,152 @@ export class RealityStudioAdapter {
     };
   }
 
+  _requireJoinedPlayer(playerId = null) {
+    const requested = String(playerId ?? this.joined_slots[0]?.player_id ?? '');
+    const player = this.joined_slots.find(slot => slot.player_id === requested);
+    if (!player) {
+      fail('STUDIO_PLAYER_REQUIRED', 'A joined compiled player slot is required for a network game command', {
+        requested_player_id: requested || null,
+        available_player_ids: this.joined_slots.map(slot => slot.player_id),
+      });
+    }
+    return player.player_id;
+  }
+
+  async _dispatchGameInput(payload = {}) {
+    const unifiedBefore = this.session.inspect();
+    if (!unifiedBefore.input?.profile) {
+      fail('STUDIO_INPUT_PROFILE_UNAVAILABLE', 'The active Unified Project has no verified input profile');
+    }
+    const playerId = this._requireJoinedPlayer(payload.player_id);
+    const frame = this.session.sampleInput(clone(payload.raw ?? {}));
+    const actions = this.session.inputRuntime.actionBooleans(frame);
+    const axisX = (actions.move_right ? 1 : 0) - (actions.move_left ? 1 : 0);
+    const axisZ = (actions.move_down ? 1 : 0) - (actions.move_up ? 1 : 0);
+    const networkCommand = axisX !== 0 || axisZ !== 0
+      ? { type: 'move', x: axisX * 1000000, z: axisZ * 1000000 }
+      : null;
+    await this._stepOnce({
+      behaviorInput: actions,
+      networkInput: networkCommand ? { player_id: playerId, command: networkCommand } : null,
+    });
+    await this._refreshViewport();
+    this.record('game.input-dispatched', {
+      frame_root: frame.frame_root,
+      input_root: frame.input_root ?? unifiedBefore.input.profile.input_root ?? null,
+      player_id: playerId,
+      active_actions: Object.entries(frame.actions ?? {}).filter(([, action]) => action?.pressed === true).map(([name]) => name),
+      network_command: networkCommand,
+      network_tick: this.network_health?.server?.tick ?? null,
+      network_state_root: this.network_health?.server?.stateRoot ?? null,
+    });
+    return this.inspect();
+  }
+
+  async _dispatchPlayerCommand(payload = {}) {
+    const playerId = this._requireJoinedPlayer(payload.player_id);
+    const command = clone(payload.player_command ?? payload.network_command ?? payload.command ?? {});
+    const commandType = String(command.type ?? '');
+    if (!['move', 'jump', 'impulse'].includes(commandType)) {
+      fail('STUDIO_PLAYER_COMMAND_UNSUPPORTED', `Network RSR accepts move, jump, or impulse; received ${commandType || 'empty command'}`, {
+        player_id: playerId,
+        command_type: commandType || null,
+      });
+    }
+    const result = await this._stepOnce({
+      behaviorInput: payload.behavior_input ?? {},
+      networkInput: { player_id: playerId, command },
+    });
+    await this._refreshViewport();
+    this.record('game.player-command-dispatched', {
+      player_id: playerId,
+      command,
+      network_tick: result.tick ?? this.network_health?.server?.tick ?? null,
+      accepted_input_count: Array.isArray(result.inputs) ? result.inputs.length : null,
+      network_state_root: result.snapshot?.stateRoot ?? this.network_health?.server?.stateRoot ?? null,
+      network_receipt_root: result.snapshot?.serverReceiptRoot ?? null,
+    });
+    return this.inspect();
+  }
+
+  _stepSpatialPreview(payload = {}) {
+    const commands = Array.isArray(payload.commands) ? clone(payload.commands) : [];
+    const result = this.session.spatialStep({ commands });
+    const spatial = result.spatial ?? this.session.inspect().spatial ?? {};
+    this.record('game.spatial-preview-stepped', {
+      command_count: commands.length,
+      tick: spatial.snapshot?.tick ?? null,
+      state_root: spatial.snapshot?.stateRoot ?? null,
+      body_root: spatial.snapshot?.bodyRoot ?? null,
+      character_root: spatial.snapshot?.characterRoot ?? null,
+      frame_root: spatial.frame?.frame_root ?? null,
+      authority: 'authoring-preview-only',
+    });
+    return this.inspect();
+  }
+
+  async _streamGameAssets(payload = {}) {
+    const unified = this.session.inspect();
+    const defaultAssetIds = (unified.assets?.items ?? [])
+      .map(asset => asset.asset_id ?? asset.id)
+      .filter(Boolean);
+    const requestedAssetIds = Array.isArray(payload.requested_asset_ids)
+      ? payload.requested_asset_ids.map(String)
+      : defaultAssetIds;
+    const request = {
+      requestedAssetIds,
+      ...(payload.request && typeof payload.request === 'object' ? clone(payload.request) : {}),
+    };
+    if (!Array.isArray(request.requestedAssetIds)) request.requestedAssetIds = requestedAssetIds;
+    const result = await this.session.assetStreaming({
+      cacheDir: payload.cache_dir,
+      profile: payload.profile ?? 'runtime',
+      maxConcurrent: Number(payload.max_concurrent ?? 4),
+      request,
+    });
+    const receipt = result.asset_streaming_receipt ?? {};
+    const readyAssetIds = Array.isArray(receipt.readyAssetIds) ? receipt.readyAssetIds.map(String) : [];
+    const failedAssetIds = Array.isArray(receipt.failedAssetIds) ? receipt.failedAssetIds.map(String) : [];
+    const blockedAssetIds = Array.isArray(receipt.blockedAssetIds) ? receipt.blockedAssetIds.map(String) : [];
+    const resolution = result.asset_streaming_resolution ?? {};
+    this.last_asset_streaming = {
+      status: failedAssetIds.length > 0
+        ? 'failed'
+        : readyAssetIds.length === requestedAssetIds.length && requestedAssetIds.length > 0
+          ? 'verified'
+          : readyAssetIds.length > 0
+            ? 'candidate-verified'
+            : 'unavailable',
+      request_root: root(request),
+      catalog_root: result.asset_streaming_catalog_root ?? null,
+      receipt_root: receipt.receiptRoot ?? null,
+      receipt: {
+        readyAssetIds,
+        failedAssetIds,
+        blockedAssetIds,
+        bytesLoaded: Number(receipt.bytesLoaded ?? 0),
+        operationCount: Array.isArray(receipt.operations) ? receipt.operations.length : null,
+      },
+      resolution: {
+        resolved: resolution.resolved ?? null,
+        failed: resolution.failed ?? null,
+        blocked: resolution.blocked ?? null,
+      },
+    };
+    this.record('game.asset-streaming-requested', {
+      request_root: this.last_asset_streaming.request_root,
+      catalog_root: this.last_asset_streaming.catalog_root,
+      receipt_root: this.last_asset_streaming.receipt_root,
+      requested_count: requestedAssetIds.length,
+      ready_count: readyAssetIds.length,
+      failed_count: failedAssetIds.length,
+      blocked_count: blockedAssetIds.length,
+      bytes_loaded: this.last_asset_streaming.receipt.bytesLoaded,
+      status: this.last_asset_streaming.status,
+    });
+    return this.inspect();
+  }
+
   async command(command, payload = {}) {
     const cmd = String(command ?? '');
     if (cmd === 'select') {
@@ -1159,6 +1592,19 @@ export class RealityStudioAdapter {
       await this._refreshViewport();
       return this.inspect();
     }
+    if (cmd === 'input-sample') {
+      const frame = this.session.sampleInput(clone(payload.raw ?? {}));
+      this.record('game.input-sampled', {
+        frame_root: frame.frame_root,
+        input_root: frame.input_root ?? null,
+        devices: frame.devices,
+      });
+      return this.inspect();
+    }
+    if (cmd === 'game-input') return this._dispatchGameInput(payload);
+    if (cmd === 'player-command') return this._dispatchPlayerCommand(payload);
+    if (cmd === 'spatial-step') return this._stepSpatialPreview(payload);
+    if (cmd === 'asset-stream') return this._streamGameAssets(payload);
     if (cmd === 'run') return this._run(payload.ticks, payload);
     if (cmd === 'pause') {
       this.control_mode = 'paused';

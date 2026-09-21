@@ -25,6 +25,16 @@ test('Reality Studio adapter projects real RNCS runtime state into the Reality G
   assert.equal(initial.integration.status, 'recorded');
   assert.equal(initial.integration.entry_count, 0);
   assert.equal(initial.controls.replay.available, false);
+  assert.ok(initial.game_capabilities.root);
+  assert.equal(initial.game_capabilities.systems.find(system => system.id === 'input').status, 'ready');
+  assert.equal(initial.game_capabilities.systems.find(system => system.id === 'spatial').metrics.bodies, 6);
+  assert.equal(initial.game_capabilities.systems.find(system => system.id === 'character').metrics.controllers, 3);
+  assert.equal(initial.game_capabilities.systems.find(system => system.id === 'animation').status, 'experimental');
+  assert.equal(initial.game_capabilities.systems.find(system => system.id === 'assets').status, 'experimental');
+  assert.equal(initial.controls.game_input.available, true);
+  assert.deepEqual(initial.controls.player_command.player_ids, ['blue', 'red']);
+  assert.ok(initial.evidence.entries.some(entry => entry.entry_id === 'game-input-profile'));
+  assert.ok(initial.gaps.some(gap => gap.code === 'GAP_GAME_ASSET_STREAMING_NOT_STARTED'));
 
   const viewport = await session.command('viewport');
   assert.match(viewport.viewport_png_data_url, /^data:image\/png;base64,/);
@@ -137,4 +147,38 @@ test('Reality Studio candidate path keeps authority and confirmation as separate
   assert.equal(committed.integration.entry_count, 0);
   assert.ok(committed.event_tail.some(event => event.type === 'candidate.committed-local'));
   assert.ok(committed.evidence.ledger_root);
+});
+
+test('Reality Studio exposes real game input, player commands, preview stepping, and asset receipts', async () => {
+  const session = await RealityStudioAdapter.create({ sessionId: 'test:reality-studio-game-capabilities' });
+  const input = await session.command('game-input', { raw: { keys: ['KeyD'] } });
+  const inputSystem = input.game_capabilities.systems.find(system => system.id === 'input');
+  assert.equal(input.runtime.tick, 1);
+  assert.equal(inputSystem.metrics.active_actions, 1);
+  assert.ok(inputSystem.roots.last_frame_root);
+  assert.ok(input.event_tail.some(event => event.type === 'game.input-dispatched' && event.details.active_actions.includes('move_right')));
+  assert.ok(input.runtime.transport.sent > 0);
+
+  const player = await session.command('player-command', { player_id: 'blue', player_command: { type: 'jump' } });
+  assert.equal(player.runtime.tick, 2);
+  assert.equal(player.runtime.clients.blue.syncStatus, 'synchronized');
+  assert.ok(player.runtime.transport.sent > input.runtime.transport.sent);
+  assert.ok(player.event_tail.some(event => event.type === 'game.player-command-dispatched'));
+
+  const networkTickBeforePreview = player.runtime.tick;
+  const preview = await session.command('spatial-step', { commands: [] });
+  const spatialSystem = preview.game_capabilities.systems.find(system => system.id === 'spatial');
+  assert.equal(preview.runtime.tick, networkTickBeforePreview);
+  assert.equal(spatialSystem.metrics.tick, 1);
+  assert.ok(spatialSystem.roots.frame_root);
+  assert.ok(preview.game_capabilities.boundaries.some(boundary => boundary.includes('authoring-preview')));
+  assert.ok(preview.event_tail.some(event => event.type === 'game.spatial-preview-stepped'));
+
+  const streamed = await session.command('asset-stream');
+  const assetsSystem = streamed.game_capabilities.systems.find(system => system.id === 'assets');
+  assert.equal(assetsSystem.status, 'failed');
+  assert.equal(assetsSystem.metrics.failed, 1);
+  assert.ok(assetsSystem.roots.receipt_root);
+  assert.equal(streamed.gaps.find(gap => gap.code === 'GAP_GAME_ASSET_STREAM_PAYLOAD_CACHE').status, 'open');
+  assert.ok(streamed.event_tail.some(event => event.type === 'game.asset-streaming-requested'));
 });

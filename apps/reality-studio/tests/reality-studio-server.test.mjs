@@ -35,6 +35,17 @@ test('server exposes Reality Graph adapter, controls, evidence, and verified vie
     assert.equal(result.body.integration.entry_count, 1);
     assert.equal(result.body.integration.entries[0].network_input_present, true);
 
+    result = await post(url, '/api/reality-studio/session/command', {
+      session_id: result.body.session_id,
+      command: 'player-command',
+      player_id: 'blue',
+      player_command: { type: 'jump' },
+    });
+    assert.equal(result.response.status, 200);
+    assert.equal(result.body.runtime.tick, 2);
+    assert.equal(result.body.runtime.clients.blue.syncStatus, 'synchronized');
+    assert.ok(result.body.event_tail.some(event => event.type === 'game.player-command-dispatched'));
+
     const sessionId = result.body.session_id;
     result = await post(url, '/api/reality-studio/session/command', { session_id: sessionId, command: 'snapshot', label: 'http-snapshot' });
     assert.equal(result.body.snapshots.length, 1);
