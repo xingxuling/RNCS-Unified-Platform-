@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.universal-art-asset-component-representation-import-registry.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Component Representation Import Registry v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "runtime_consumer",
+    "execution_mode",
+    "entries",
+    "handler_count",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "registry_root"
+  ],
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-component-representation-import-registry.v0.1"},
+    "version": {"const": "0.1.0"},
+    "runtime_consumer": {"const": "VSR_REPRESENTATION_IMPORT_ADAPTER"},
+    "execution_mode": {"const": "INJECTED_CONSUMER_ADAPTER"},
+    "entries": {"type": "array", "minItems": 1, "maxItems": 32, "items": {"$ref": "#/$defs/entry"}},
+    "handler_count": {"type": "integer", "minimum": 1, "maximum": 32},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "registry_root": {"$ref": "#/$defs/root"}
+  },
+  "$defs": {
+    "root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "kind": {"enum": ["mesh", "sdf", "voxel", "point-cloud", "gaussian-splat", "neural-field", "curve", "particle", "material", "rig", "animation"]},
+    "entry": {
+      "type": "object",
+      "required": ["representation_kind", "handler_id", "compile_bound", "verify_bound", "candidate_only", "authoritative"],
+      "additionalProperties": false,
+      "properties": {
+        "representation_kind": {"$ref": "#/$defs/kind"},
+        "handler_id": {"type": "string", "minLength": 1},
+        "compile_bound": {"const": true},
+        "verify_bound": {"const": true},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false}
+      }
+    }
+  },
+  "additionalProperties": false
+}

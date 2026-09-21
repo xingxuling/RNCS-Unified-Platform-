@@ -20,6 +20,7 @@ VSR 的首个三维空间现实参考层。它把 Mesh、层级变换、相机�
 - `VSRSpatialAssetStreamer`：依赖优先异步加载、并发上限、字节 SHA-256 校验、驻留状态和收据根；`reconcile(previousReceipt,nextReceipt)` 先释放上一工作集租约，再按下一解析结果驱逐无租约 resident，并生成可验证的 `vsr.spatial-asset-transition.v0.1` 收据；帧计划可选绑定 `assetStreaming` 证据；
 - `createVSRBrowserAssetCache()`：以 CacheStorage 为 lowering 的内容寻址、SHA-256/byte-length 校验、root-checked manifest、冷启动 rehydrate、revision-root 失效和确定性 byte-budget LRU；它只拥有可丢弃浏览器/WebView 字节，不拥有 VSR catalog、lease、canonical state 或 authority；真实 Chromium 已验证首次写入、冷重载命中和 scene/payload revision 重建，Reality Build 的 Android host 又通过 `loadDataWithBaseURL("https://rncs.local/", ...)` 复用同一 provider 并验证 app-private WebView rehydrate；quota/eviction/performance、远程 coherence、物理设备和生产部署仍未实现；
 - `compileRagfSpatialAsset()`：校验 `ragf.vsr-spatial-asset.v0.4` 的封存根和 VSR 兼容目标，把 RAGF 主网格/三级 LOD 编译为当前场景，并可绑定一个 Reality Cell 的驻留目录；
+- `composeSpatialSceneFragments()`：把独立导入的 VSR 场景片段按稳定 ID 重映射到隔离命名空间，挂到带 URRF 变换的合成锚点下，并生成可回验的候选组合回执；不会写入 RNCS 真相，也不等同于 AAA 资产合并；
 - Metallic / Roughness 紧凑参考光照；
 - Directional / Point / Ambient Light；
 - Directional Shadow Map 参考路径；

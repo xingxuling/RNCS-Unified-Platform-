@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/urrf-gap-ledger.v0.1.schema.json",
+  "type": "object",
+  "required": ["format", "version", "ledger_id", "entries", "summary", "authority", "ledger_root"],
+  "properties": {
+    "format": {"const": "rncs.urrf-gap-ledger.v0.1"},
+    "version": {"const": "0.1.0"},
+    "ledger_id": {"type": "string", "minLength": 1},
+    "purpose": {"type": "string", "minLength": 1},
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["gap_id", "task_refs", "gap_type", "missing_capability", "workaround", "donor", "generality", "candidate_absorption", "affected_k400_cells", "evidence_refs", "authority", "entry_root"],
+        "properties": {
+          "gap_id": {"type": "string", "minLength": 1},
+          "task_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^URRF-[0-9]{2}$"}},
+          "gap_type": {"enum": ["RCL_GAP", "PROVIDER_GAP", "MIXED"]},
+          "missing_capability": {"type": "string", "minLength": 1},
+          "provider_id": {"type": ["string", "null"]},
+          "workaround": {"type": "object", "required": ["owner_layer", "language", "semantic_owner", "canonical_owner", "candidate_only", "description"], "properties": {"owner_layer": {"type": "string", "minLength": 1}, "language": {"type": "string", "minLength": 1}, "semantic_owner": {"const": "RCL"}, "canonical_owner": {"const": "RNCS"}, "candidate_only": {"const": true}, "description": {"type": "string", "minLength": 1}}},
+          "donor": {"type": "object", "required": ["donor_id", "owner_layer", "advantage", "source_refs", "evidence_refs"], "properties": {"donor_id": {"type": "string", "minLength": 1}, "owner_layer": {"type": "string", "minLength": 1}, "advantage": {"type": "string", "minLength": 1}, "source_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}, "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}}},
+          "generality": {"enum": ["CROSS_PROJECT", "DOMAIN_LOCAL", "HOST_LOCAL"]},
+          "candidate_absorption": {"type": "object", "required": ["status", "primitive_candidates", "regression_cases"], "properties": {"status": {"enum": ["PENDING", "CANDIDATE", "NOT_APPLICABLE"]}, "primitive_candidates": {"type": "array", "items": {"type": "string"}}, "regression_cases": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}}},
+          "affected_k400_cells": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^K400:URRF-[0-9]{2}:[A-Z_]+$"}},
+          "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "authority": {"type": "object", "required": ["canonical_owner", "semantic_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "rcl_promotion_authorized", "canonical_write_authorized", "candidate_only"], "properties": {"canonical_owner": {"const": "RNCS"}, "semantic_owner": {"const": "RCL"}, "representation_owner": {"const": "URRF"}, "provider_can_write_authoritative_world_state": {"const": false}, "provider_can_commit": {"const": false}, "rcl_promotion_authorized": {"const": false}, "canonical_write_authorized": {"const": false}, "candidate_only": {"const": true}}},
+          "entry_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    },
+    "summary": {"type": "object", "required": ["entry_count", "rcl_gap_count", "provider_gap_count", "mixed_gap_count", "candidate_only"], "properties": {"entry_count": {"type": "integer", "minimum": 1}, "rcl_gap_count": {"type": "integer", "minimum": 0}, "provider_gap_count": {"type": "integer", "minimum": 0}, "mixed_gap_count": {"type": "integer", "minimum": 0}, "candidate_only": {"const": true}}},
+    "authority": {"type": "object"},
+    "ledger_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

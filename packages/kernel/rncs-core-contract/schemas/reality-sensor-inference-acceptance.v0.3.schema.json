@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.reality-sensor-inference-acceptance.v0.3",
+  "title": "RNCS Reality Sensor Inference Acceptance Gate v0.3",
+  "type": "object",
+  "required": ["format", "version", "acceptance_id", "candidate_id", "candidate_root", "object_id", "decision", "status", "accepted_at_tick", "semantic_scope", "authority_receipt", "authority_lease", "promotion_allowed", "canonical_property_mutation_performed", "canonical_owner", "authority", "evidence_refs", "candidate_only", "authoritative", "commit_status", "acceptance_root"],
+  "properties": {
+    "format": {"const": "rncs.reality-sensor-inference-acceptance.v0.3"},
+    "version": {"const": "0.3.0"},
+    "acceptance_id": {"type": "string", "minLength": 1},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "candidate_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "object_id": {"type": "string", "minLength": 1},
+    "decision": {"enum": ["ACCEPT", "REJECT"]},
+    "status": {"enum": ["ACCEPTED", "REJECTED"]},
+    "accepted_at_tick": {"type": "integer", "minimum": 0},
+    "semantic_scope": {"type": "string", "minLength": 1},
+    "authority_receipt": {
+      "type": "object",
+      "required": ["format", "version", "status", "candidate_root", "decision", "authority_id", "authority_ref", "lease_root", "epoch", "fencing_token", "canonical_owner", "provider_can_write_canonical_property", "decision_root", "receipt_root"],
+      "properties": {
+        "format": {"const": "rncs.reality-sensor-inference-authority-receipt.v0.3"},
+        "version": {"const": "0.3.0"},
+        "status": {"const": "committed"},
+        "candidate_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "decision": {"enum": ["ACCEPT", "REJECT"]},
+        "authority_id": {"type": "string", "minLength": 1},
+        "authority_ref": {"type": "string", "minLength": 1},
+        "lease_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "epoch": {"type": "integer", "minimum": 0},
+        "fencing_token": {"type": "integer", "minimum": 0},
+        "canonical_owner": {"const": "RNCS"},
+        "provider_can_write_canonical_property": {"const": false},
+        "decision_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "receipt_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    },
+    "authority_lease": {"$ref": "rncs.authority-lease.v0.3"},
+    "promotion_allowed": {"type": "boolean"},
+    "canonical_property_mutation_performed": {"const": false},
+    "canonical_owner": {"const": "RNCS"},
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "provider_can_write_canonical_property", "rncs_authority_required", "canonical_write_authorized", "candidate_only", "authoritative"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "provider_can_write_canonical_property": {"const": false},
+        "rncs_authority_required": {"const": true},
+        "canonical_write_authorized": {"const": false},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false}
+      },
+      "additionalProperties": true
+    },
+    "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "acceptance_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {"if": {"properties": {"decision": {"const": "ACCEPT"}}}, "then": {"properties": {"status": {"const": "ACCEPTED"}, "promotion_allowed": {"const": true}}}},
+    {"if": {"properties": {"decision": {"const": "REJECT"}}}, "then": {"properties": {"status": {"const": "REJECTED"}, "promotion_allowed": {"const": false}}}}
+  ],
+  "additionalProperties": true
+}

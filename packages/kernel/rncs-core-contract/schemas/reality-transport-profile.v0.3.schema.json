@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.reality-transport-profile.v0.3",
+  "title": "RNCS Reality Fabric Transport Profile v0.3",
+  "type": "object",
+  "required": ["format", "version", "profile_id", "transport_kind", "qos_class", "coverage", "bandwidth_mbps", "latency_budget_ms", "reliability_ppm", "freshness_budget_ms", "priority", "loss_mode", "discovery_supported", "roaming_supported", "low_power", "bidirectional", "requires_authority", "fallback_profile_ids", "evidence_refs", "candidate_only", "authoritative", "commit_status", "profile_root"],
+  "properties": {
+    "format": {"const": "rncs.reality-transport-profile.v0.3"},
+    "version": {"const": "0.3.0"},
+    "profile_id": {"type": "string", "minLength": 1},
+    "transport_kind": {"enum": ["FIBER", "WIFI", "BLUETOOTH", "RDN"]},
+    "qos_class": {"enum": ["PLAYER_CONTROL", "AUTHORITY_EVENT", "STATE_DELTA", "AUDIO", "VISUAL_PAGE", "EVIDENCE_ROOT", "BACKGROUND_REFINEMENT"]},
+    "coverage": {"type": "string", "minLength": 1},
+    "bandwidth_mbps": {"type": "integer", "minimum": 0},
+    "latency_budget_ms": {"type": "integer", "minimum": 0},
+    "reliability_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+    "freshness_budget_ms": {"type": "integer", "minimum": 0},
+    "priority": {"type": "integer", "minimum": 0, "maximum": 100},
+    "loss_mode": {"enum": ["NONE", "RECOVERABLE", "BEST_EFFORT"]},
+    "discovery_supported": {"type": "boolean"},
+    "roaming_supported": {"type": "boolean"},
+    "low_power": {"type": "boolean"},
+    "bidirectional": {"type": "boolean"},
+    "requires_authority": {"type": "boolean"},
+    "fallback_profile_ids": {"type": "array", "items": {"type": "string"}},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "profile_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

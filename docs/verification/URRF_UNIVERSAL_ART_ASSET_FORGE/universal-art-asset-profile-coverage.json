@@ -1,0 +1,600 @@
+{
+  "format": "urrf.universal-art-asset-profile-coverage.v0.1",
+  "version": "0.1.0",
+  "coverage_id": "urrf-profile-coverage-integration-v01",
+  "source": "urrf-profile-coverage-evaluator",
+  "expected_profiles": [
+    "character",
+    "creature",
+    "prop",
+    "vehicle",
+    "structure",
+    "environment",
+    "vegetation",
+    "resource",
+    "vfx"
+  ],
+  "expected_modes": {
+    "character": "BUILTIN_REFERENCE",
+    "creature": "BUILTIN_REFERENCE",
+    "prop": "BUILTIN_REFERENCE",
+    "vehicle": "BUILTIN_REFERENCE",
+    "structure": "BUILTIN_REFERENCE",
+    "environment": "BUILTIN_REFERENCE",
+    "vegetation": "BUILTIN_REFERENCE",
+    "resource": "BUILTIN_REFERENCE",
+    "vfx": "UNRESOLVED"
+  },
+  "entries": [
+    {
+      "index": 0,
+      "asset_key": "profile-coverage-character",
+      "asset_id": "asset:c05dbe23a32fa8262449ed7e",
+      "asset_profile": "character",
+      "requested_profile": "character",
+      "status": "BLOCKED",
+      "genome_root": "b29274818ecf2ab8cbba0682976c13c071e527187c01865c846cbcc3a7083e68",
+      "forge_asset_profile": "character",
+      "forge_genome_root": "b29274818ecf2ab8cbba0682976c13c071e527187c01865c846cbcc3a7083e68",
+      "resolution_root": "323cfc1d83196a72dbe364d844e4f56c95d85465d4524ef3d24b6f36e946e46c",
+      "resolution": {
+        "format": "urrf.universal-art-asset-provider-resolution.v0.1",
+        "version": "0.1.0",
+        "asset_id": "asset:c05dbe23a32fa8262449ed7e",
+        "asset_profile": "character",
+        "genome_root": "b29274818ecf2ab8cbba0682976c13c071e527187c01865c846cbcc3a7083e68",
+        "resolution_root": "323cfc1d83196a72dbe364d844e4f56c95d85465d4524ef3d24b6f36e946e46c",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
+        "selected_provider_source": "ragf-reference-provider",
+        "eligible": true,
+        "runtime_status": "READY_REFERENCE"
+      },
+      "execution": {
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
+      },
+      "candidate": {
+        "present": true,
+        "candidate_root": "ed2dd244f41673631ff2f3c7edb211b162f590ec9900d792c795c7b202102e18"
+      },
+      "authority": {
+        "candidate_only": true,
+        "authoritative": false,
+        "canonical_write_authorized": false,
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "acceptance_can_commit": false,
+        "rncs_authority_required": true
+      },
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
+      "checks": {
+        "profile_binding": true,
+        "genome_binding": true,
+        "resolution_integrity": true,
+        "candidate_binding": true,
+        "expected_mode": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 1,
+      "asset_key": "profile-coverage-creature",
+      "asset_id": "asset:b8fe570616a6dfef58607fb9",
+      "asset_profile": "creature",
+      "requested_profile": "creature",
+      "status": "BLOCKED",
+      "genome_root": "fd6b8cc885100610e82794b2448e88ec68664d114d202244d6a1462393f5f22c",
+      "forge_asset_profile": "creature",
+      "forge_genome_root": "fd6b8cc885100610e82794b2448e88ec68664d114d202244d6a1462393f5f22c",
+      "resolution_root": "fc84e5decb1619133527256439641b9d1d04fb8f4dda2b8e24a4396b373653e8",
+      "resolution": {
+        "format": "urrf.universal-art-asset-provider-resolution.v0.1",
+        "version": "0.1.0",
+        "asset_id": "asset:b8fe570616a6dfef58607fb9",
+        "asset_profile": "creature",
+        "genome_root": "fd6b8cc885100610e82794b2448e88ec68664d114d202244d6a1462393f5f22c",
+        "resolution_root": "fc84e5decb1619133527256439641b9d1d04fb8f4dda2b8e24a4396b373653e8",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
+        "selected_provider_source": "ragf-reference-provider",
+        "eligible": true,
+        "runtime_status": "READY_REFERENCE"
+      },
+      "execution": {
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
+      },
+      "candidate": {
+        "present": true,
+        "candidate_root": "4f6ca2cf8bebb61483566ad5532e393646552b53026d3ea2da30490f38d6f48f"
+      },
+      "authority": {
+        "candidate_only": true,
+        "authoritative": false,
+        "canonical_write_authorized": false,
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "acceptance_can_commit": false,
+        "rncs_authority_required": true
+      },
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
+      "checks": {
+        "profile_binding": true,
+        "genome_binding": true,
+        "resolution_integrity": true,
+        "candidate_binding": true,
+        "expected_mode": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 2,
+      "asset_key": "profile-coverage-prop",
+      "asset_id": "asset:21e0f31956d0f44a8198617d",
+      "asset_profile": "prop",
+      "requested_profile": "prop",
+      "status": "BLOCKED",
+      "genome_root": "12c47d990f485cb03c0936cd2e82146a2504147307c8a0afe0b4cf0213fb292d",
+      "forge_asset_profile": "prop",
+      "forge_genome_root": "12c47d990f485cb03c0936cd2e82146a2504147307c8a0afe0b4cf0213fb292d",
+      "resolution_root": "9a8a4612350c08e4b28206d8147e76b87505c2f95c77a95f99208a432e3142b7",
+      "resolution": {
+        "format": "urrf.universal-art-asset-provider-resolution.v0.1",
+        "version": "0.1.0",
+        "asset_id": "asset:21e0f31956d0f44a8198617d",
+        "asset_profile": "prop",
+        "genome_root": "12c47d990f485cb03c0936cd2e82146a2504147307c8a0afe0b4cf0213fb292d",
+        "resolution_root": "9a8a4612350c08e4b28206d8147e76b87505c2f95c77a95f99208a432e3142b7",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
+        "selected_provider_source": "ragf-reference-provider",
+        "eligible": true,
+        "runtime_status": "READY_REFERENCE"
+      },
+      "execution": {
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
+      },
+      "candidate": {
+        "present": true,
+        "candidate_root": "bcc08f60c64e46bfbfe46c354bc8c3ca478dba5da9a0f1a0b0a46448c186bdd9"
+      },
+      "authority": {
+        "candidate_only": true,
+        "authoritative": false,
+        "canonical_write_authorized": false,
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "acceptance_can_commit": false,
+        "rncs_authority_required": true
+      },
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
+      "checks": {
+        "profile_binding": true,
+        "genome_binding": true,
+        "resolution_integrity": true,
+        "candidate_binding": true,
+        "expected_mode": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 3,
+      "asset_key": "profile-coverage-vehicle",
+      "asset_id": "asset:73c48add0d6031a045eec8d3",
+      "asset_profile": "vehicle",
+      "requested_profile": "vehicle",
+      "status": "BLOCKED",
+      "genome_root": "6430463c5437d3d33d52702a05810243a7004149c994872d44ccf94c00406d83",
+      "forge_asset_profile": "vehicle",
+      "forge_genome_root": "6430463c5437d3d33d52702a05810243a7004149c994872d44ccf94c00406d83",
+      "resolution_root": "087250867cc129a77fbc11587084659cfa136aecdea56c4ea52fedfceaf52c1f",
+      "resolution": {
+        "format": "urrf.universal-art-asset-provider-resolution.v0.1",
+        "version": "0.1.0",
+        "asset_id": "asset:73c48add0d6031a045eec8d3",
+        "asset_profile": "vehicle",
+        "genome_root": "6430463c5437d3d33d52702a05810243a7004149c994872d44ccf94c00406d83",
+        "resolution_root": "087250867cc129a77fbc11587084659cfa136aecdea56c4ea52fedfceaf52c1f",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
+        "selected_provider_source": "ragf-reference-provider",
+        "eligible": true,
+        "runtime_status": "READY_REFERENCE"
+      },
+      "execution": {
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
+      },
+      "candidate": {
+        "present": true,
+        "candidate_root": "d36a3206de053356430ce54ace7d8c0574758a8596f6c3f10990e67bfc7083f6"
+      },
+      "authority": {
+        "candidate_only": true,
+        "authoritative": false,
+        "canonical_write_authorized": false,
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "acceptance_can_commit": false,
+        "rncs_authority_required": true
+      },
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
+      "checks": {
+        "profile_binding": true,
+        "genome_binding": true,
+        "resolution_integrity": true,
+        "candidate_binding": true,
+        "expected_mode": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 4,
+      "asset_key": "profile-coverage-structure",
+      "asset_id": "asset:36c7b845d2088006a2af6324",
+      "asset_profile": "structure",
+      "requested_profile": "structure",
+      "status": "BLOCKED",
+      "genome_root": "e0e2d65bb58cdc2592f99c25bc2af23493546ce8ca0e34c2a90f6e9381a016c3",
+      "forge_asset_profile": "structure",
+      "forge_genome_root": "e0e2d65bb58cdc2592f99c25bc2af23493546ce8ca0e34c2a90f6e9381a016c3",
+      "resolution_root": "bb0e586ca0b8ca64e9512f96fb28b63af104dcb80ed652c2b7d4d3ff6397de93",
+      "resolution": {
+        "format": "urrf.universal-art-asset-provider-resolution.v0.1",
+        "version": "0.1.0",
+        "asset_id": "asset:36c7b845d2088006a2af6324",
+        "asset_profile": "structure",
+        "genome_root": "e0e2d65bb58cdc2592f99c25bc2af23493546ce8ca0e34c2a90f6e9381a016c3",
+        "resolution_root": "bb0e586ca0b8ca64e9512f96fb28b63af104dcb80ed652c2b7d4d3ff6397de93",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
+        "selected_provider_source": "ragf-reference-provider",
+        "eligible": true,
+        "runtime_status": "READY_REFERENCE"
+      },
+      "execution": {
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
+      },
+      "candidate": {
+        "present": true,
+        "candidate_root": "64a6093ba6f0f48da43f65e0f37446e99c834b61c1136cb80e5f044926507716"
+      },
+      "authority": {
+        "candidate_only": true,
+        "authoritative": false,
+        "canonical_write_authorized": false,
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "acceptance_can_commit": false,
+        "rncs_authority_required": true
+      },
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
+      "checks": {
+        "profile_binding": true,
+        "genome_binding": true,
+        "resolution_integrity": true,
+        "candidate_binding": true,
+        "expected_mode": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 5,
+      "asset_key": "profile-coverage-environment",
+      "asset_id": "asset:b9e6cff7b514f988ae3f0361",
+      "asset_profile": "environment",
+      "requested_profile": "environment",
+      "status": "BLOCKED",
+      "genome_root": "2f45b645a633b419a8d4f8b5d44c0a7c5d01285c28330ee70b261bf1d39e7d54",
+      "forge_asset_profile": "environment",
+      "forge_genome_root": "2f45b645a633b419a8d4f8b5d44c0a7c5d01285c28330ee70b261bf1d39e7d54",
+      "resolution_root": "051c5925eb3925727d83705a5f75f80949dddd5b2d4cc51e800cb981e05387f5",
+      "resolution": {
+        "format": "urrf.universal-art-asset-provider-resolution.v0.1",
+        "version": "0.1.0",
+        "asset_id": "asset:b9e6cff7b514f988ae3f0361",
+        "asset_profile": "environment",
+        "genome_root": "2f45b645a633b419a8d4f8b5d44c0a7c5d01285c28330ee70b261bf1d39e7d54",
+        "resolution_root": "051c5925eb3925727d83705a5f75f80949dddd5b2d4cc51e800cb981e05387f5",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
+        "selected_provider_source": "ragf-reference-provider",
+        "eligible": true,
+        "runtime_status": "READY_REFERENCE"
+      },
+      "execution": {
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
+      },
+      "candidate": {
+        "present": true,
+        "candidate_root": "7813c00aae5aa73a199535e24570bfe63d0844bb5a71f96b6a84653f6be851d7"
+      },
+      "authority": {
+        "candidate_only": true,
+        "authoritative": false,
+        "canonical_write_authorized": false,
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "acceptance_can_commit": false,
+        "rncs_authority_required": true
+      },
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
+      "checks": {
+        "profile_binding": true,
+        "genome_binding": true,
+        "resolution_integrity": true,
+        "candidate_binding": true,
+        "expected_mode": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 6,
+      "asset_key": "profile-coverage-vegetation",
+      "asset_id": "asset:375c2c626d65044093d54381",
+      "asset_profile": "vegetation",
+      "requested_profile": "vegetation",
+      "status": "BLOCKED",
+      "genome_root": "8d15b0504a60ee5fcf79cf8fb7ecbf1a5377027bfbe3bf5cf0400087b2c3b870",
+      "forge_asset_profile": "vegetation",
+      "forge_genome_root": "8d15b0504a60ee5fcf79cf8fb7ecbf1a5377027bfbe3bf5cf0400087b2c3b870",
+      "resolution_root": "6a71bcba1a644ca4c5ecd7f9fce213321abd0a981a83a78133588fd776a73b9b",
+      "resolution": {
+        "format": "urrf.universal-art-asset-provider-resolution.v0.1",
+        "version": "0.1.0",
+        "asset_id": "asset:375c2c626d65044093d54381",
+        "asset_profile": "vegetation",
+        "genome_root": "8d15b0504a60ee5fcf79cf8fb7ecbf1a5377027bfbe3bf5cf0400087b2c3b870",
+        "resolution_root": "6a71bcba1a644ca4c5ecd7f9fce213321abd0a981a83a78133588fd776a73b9b",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
+        "selected_provider_source": "ragf-reference-provider",
+        "eligible": true,
+        "runtime_status": "READY_REFERENCE"
+      },
+      "execution": {
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
+      },
+      "candidate": {
+        "present": true,
+        "candidate_root": "a519eaa78d4870a53ef9dc06f6b0bf68b18a3fe000e211e80b1c5bade223d626"
+      },
+      "authority": {
+        "candidate_only": true,
+        "authoritative": false,
+        "canonical_write_authorized": false,
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "acceptance_can_commit": false,
+        "rncs_authority_required": true
+      },
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
+      "checks": {
+        "profile_binding": true,
+        "genome_binding": true,
+        "resolution_integrity": true,
+        "candidate_binding": true,
+        "expected_mode": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 7,
+      "asset_key": "profile-coverage-resource",
+      "asset_id": "asset:71c60af578b2e558d28d9bb5",
+      "asset_profile": "resource",
+      "requested_profile": "resource",
+      "status": "BLOCKED",
+      "genome_root": "555adc7c42587b952874eb0e5aa62b7bc406c779acd7c750f3d5805f4ef2f73e",
+      "forge_asset_profile": "resource",
+      "forge_genome_root": "555adc7c42587b952874eb0e5aa62b7bc406c779acd7c750f3d5805f4ef2f73e",
+      "resolution_root": "d720fe0b89180faa6b4f9016bed188ad3091b25366341da0c0b0cc03bd360293",
+      "resolution": {
+        "format": "urrf.universal-art-asset-provider-resolution.v0.1",
+        "version": "0.1.0",
+        "asset_id": "asset:71c60af578b2e558d28d9bb5",
+        "asset_profile": "resource",
+        "genome_root": "555adc7c42587b952874eb0e5aa62b7bc406c779acd7c750f3d5805f4ef2f73e",
+        "resolution_root": "d720fe0b89180faa6b4f9016bed188ad3091b25366341da0c0b0cc03bd360293",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
+        "selected_provider_source": "ragf-reference-provider",
+        "eligible": true,
+        "runtime_status": "READY_REFERENCE"
+      },
+      "execution": {
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
+      },
+      "candidate": {
+        "present": true,
+        "candidate_root": "60d0b5b07bfc9c6a0b2c6a7a89433ed03e3c9e03b96bc9f2ff25ba976dfd0895"
+      },
+      "authority": {
+        "candidate_only": true,
+        "authoritative": false,
+        "canonical_write_authorized": false,
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "acceptance_can_commit": false,
+        "rncs_authority_required": true
+      },
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
+      "checks": {
+        "profile_binding": true,
+        "genome_binding": true,
+        "resolution_integrity": true,
+        "candidate_binding": true,
+        "expected_mode": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 8,
+      "asset_key": "profile-coverage-vfx",
+      "asset_id": "asset:e199a996e4026d4875e015fd",
+      "asset_profile": "vfx",
+      "requested_profile": "vfx",
+      "status": "BLOCKED",
+      "genome_root": "c9865d06e2a748805b56057c11aac694247dec121b84fca7c35b066c98eaabd4",
+      "forge_asset_profile": "vfx",
+      "forge_genome_root": "c9865d06e2a748805b56057c11aac694247dec121b84fca7c35b066c98eaabd4",
+      "resolution_root": "05419e7f64ca65e73bf5893bbe1d6e259217a339196a45428ba29458bb4ee016",
+      "resolution": {
+        "format": "urrf.universal-art-asset-provider-resolution.v0.1",
+        "version": "0.1.0",
+        "asset_id": "asset:e199a996e4026d4875e015fd",
+        "asset_profile": "vfx",
+        "genome_root": "c9865d06e2a748805b56057c11aac694247dec121b84fca7c35b066c98eaabd4",
+        "resolution_root": "05419e7f64ca65e73bf5893bbe1d6e259217a339196a45428ba29458bb4ee016",
+        "selected_provider_id": null,
+        "selected_provider_root": null,
+        "selected_provider_source": null,
+        "eligible": false,
+        "runtime_status": "UNRESOLVED"
+      },
+      "execution": {
+        "mode": "PROVIDER_RESOLUTION",
+        "status": "FAILED",
+        "provider_id": null,
+        "failure_code": "PROFILE_PROVIDER_UNRESOLVED"
+      },
+      "candidate": {
+        "present": false,
+        "candidate_root": null
+      },
+      "authority": {
+        "candidate_only": true,
+        "authoritative": false,
+        "canonical_write_authorized": false,
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "acceptance_can_commit": false,
+        "rncs_authority_required": true
+      },
+      "expected_mode": "UNRESOLVED",
+      "observed_mode": "UNRESOLVED",
+      "checks": {
+        "profile_binding": true,
+        "genome_binding": true,
+        "resolution_integrity": true,
+        "candidate_binding": true,
+        "expected_mode": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    }
+  ],
+  "summary": {
+    "profile_count": 9,
+    "pass_count": 9,
+    "fail_count": 0,
+    "mode_histogram": {
+      "BUILTIN_REFERENCE": 8,
+      "EXTERNAL_CONTRACT_ONLY": 0,
+      "EXTERNAL_EXECUTED": 0,
+      "INJECTED_EXECUTED": 0,
+      "UNRESOLVED": 1,
+      "INCONSISTENT": 0
+    }
+  },
+  "coverage": {
+    "expected_profile_count": 9,
+    "observed_profile_count": 9,
+    "expected_profiles": [
+      "character",
+      "creature",
+      "prop",
+      "vehicle",
+      "structure",
+      "environment",
+      "vegetation",
+      "resource",
+      "vfx"
+    ],
+    "observed_profiles": [
+      "character",
+      "creature",
+      "prop",
+      "vehicle",
+      "structure",
+      "environment",
+      "vegetation",
+      "resource",
+      "vfx"
+    ],
+    "missing_profiles": [],
+    "unexpected_profiles": [],
+    "unique_genome_root_count": 9,
+    "unique_resolution_root_count": 9
+  },
+  "checks": {
+    "entry_count": true,
+    "profile_coverage": true,
+    "unique_profiles": true,
+    "unique_genome_roots": true,
+    "unique_resolution_roots": true,
+    "entry_checks": true,
+    "no_silent_fallback": true,
+    "authority_boundary": true
+  },
+  "status": "CANDIDATE_PROFILE_COVERAGE_PASS",
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true
+  },
+  "coverage_root": "50c8c896cb331f4a701f5d0c7ed259812743cdb741407c247931898bb9834170"
+}

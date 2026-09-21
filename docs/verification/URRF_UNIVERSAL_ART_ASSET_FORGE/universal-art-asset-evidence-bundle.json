@@ -1,0 +1,63 @@
+{
+  "format": "urrf.universal-art-asset-evidence-bundle.v0.1",
+  "version": "0.1.0",
+  "source": "independent-evidence-bundle",
+  "status": "INCOMPLETE",
+  "decision": "BLOCKED",
+  "genome_root": "6af9eacaaaae30d65296d00f0acdc93d7eae27d843d25d80cea045eafd4fd297",
+  "candidate_root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
+  "file_inspection_root": "70c831a94250e93f747a1d8320901dbc6253d1e9b014bf0eb11dcbeb0c11b253",
+  "artifact_roots": {
+    "animation-clips": "47158950c1c033622f92a4e8ba404dfb191d10d6a8d98fa9a249ead7e3577cd0",
+    "collision-shape": "a14df9e767f48f509c49ccd8bcad5d69d80a9932124ffb0a0befc9ff367524d3",
+    "concept-svg": "2453bf66a4f91da6cda5c68ae1f798430f772b615ce3cdb8044a7966fcfcd9fc",
+    "dependency-graph": "05186a17d7ceef1c3b1f6fc2d2c019080b29e0953845b21a2198d99e03feecc3",
+    "lod-manifest": "3c7d98f6b124845a8e6f049fc3d8e1f90bbfc8e20d85da4c3b450e19dfe1541b",
+    "mesh-glb": "b14763f45777df3792bb030e33856591cfe7d3c9096e68dfbf0a2667378c26ae",
+    "mesh-lod1-glb": "2273fbbbaaaa3ad0953619d0929e841c0122825346057033e4ed88c199e131a0",
+    "mesh-lod2-glb": "b7c7d09e32bc37eacf38ca5ed76f9dd34905ee6157ac8e2bfa694fbd50b08aa2",
+    "particle-preset": "d6a16a141cd660f7fd76a1cfffb98a7ea1f105e49bc86bb512d0d9eb5ff7c877",
+    "pbr-texture-pack": "e70f36e26ec47a86e41e9e04ad594cf39098dc52401031f530911fd68f192a19",
+    "prefab-blueprint": "4fc6962f7180c63de812596fc5527f43563b6fbc74e63b5787a1e4845372cb04",
+    "projection-manifest": "d9e3a4eea0d733af74bed8725167daabff447cfae5a07b7afac495316a57a1e4",
+    "retarget-profile": "7615b3fff4e5974489dc9b3a78cdcbcd13b7ba057e9a3e7f0a2c59b397bea81b",
+    "rsr-embodiment-profile": "dff0650a9cb99072dee5f816b54f61502f005dcf8edee29936635e79947eaecc",
+    "sfx-wav": "f6f5f9353b9d3d4053d5b88a13acb7c5089f245fb8fd2990d910707c1ed1167e",
+    "skeleton-rig": "9759d173aed8fe9156a746f4392b07dde13cb08e0fde81d062861b7ca571dc17",
+    "sprite-sheet": "ac6c8380146f638547615272d2954cd86d6c4e831aea703dc1ae1a7ca049186d",
+    "vsr-spatial-asset": "095af39568e39bb8a2eb625c9035c2b960a214968628e1efae00be76b0b515f0"
+  },
+  "receipt_roots": {
+    "provenance_license": null,
+    "art_direction": null,
+    "quality": null,
+    "human_review": null
+  },
+  "receipts": {
+    "provenance_license": null,
+    "art_direction": null,
+    "quality": null,
+    "human_review": null
+  },
+  "coverage": {
+    "required_receipts": [
+      "provenance_license",
+      "art_direction",
+      "quality",
+      "human_review"
+    ],
+    "present_receipts": [],
+    "complete": false
+  },
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "authority": {
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true,
+    "candidate_only": true,
+    "authoritative": false
+  },
+  "bundle_root": "a8d370cb83661ca6f4a0c2ce7780e0e5f67db5e26e2de1e6f074617645e39179"
+}

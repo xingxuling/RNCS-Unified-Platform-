@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.universal-art-asset-vsr-webgpu-performance.v0.1.schema.json",
+  "title": "URRF Universal Art Asset VSR WebGPU Performance v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "status",
+    "source_reality_root",
+    "assembly_root",
+    "projection_root",
+    "materialization_root",
+    "scene_id",
+    "frame_root",
+    "cpu_frame_root",
+    "performance_root",
+    "sample_count",
+    "warmup_frame_count",
+    "steady_state_sample_count",
+    "sustained",
+    "budget_status",
+    "authority",
+    "notes",
+    "report_root"
+  ],
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-vsr-webgpu-performance.v0.1"},
+    "version": {"const": "0.1.0"},
+    "status": {"const": "LOCAL_HOST_CANDIDATE_PASS"},
+    "source_reality_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "assembly_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "projection_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "materialization_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "scene_id": {"type": "string", "minLength": 1},
+    "frame_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "cpu_frame_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "performance_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "sample_count": {"type": "integer", "minimum": 2, "maximum": 256},
+    "warmup_frame_count": {"type": "integer", "minimum": 1},
+    "steady_state_sample_count": {"type": "integer", "minimum": 1},
+    "sustained": {"$ref": "#/$defs/sustained"},
+    "budget_status": {"const": "PASS"},
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "representation_owner", "execution_owner", "candidate_only", "authoritative", "canonical_write_authorized"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "execution_owner": {"const": "VSR"},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false},
+        "canonical_write_authorized": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "notes": {"type": "string", "minLength": 1},
+    "report_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "$defs": {
+    "stat": {
+      "type": "object",
+      "required": ["min", "p50", "p95", "max"],
+      "properties": {
+        "min": {"type": "integer", "minimum": 0},
+        "p50": {"type": "integer", "minimum": 0},
+        "p95": {"type": "integer", "minimum": 0},
+        "max": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "sample": {
+      "type": "object",
+      "required": [
+        "index",
+        "phase",
+        "wall_us",
+        "compile_us",
+        "upload_us",
+        "encode_us",
+        "submit_us",
+        "frame_root",
+        "receipt_root",
+        "submitted",
+        "device_lost",
+        "texture_bytes_resident",
+        "texture_uploads",
+        "texture_evictions",
+        "buffer_bytes_resident",
+        "buffer_uploads",
+        "buffer_evictions"
+      ],
+      "properties": {
+        "index": {"type": "integer", "minimum": 0},
+        "phase": {"enum": ["warmup", "steady_state"]},
+        "wall_us": {"type": "integer", "minimum": 0},
+        "compile_us": {"type": "integer", "minimum": 0},
+        "upload_us": {"type": "integer", "minimum": 0},
+        "encode_us": {"type": "integer", "minimum": 0},
+        "submit_us": {"type": "integer", "minimum": 0},
+        "frame_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "receipt_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "submitted": {"const": true},
+        "device_lost": {"const": false},
+        "texture_bytes_resident": {"type": "integer", "minimum": 0},
+        "texture_uploads": {"type": "integer", "minimum": 0},
+        "texture_evictions": {"type": "integer", "minimum": 0},
+        "buffer_bytes_resident": {"type": "integer", "minimum": 0},
+        "buffer_uploads": {"type": "integer", "minimum": 0},
+        "buffer_evictions": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "sustained": {
+      "type": "object",
+      "required": [
+        "format",
+        "version",
+        "sample_count",
+        "warmup_frame_count",
+        "steady_state_sample_count",
+        "samples",
+        "metrics_us",
+        "warmup_metrics_us",
+        "steady_state_metrics_us",
+        "residency_bytes",
+        "transfer_totals",
+        "steady_state_transfer_totals",
+        "root_stability",
+        "submitted_count",
+        "device_loss_count",
+        "budget",
+        "budget_checks",
+        "budget_failures",
+        "budget_status",
+        "performance_root"
+      ],
+      "properties": {
+        "format": {"const": "urrf.universal-art-asset-vsr-webgpu-sustained-performance.v0.1"},
+        "version": {"const": "0.1.0"},
+        "sample_count": {"type": "integer", "minimum": 2, "maximum": 256},
+        "warmup_frame_count": {"type": "integer", "minimum": 1},
+        "steady_state_sample_count": {"type": "integer", "minimum": 1},
+        "samples": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/sample"}},
+        "metrics_us": {
+          "type": "object",
+          "required": ["wall", "compile", "upload", "encode", "submit"],
+          "properties": {
+            "wall": {"$ref": "#/$defs/stat"},
+            "compile": {"$ref": "#/$defs/stat"},
+            "upload": {"$ref": "#/$defs/stat"},
+            "encode": {"$ref": "#/$defs/stat"},
+            "submit": {"$ref": "#/$defs/stat"}
+          },
+          "additionalProperties": false
+        },
+        "warmup_metrics_us": {
+          "type": "object",
+          "required": ["wall", "compile", "upload", "encode", "submit"],
+          "properties": {
+            "wall": {"$ref": "#/$defs/stat"},
+            "compile": {"$ref": "#/$defs/stat"},
+            "upload": {"$ref": "#/$defs/stat"},
+            "encode": {"$ref": "#/$defs/stat"},
+            "submit": {"$ref": "#/$defs/stat"}
+          },
+          "additionalProperties": false
+        },
+        "steady_state_metrics_us": {
+          "type": "object",
+          "required": ["wall", "compile", "upload", "encode", "submit"],
+          "properties": {
+            "wall": {"$ref": "#/$defs/stat"},
+            "compile": {"$ref": "#/$defs/stat"},
+            "upload": {"$ref": "#/$defs/stat"},
+            "encode": {"$ref": "#/$defs/stat"},
+            "submit": {"$ref": "#/$defs/stat"}
+          },
+          "additionalProperties": false
+        },
+        "residency_bytes": {
+          "type": "object",
+          "required": ["texture", "buffer"],
+          "properties": {
+            "texture": {"$ref": "#/$defs/stat"},
+            "buffer": {"$ref": "#/$defs/stat"}
+          },
+          "additionalProperties": false
+        },
+        "transfer_totals": {"$ref": "#/$defs/transfers"},
+        "steady_state_transfer_totals": {"$ref": "#/$defs/transfers"},
+        "root_stability": {
+          "type": "object",
+          "required": ["frame_root_variants", "receipt_root_variants", "all_frame_roots_match_expected"],
+          "properties": {
+            "frame_root_variants": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}},
+            "receipt_root_variants": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}},
+            "all_frame_roots_match_expected": {"const": true}
+          },
+          "additionalProperties": false
+        },
+        "submitted_count": {"type": "integer", "minimum": 2},
+        "device_loss_count": {"const": 0},
+        "budget": {"$ref": "#/$defs/budget"},
+        "budget_checks": {
+          "type": "object",
+          "required": ["sample_count", "wall_p95", "compile_p95", "encode_p95", "submit_p95", "texture_residency", "buffer_residency", "texture_evictions", "buffer_evictions", "frame_root_variants", "device_losses"],
+          "properties": {
+            "sample_count": {"const": true},
+            "wall_p95": {"const": true},
+            "compile_p95": {"const": true},
+            "encode_p95": {"const": true},
+            "submit_p95": {"const": true},
+            "texture_residency": {"const": true},
+            "buffer_residency": {"const": true},
+            "texture_evictions": {"const": true},
+            "buffer_evictions": {"const": true},
+            "frame_root_variants": {"const": true},
+            "device_losses": {"const": true}
+          },
+          "additionalProperties": false
+        },
+        "budget_failures": {"type": "array", "maxItems": 0},
+        "budget_status": {"const": "PASS"},
+        "performance_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "transfers": {
+      "type": "object",
+      "required": ["texture_uploads", "texture_evictions", "buffer_uploads", "buffer_evictions"],
+      "properties": {
+        "texture_uploads": {"type": "integer", "minimum": 0},
+        "texture_evictions": {"type": "integer", "minimum": 0},
+        "buffer_uploads": {"type": "integer", "minimum": 0},
+        "buffer_evictions": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "budget": {
+      "type": "object",
+      "required": [
+        "sample_count",
+        "warmup_frame_count",
+        "max_wall_p95_us",
+        "max_compile_p95_us",
+        "max_encode_p95_us",
+        "max_submit_p95_us",
+        "max_texture_bytes_resident",
+        "max_buffer_bytes_resident",
+        "max_texture_evictions",
+        "max_buffer_evictions",
+        "max_frame_root_variants",
+        "max_device_losses"
+      ],
+      "properties": {
+        "sample_count": {"type": "integer", "minimum": 2},
+        "warmup_frame_count": {"type": "integer", "minimum": 1},
+        "max_wall_p95_us": {"type": "integer", "minimum": 0},
+        "max_compile_p95_us": {"type": "integer", "minimum": 0},
+        "max_encode_p95_us": {"type": "integer", "minimum": 0},
+        "max_submit_p95_us": {"type": "integer", "minimum": 0},
+        "max_texture_bytes_resident": {"type": "integer", "minimum": 0},
+        "max_buffer_bytes_resident": {"type": "integer", "minimum": 0},
+        "max_texture_evictions": {"type": "integer", "minimum": 0},
+        "max_buffer_evictions": {"type": "integer", "minimum": 0},
+        "max_frame_root_variants": {"type": "integer", "minimum": 1},
+        "max_device_losses": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

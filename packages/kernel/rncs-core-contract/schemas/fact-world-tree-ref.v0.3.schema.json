@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.fact-world-tree-ref.v0.3",
+  "title": "RNCS Fact World Tree Reference v0.3",
+  "type": "object",
+  "required": ["format", "version", "world_id", "branch_id", "reality_root", "tree_root", "head_event_root", "event_count", "fact_count", "evidence_refs", "candidate_only", "authoritative", "commit_status", "reference_root"],
+  "properties": {
+    "format": {"const": "rncs.fact-world-tree-ref.v0.3"},
+    "version": {"const": "0.3.0"},
+    "world_id": {"type": "string", "minLength": 1},
+    "branch_id": {"type": "string", "minLength": 1},
+    "reality_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "tree_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "head_event_root": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "event_count": {"type": "integer", "minimum": 0},
+    "fact_count": {"type": "integer", "minimum": 0},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "reference_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

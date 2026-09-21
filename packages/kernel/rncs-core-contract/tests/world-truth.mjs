@@ -5,6 +5,7 @@ import {
   appendWorldEvent,
   applyWorldMutation,
   createFactWorldTree,
+  createFactWorldTreeRef,
   createWorldEvent,
   createWorldEventLog,
   createWorldFact,
@@ -12,6 +13,7 @@ import {
   rebuildFactWorldTree,
   replayWorldEvents,
   verifyFactWorldTree,
+  verifyFactWorldTreeRef,
   verifyWorldEvent,
   verifyWorldEventLog,
   verifyWorldFact,
@@ -152,6 +154,12 @@ test('FactWorldTree keeps canonical facts distinct from subject memory and trace
   assert.equal(verifyWorldFact(candidate).valid, true);
   const tree = rebuildFactWorldTree({eventLog: log, reality_root: realityRoot, facts: [canonical, candidate]});
   assert.equal(verifyFactWorldTree(tree).valid, true);
+  const treeRef = createFactWorldTreeRef({tree, evidence_refs: [evidenceRoot]});
+  assert.equal(verifyFactWorldTreeRef(treeRef).valid, true);
+  assert.equal(treeRef.tree_root, tree.tree_root);
+  assert.equal(treeRef.event_count, tree.accepted_events.length);
+  assert.equal(treeRef.fact_count, tree.facts.length);
+  assert.equal(treeRef.authoritative, false);
   assert.deepEqual(tree.canonical_facts, ['fact:city-power-off']);
   assert.deepEqual(tree.candidate_facts, ['fact:rain-forecast']);
   assert.equal(tree.memory_world_tree_ref, null);
@@ -161,12 +169,13 @@ test('FactWorldTree keeps canonical facts distinct from subject memory and trace
   assert.throws(() => createFactWorldTree({world_id: worldId, reality_root: realityRoot, events: log.events, facts: [createWorldFact({...candidate, source_events: ['event:missing']})]}), /FACT_TREE_SOURCE_EVENT_MISSING/);
 });
 
-test('v0.3 schemas freeze the four P0 truth contracts', () => {
+test('v0.3 schemas freeze the P0 truth contracts', () => {
   const expected = [
     ['world-time.v0.3.schema.json', 'WORLD_TIME_FORMAT'],
     ['world-event.v0.3.schema.json', 'WORLD_EVENT_FORMAT'],
     ['world-fact.v0.3.schema.json', 'WORLD_FACT_FORMAT'],
-    ['fact-world-tree.v0.3.schema.json', 'FACT_TREE_FORMAT']
+    ['fact-world-tree.v0.3.schema.json', 'FACT_TREE_FORMAT'],
+    ['fact-world-tree-ref.v0.3.schema.json', 'FACT_TREE_REF_FORMAT']
   ];
   for (const [name, formatKey] of expected) {
     const schema = JSON.parse(fs.readFileSync(new URL(`../schemas/${name}`, import.meta.url), 'utf8'));
@@ -177,7 +186,8 @@ test('v0.3 schemas freeze the four P0 truth contracts', () => {
       WORLD_TIME_FORMAT: 'rncs.world-time.v0.3',
       WORLD_EVENT_FORMAT: 'rncs.world-event.v0.3',
       WORLD_FACT_FORMAT: 'rncs.world-fact.v0.3',
-      FACT_TREE_FORMAT: 'rncs.fact-world-tree.v0.3'
+      FACT_TREE_FORMAT: 'rncs.fact-world-tree.v0.3',
+      FACT_TREE_REF_FORMAT: 'rncs.fact-world-tree-ref.v0.3'
     }[formatKey]);
   }
 });

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>URRF Large-World Art Asset Composition Browser Evidence</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #08111e; color: #e8f1ff; }
+    body { margin: 0; padding: 24px; display: grid; place-items: center; min-height: 100vh; }
+    main { width: min(1100px, 100%); }
+    h1 { font-size: 20px; margin: 0 0 8px; }
+    p { color: #a9bdd8; }
+    canvas { display: block; width: 100%; aspect-ratio: 16 / 9; background: #07111e; border: 1px solid #315170; border-radius: 12px; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 16px; background: #101c2c; border: 1px solid #294362; border-radius: 12px; }
+    .ok { color: #8ff0bf; }
+    .warn { color: #ffd188; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>URRF large-world art-asset composition · browser evidence</h1>
+  <p id="status">Loading rooted VSR scene…</p>
+  <canvas id="viewport" width="960" height="560"></canvas>
+  <pre id="evidence">{}</pre>
+</main>
+<script src="../../../packages/world/visual-state-runtime/apps/spatial-v04/vsr-spatial-browser.js"></script>
+<script>
+  const output = document.querySelector('#evidence');
+  const status = document.querySelector('#status');
+  const canvas = document.querySelector('#viewport');
+  const options = {width: 960, height: 560, qualityTier: 'quality', enableShadows: false, gpuDrivenCulling: false};
+  const publish = value => { window.__URRF_BROWSER_EVIDENCE__ = value; output.textContent = JSON.stringify(value, null, 2); };
+  async function run() {
+    const api = window.VSRSpatial3D;
+    const scene = await fetch('./large-world-art-asset-composition-scene.json').then(response => response.json());
+    const plan = api.compileSpatialFrame(scene, options);
+    const base = {
+      format: 'urrf.large-world-art-asset-composition-browser-evidence.v0.1',
+      scene_id: scene.sceneId,
+      scene_root: scene.scene_root,
+      frame_root: plan.frameRoot,
+      planned_draws: plan.stats.visibleDraws,
+      planned_triangles: plan.stats.triangleCount,
+      candidate_only: scene.large_world?.candidate_only === true,
+      authoritative: scene.large_world?.authoritative === true
+    };
+    const capability = api.probeSpatialWebGPU();
+    if (!capability.available) {
+      status.className = 'warn';
+      status.textContent = 'WebGPU unavailable in this browser context; this is a capability receipt, not GPU execution.';
+      publish({...base, capability, execution: 'NOT_RUN_WEBGPU'});
+      return;
+    }
+    try {
+      const executor = await api.VSRSpatialWebGPUExecutor.create(canvas);
+      const receipt = await executor.render(scene, options);
+      const receiptVerified = api.verifySpatialWebGPUReceipt(receipt);
+      executor.destroy();
+      status.className = receiptVerified && receipt.submitted && !receipt.deviceLost ? 'ok' : 'warn';
+      status.textContent = receiptVerified && receipt.submitted && !receipt.deviceLost ? 'Real browser WebGPU execution · receipt verified' : 'Browser WebGPU returned a non-passing receipt';
+      publish({...base, capability, execution: receiptVerified && receipt.submitted && !receipt.deviceLost ? 'WEBGPU_EXECUTED_CANDIDATE' : 'WEBGPU_RECEIPT_INVALID', receipt_verified: receiptVerified, receipt});
+    } catch (error) {
+      status.className = 'warn';
+      status.textContent = `WebGPU execution failed: ${error?.message ?? String(error)}`;
+      publish({...base, capability, execution: 'WEBGPU_BLOCKED', error: String(error?.stack ?? error)});
+    }
+  }
+  run().catch(error => { status.className = 'warn'; status.textContent = `Evidence page failed: ${error?.message ?? String(error)}`; publish({execution: 'PAGE_FAILED', error: String(error?.stack ?? error)}); });
+</script>
+</body>
+</html>

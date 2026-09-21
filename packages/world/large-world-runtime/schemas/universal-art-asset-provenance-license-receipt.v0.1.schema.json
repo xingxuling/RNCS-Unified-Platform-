@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.universal-art-asset-provenance-license-receipt.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Provenance and License Receipt v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "source",
+    "receipt_status",
+    "decision",
+    "audited_provider_id",
+    "genome_root",
+    "candidate_root",
+    "file_inspection_root",
+    "provenance",
+    "license",
+    "model_weights_audit",
+    "artifact_roots",
+    "verifier",
+    "receipt_root"
+  ],
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-provenance-license-receipt.v0.1"},
+    "version": {"const": "0.1.0"},
+    "source": {"const": "external-provenance-license-auditor"},
+    "receipt_status": {"const": "VERIFIED"},
+    "decision": {"const": "PASS"},
+    "audited_provider_id": {"type": "string", "minLength": 1},
+    "genome_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "candidate_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "file_inspection_root": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "provenance": {
+      "type": "object",
+      "required": ["upstream_url", "source_revision", "generator_version", "seed"],
+      "properties": {
+        "upstream_url": {"type": "string", "minLength": 1},
+        "source_revision": {"type": "string", "minLength": 1},
+        "generator_version": {"type": "string", "minLength": 1},
+        "seed": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "license": {
+      "type": "object",
+      "required": ["status", "identifier", "scope"],
+      "properties": {
+        "status": {"const": "VERIFIED"},
+        "identifier": {"type": "string", "minLength": 1},
+        "scope": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "model_weights_audit": {
+      "type": "object",
+      "required": ["status", "mode"],
+      "properties": {
+        "status": {"const": "PASS"},
+        "mode": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "artifact_roots": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+    },
+    "verifier": {
+      "type": "object",
+      "required": ["kind", "status", "verifier_id", "method"],
+      "properties": {
+        "kind": {"const": "external-provenance-license-auditor"},
+        "status": {"const": "PASS"},
+        "verifier_id": {"type": "string", "minLength": 1},
+        "method": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "notes": {"type": "string"},
+    "receipt_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

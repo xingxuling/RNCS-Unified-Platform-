@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.universal-art-asset-holdout.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Holdout Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "holdout_id",
+    "source",
+    "batch_root",
+    "baseline_roots",
+    "asset_count",
+    "assets",
+    "summary",
+    "coverage",
+    "checks",
+    "status",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "authority",
+    "holdout_root"
+  ],
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-holdout.v0.1"},
+    "version": {"const": "0.1.0"},
+    "holdout_id": {"type": "string", "minLength": 1},
+    "source": {"const": "urrf-holdout-evaluator"},
+    "batch_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "baseline_roots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["batch_root", "genome_roots", "candidate_roots", "forge_roots"],
+      "properties": {
+        "batch_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "genome_roots": {"type": "array", "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "maxItems": 64},
+        "candidate_roots": {"type": "array", "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "maxItems": 64},
+        "forge_roots": {"type": "array", "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "maxItems": 64}
+      }
+    },
+    "asset_count": {"type": "integer", "minimum": 1, "maximum": 64},
+    "assets": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "asset_key",
+          "index",
+          "asset_id",
+          "asset_profile",
+          "quality_tier",
+          "status",
+          "structural_pass",
+          "structural_checks",
+          "structural_failures",
+          "acceptance_pass",
+          "genome_root",
+          "candidate_root",
+          "forge_root",
+          "file_inspection_root",
+          "triangle_count",
+          "lod_count",
+          "pbr_channel_count",
+          "acceptance_failures"
+        ],
+        "properties": {
+          "asset_key": {"type": "string", "minLength": 1},
+          "index": {"type": "integer", "minimum": 0, "maximum": 63},
+          "asset_id": {"type": "string", "minLength": 1},
+          "asset_profile": {"enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]},
+          "quality_tier": {"enum": ["PREVIEW", "PRODUCTION", "AAA"]},
+          "status": {"enum": ["BLOCKED", "READY_FOR_HUMAN_REVIEW"]},
+          "structural_pass": {"type": "boolean"},
+          "structural_checks": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["candidate_root", "file_inspection", "geometry", "topology", "uv", "normal", "pbr", "lod"],
+            "properties": {
+              "candidate_root": {"type": "boolean"},
+              "file_inspection": {"type": "boolean"},
+              "geometry": {"type": "boolean"},
+              "topology": {"type": "boolean"},
+              "uv": {"type": "boolean"},
+              "normal": {"type": "boolean"},
+              "pbr": {"type": "boolean"},
+              "lod": {"type": "boolean"}
+            }
+          },
+          "structural_failures": {"type": "array", "items": {"type": "string"}},
+          "acceptance_pass": {"type": "boolean"},
+          "genome_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "candidate_root": {"anyOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]},
+          "forge_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "file_inspection_root": {"anyOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]},
+          "triangle_count": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+          "lod_count": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+          "pbr_channel_count": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+          "acceptance_failures": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_count", "structural_pass_count", "acceptance_pass_count", "blocked_count"],
+      "properties": {
+        "asset_count": {"type": "integer", "minimum": 1, "maximum": 64},
+        "structural_pass_count": {"type": "integer", "minimum": 0, "maximum": 64},
+        "acceptance_pass_count": {"type": "integer", "minimum": 0, "maximum": 64},
+        "blocked_count": {"type": "integer", "minimum": 0, "maximum": 64}
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expected_profiles", "observed_profiles", "missing_profiles", "unique_genome_root_count", "unique_candidate_root_count", "unique_forge_root_count", "baseline_overlap_roots"],
+      "properties": {
+        "expected_profiles": {"type": "array", "minItems": 1, "items": {"enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]}},
+        "observed_profiles": {"type": "array", "items": {"enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]}},
+        "missing_profiles": {"type": "array", "items": {"enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]}},
+        "unique_genome_root_count": {"type": "integer", "minimum": 0, "maximum": 64},
+        "unique_candidate_root_count": {"type": "integer", "minimum": 0, "maximum": 64},
+        "unique_forge_root_count": {"type": "integer", "minimum": 0, "maximum": 64},
+        "baseline_overlap_roots": {"type": "array", "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["batch_verification", "asset_count", "asset_keys_unique", "expected_profile_coverage", "unique_genome_roots", "unique_candidate_roots", "unique_forge_roots", "structural_inspection", "baseline_batch_root_distinct", "baseline_root_isolation"],
+      "properties": {
+        "batch_verification": {"type": "boolean"},
+        "asset_count": {"type": "boolean"},
+        "asset_keys_unique": {"type": "boolean"},
+        "expected_profile_coverage": {"type": "boolean"},
+        "unique_genome_roots": {"type": "boolean"},
+        "unique_candidate_roots": {"type": "boolean"},
+        "unique_forge_roots": {"type": "boolean"},
+        "structural_inspection": {"type": "boolean"},
+        "baseline_batch_root_distinct": {"type": "boolean"},
+        "baseline_root_isolation": {"type": "boolean"}
+      }
+    },
+    "status": {"enum": ["CANDIDATE_HOLDOUT_PASS", "CANDIDATE_HOLDOUT_FAIL"]},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "acceptance_can_commit", "rncs_authority_required"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      }
+    },
+    "holdout_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

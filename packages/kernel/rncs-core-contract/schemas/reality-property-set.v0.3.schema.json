@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.reality-property-set.v0.3",
+  "title": "RNCS Reality Property Set v0.3",
+  "type": "object",
+  "required": ["format", "version", "object_id", "property_set_id", "revision", "intrinsic_properties", "dynamic_state", "field_state", "custom_properties", "canonical_owner", "authority", "candidate_only", "authoritative", "commit_status", "evidence_refs", "property_root"],
+  "properties": {
+    "format": {"const": "rncs.reality-property-set.v0.3"},
+    "version": {"const": "0.3.0"},
+    "object_id": {"type": "string", "minLength": 1},
+    "property_set_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "string", "minLength": 1},
+    "intrinsic_properties": {"$ref": "#/$defs/propertyMap"},
+    "dynamic_state": {"$ref": "#/$defs/propertyMap"},
+    "field_state": {"$ref": "#/$defs/propertyMap"},
+    "custom_properties": {"$ref": "#/$defs/propertyMap"},
+    "canonical_owner": {"const": "RNCS"},
+    "authority": {"type": "object", "required": ["provider_can_write_canonical_property", "rncs_authority_required", "candidate_only", "authoritative"], "properties": {"provider_can_write_canonical_property": {"const": false}, "rncs_authority_required": {"const": true}, "candidate_only": {"type": "boolean"}, "authoritative": {"type": "boolean"}}, "additionalProperties": true},
+    "candidate_only": {"type": "boolean"},
+    "authoritative": {"type": "boolean"},
+    "commit_status": {"enum": ["COMMITTED", "NOT_COMMITTED"]},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "property_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "propertyMap": {"type": "object", "additionalProperties": {"$ref": "#/$defs/propertyEntry"}},
+    "propertyEntry": {
+      "type": "object",
+      "required": ["property_id", "domain", "kind", "value_kind", "version", "status", "validity_interval", "provenance_ref", "authority_ref", "evidence_refs", "candidate_only", "authoritative", "commit_status", "property_root"],
+      "properties": {
+        "property_id": {"type": "string", "minLength": 1},
+        "domain": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["intrinsic", "dynamic", "field", "custom"]},
+        "value_kind": {"enum": ["quantity", "symbolic"]},
+        "quantity": {"$ref": "rncs.reality-quantity.v0.3"},
+        "value": {},
+        "version": {"type": "string", "minLength": 1},
+        "status": {"enum": ["CANONICAL", "CANDIDATE", "REJECTED"]},
+        "validity_interval": {"type": "object", "properties": {"start": {}, "end": {}}, "additionalProperties": false},
+        "provenance_ref": {"type": "string", "minLength": 1},
+        "authority_ref": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "items": {"type": "string"}},
+        "candidate_only": {"type": "boolean"},
+        "authoritative": {"type": "boolean"},
+        "commit_status": {"enum": ["COMMITTED", "NOT_COMMITTED"]},
+        "property_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "allOf": [
+    {"if": {"properties": {"candidate_only": {"const": true}}}, "then": {"properties": {"authoritative": {"const": false}, "commit_status": {"const": "NOT_COMMITTED"}}}},
+    {"if": {"properties": {"candidate_only": {"const": false}}}, "then": {"properties": {"authoritative": {"const": true}, "commit_status": {"const": "COMMITTED"}}}}
+  ],
+  "additionalProperties": true
+}

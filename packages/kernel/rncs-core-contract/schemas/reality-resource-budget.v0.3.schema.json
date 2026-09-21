@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.reality-resource-budget.v0.3",
+  "title": "RNCS Reality Resource Budget v0.3",
+  "type": "object",
+  "required": ["format", "version", "budget_id", "node_id", "window_ticks", "power_profile_root", "transport_profile_roots", "capacities", "used", "reserved", "minimum_reserve", "available", "pressure_by_resource", "budget_mode", "evidence_refs", "candidate_only", "authoritative", "commit_status", "budget_root"],
+  "$defs": {
+    "resourceVector": {
+      "type": "object",
+      "required": ["CPU", "GPU", "NPU", "VRAM", "RAM", "STORAGE", "NETWORK", "AGENT_COMPUTE", "SIMULATION", "ENERGY"],
+      "properties": {
+        "CPU": {"type": "integer", "minimum": 0},
+        "GPU": {"type": "integer", "minimum": 0},
+        "NPU": {"type": "integer", "minimum": 0},
+        "VRAM": {"type": "integer", "minimum": 0},
+        "RAM": {"type": "integer", "minimum": 0},
+        "STORAGE": {"type": "integer", "minimum": 0},
+        "NETWORK": {"type": "integer", "minimum": 0},
+        "AGENT_COMPUTE": {"type": "integer", "minimum": 0},
+        "SIMULATION": {"type": "integer", "minimum": 0},
+        "ENERGY": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": true
+    },
+    "pressureVector": {
+      "type": "object",
+      "required": ["CPU", "GPU", "NPU", "VRAM", "RAM", "STORAGE", "NETWORK", "AGENT_COMPUTE", "SIMULATION", "ENERGY"],
+      "properties": {
+        "CPU": {"enum": ["AVAILABLE", "PRESSURED", "RESERVE_BREACH", "OVERCOMMITTED"]},
+        "GPU": {"enum": ["AVAILABLE", "PRESSURED", "RESERVE_BREACH", "OVERCOMMITTED"]},
+        "NPU": {"enum": ["AVAILABLE", "PRESSURED", "RESERVE_BREACH", "OVERCOMMITTED"]},
+        "VRAM": {"enum": ["AVAILABLE", "PRESSURED", "RESERVE_BREACH", "OVERCOMMITTED"]},
+        "RAM": {"enum": ["AVAILABLE", "PRESSURED", "RESERVE_BREACH", "OVERCOMMITTED"]},
+        "STORAGE": {"enum": ["AVAILABLE", "PRESSURED", "RESERVE_BREACH", "OVERCOMMITTED"]},
+        "NETWORK": {"enum": ["AVAILABLE", "PRESSURED", "RESERVE_BREACH", "OVERCOMMITTED"]},
+        "AGENT_COMPUTE": {"enum": ["AVAILABLE", "PRESSURED", "RESERVE_BREACH", "OVERCOMMITTED"]},
+        "SIMULATION": {"enum": ["AVAILABLE", "PRESSURED", "RESERVE_BREACH", "OVERCOMMITTED"]},
+        "ENERGY": {"enum": ["AVAILABLE", "PRESSURED", "RESERVE_BREACH", "OVERCOMMITTED"]}
+      },
+      "additionalProperties": true
+    }
+  },
+  "properties": {
+    "format": {"const": "rncs.reality-resource-budget.v0.3"},
+    "version": {"const": "0.3.0"},
+    "budget_id": {"type": "string", "minLength": 1},
+    "node_id": {"type": "string", "minLength": 1},
+    "window_ticks": {"type": "integer", "minimum": 1},
+    "power_profile_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "transport_profile_roots": {"type": "array", "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "capacities": {"$ref": "#/$defs/resourceVector"},
+    "used": {"$ref": "#/$defs/resourceVector"},
+    "reserved": {"$ref": "#/$defs/resourceVector"},
+    "minimum_reserve": {"$ref": "#/$defs/resourceVector"},
+    "available": {"$ref": "#/$defs/resourceVector"},
+    "pressure_by_resource": {"$ref": "#/$defs/pressureVector"},
+    "budget_mode": {"enum": ["AVAILABLE", "PRESSURED", "OVERCOMMITTED"]},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "budget_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

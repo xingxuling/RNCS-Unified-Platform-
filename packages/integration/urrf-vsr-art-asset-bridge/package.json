@@ -1,0 +1,25 @@
+{
+  "name": "@taowind/urrf-vsr-art-asset-bridge",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "description": "Explicit URRF component representation bridge for VSR asset handlers",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "tests",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@taowind/large-world-runtime": "*",
+    "@taowind/visual-state-runtime": "*"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

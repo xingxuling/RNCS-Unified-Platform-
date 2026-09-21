@@ -2,18 +2,20 @@
 
 - 版本：v0.7.0-alpha.1
 - 定位：现实资产生产会话、资产家族编译器与持续资产运行时
-- 自动测试：190/190通过
+- 自动测试：229/229通过
 - 三候选：balanced、mobile、cinematic真实生成并可独立接受
 - 生产就绪：技术、语义、平台、生产、几何、材质、骨骼、动画、运行时、来源十类门已实现
 - 定点再生成：Generation历史、稳定Asset ID、选择/再生/接受回执已实现
 - 二维资产：SVG、PNG精灵、WAV、粒子、碰撞已闭环
-- 三维资产：圆润分部几何、GLB、非恒定 PBR、8 骨骼、4 动画、morph、三级 LOD 已闭环
+- 三维资产：角色类圆润分部几何、GLB、非恒定 PBR、8 骨骼、4 动画、morph、三级 LOD 已闭环；`creature` 具备独立四足几何、13 骨骼、4 动画、动态 RSR、步态事件和 quadruped retarget；静态 `prop/vehicle/structure/environment/vegetation/resource` 族具备 profile-aware 几何、四通道 PBR、三级 LOD、VSR 与静态 RSR 候选，并使用 `static-asset` / `static-box` Genome 语义、无攻击动画集合和族形态单帧预览
 - 资产装配：Prefab、Retarget、Cross-media Projection已实现
 - 连续性：Asset Family、Lineage Graph、文件SHA-256与Studio导入已实现
 - 运行时适配：VSR v0.8、RSR v0.9、Reality Studio v1.5
 - 运行时适配校验：RAGF VSR v0.4 / RSR v0.4 适配包的版本、兼容目标、LOD/物理字段和封存根已纳入生产就绪门
-- 内置 3D 质量门：最低几何细节、四张 PBR map、morph target、四个嵌入动画、骨骼数量和语义 collision fixture 已纳入候选验收
+- 内置 3D 质量门：角色类最低几何细节、四张 PBR map、morph target、四个嵌入动画、骨骼数量和语义 collision fixture 已纳入候选验收；生物族使用独立四足骨骼、步态动画、动态 RSR 和碰撞合同；静态族使用独立的几何、LOD、PBR、碰撞、无骨骼运行时和 `impact/destroy` 事件合同
 - 外部Provider：stdio协议已实现并测试
+- TRELLIS.2 本地适配器：命令、权重、CUDA、依赖、许可证、超时、崩溃与结果根预检/失败关闭已实现；当前主机因无 CUDA/NVIDIA、权重和真实 Provider 保持 `BLOCKED / NOT_RUN`
+- VFX 专用参考 Provider：粒子、体积、flipbook、曲线四种表示、世界时间驱动效果图、固定步长预算、平台/运行时合同和结果根校验已闭环；它不生成网格替代特效，技术候选可本地执行，但外部高保真 Provider、GPU、目标设备、艺术指导和人工验收仍为 `BLOCKED / NOT_RUN`
 - Anime 内置 Provider：v0.4 状态驱动 SVG/PNG 角色媒体、多帧 PNG 序列、motion track、媒体清单、state root 与非占位质量门已实现
 - Anime 连续性：同一身份在表情、口型、视线、姿势和二级运动帧间保持 identity、palette、proportion 与 appearance roots
 - Anime 时间性：头发、衣物、呼吸、眨眼进入逐帧 motion track，并验证真实帧根差异与确定性回放

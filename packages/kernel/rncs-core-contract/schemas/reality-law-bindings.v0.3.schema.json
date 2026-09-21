@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.reality-law-bindings.v0.3",
+  "title": "RNCS Reality Law Bindings v0.3",
+  "type": "object",
+  "required": ["format", "version", "object_id", "law_bindings_id", "revision", "world_law_set_id", "world_laws", "constitutive_laws", "interaction_laws", "canonical_owner", "authority", "candidate_only", "authoritative", "commit_status", "evidence_refs", "bindings_root"],
+  "properties": {
+    "format": {"const": "rncs.reality-law-bindings.v0.3"},
+    "version": {"const": "0.3.0"},
+    "object_id": {"type": "string", "minLength": 1},
+    "law_bindings_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "string", "minLength": 1},
+    "world_law_set_id": {"type": "string", "minLength": 1},
+    "world_laws": {"$ref": "#/$defs/lawMap"},
+    "constitutive_laws": {"$ref": "#/$defs/lawMap"},
+    "interaction_laws": {"$ref": "#/$defs/lawMap"},
+    "canonical_owner": {"const": "RNCS"},
+    "authority": {"type": "object", "required": ["provider_can_write_canonical_law", "rncs_authority_required", "candidate_only", "authoritative"], "properties": {"provider_can_write_canonical_law": {"const": false}, "rncs_authority_required": {"const": true}, "candidate_only": {"type": "boolean"}, "authoritative": {"type": "boolean"}}, "additionalProperties": true},
+    "candidate_only": {"type": "boolean"},
+    "authoritative": {"type": "boolean"},
+    "commit_status": {"enum": ["COMMITTED", "NOT_COMMITTED"]},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "bindings_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "lawMap": {"type": "object", "additionalProperties": {"$ref": "#/$defs/lawEntry"}},
+    "lawEntry": {
+      "type": "object",
+      "required": ["law_id", "law_type", "domain", "model", "version", "parameters", "valid_range", "supported_property_ids", "evidence_refs", "provenance_ref", "authority_ref", "provider_policy", "status", "candidate_only", "authoritative", "commit_status", "law_root"],
+      "properties": {
+        "law_id": {"type": "string", "minLength": 1},
+        "law_type": {"enum": ["world", "constitutive", "interaction"]},
+        "domain": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "parameters": {"type": "object"},
+        "valid_range": {"type": "object"},
+        "supported_property_ids": {"type": "array", "items": {"type": "string"}},
+        "evidence_refs": {"type": "array", "items": {"type": "string"}},
+        "provenance_ref": {"type": "string", "minLength": 1},
+        "authority_ref": {"type": "string", "minLength": 1},
+        "provider_policy": {"type": "object", "required": ["provider_may_rewrite_canonical"], "properties": {"provider_may_rewrite_canonical": {"const": false}}, "additionalProperties": true},
+        "status": {"enum": ["CANONICAL", "CANDIDATE", "REJECTED"]},
+        "candidate_only": {"type": "boolean"},
+        "authoritative": {"type": "boolean"},
+        "commit_status": {"enum": ["COMMITTED", "NOT_COMMITTED"]},
+        "law_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "allOf": [
+    {"if": {"properties": {"candidate_only": {"const": true}}}, "then": {"properties": {"authoritative": {"const": false}, "commit_status": {"const": "NOT_COMMITTED"}}}},
+    {"if": {"properties": {"candidate_only": {"const": false}}}, "then": {"properties": {"authoritative": {"const": true}, "commit_status": {"const": "COMMITTED"}}}}
+  ],
+  "additionalProperties": true
+}
