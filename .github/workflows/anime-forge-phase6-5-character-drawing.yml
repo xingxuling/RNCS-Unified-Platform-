@@ -1,0 +1,47 @@
+name: RNCS Anime Forge Phase 6.5 Character Drawing
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main-95]
+    paths:
+      - "packages/world/native-character-morphogenesis-runtime/**"
+      - "scripts/build-anime-forge-phase6-5-character-drawing.mjs"
+      - "scripts/verify-anime-forge-phase6-5-character-drawing.mjs"
+      - "docs/execution/phase6-5/**"
+      - "docs/verification/anime-forge-phase6-5-character-drawing-v0.1/**"
+      - ".github/workflows/anime-forge-phase6-5-character-drawing.yml"
+
+jobs:
+  character-drawing-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: npm ci --ignore-scripts
+      - name: Phase 6.5 RED / GREEN drawing gates
+        run: node --test packages/world/native-character-morphogenesis-runtime/tests/character-drawing-compiler.test.mjs
+      - name: Semantic anatomy regression
+        run: node --test packages/world/native-character-morphogenesis-runtime/tests/semantic-anatomy.test.mjs
+      - name: Full native morphology regression
+        run: npm test --workspace @taowind/native-character-morphogenesis-runtime
+      - name: Build Phase 6.5 evidence
+        env:
+          FFMPEG_PATH: ffmpeg
+          FFPROBE_PATH: ffprobe
+          ANIME_PHASE6_5_EVIDENCE_DIR: tmp/anime-forge-phase6-5-character-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-5-character-drawing.mjs
+      - name: Verify Phase 6.5 evidence
+        run: node scripts/verify-anime-forge-phase6-5-character-drawing.mjs --evidence tmp/anime-forge-phase6-5-character-drawing-evidence
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rncs-anime-forge-phase6-5-character-drawing-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 30
+          path: tmp/anime-forge-phase6-5-character-drawing-evidence
