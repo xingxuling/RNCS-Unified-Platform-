@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.universal-art-asset-quality-proof.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Quality Proof v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "source",
+    "receipt_status",
+    "decision",
+    "target_quality_tier",
+    "genome_root",
+    "candidate_root",
+    "file_inspection_root",
+    "benchmark_root",
+    "hardware_profile",
+    "metrics",
+    "verifier",
+    "receipt_root"
+  ],
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-quality-proof.v0.1"},
+    "version": {"const": "0.1.0"},
+    "source": {"const": "external-quality-verifier"},
+    "receipt_status": {"const": "VERIFIED"},
+    "decision": {"const": "PASS"},
+    "target_quality_tier": {"enum": ["PREVIEW", "PRODUCTION", "AAA"]},
+    "genome_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "candidate_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "file_inspection_root": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "benchmark_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "hardware_profile": {"type": "string", "minLength": 1},
+    "metrics": {
+      "type": "object",
+      "required": ["lod0_triangle_count", "texture_size", "pbr_channel_count", "target_platform"],
+      "properties": {
+        "lod0_triangle_count": {"type": "integer", "minimum": 0},
+        "texture_size": {"type": "integer", "minimum": 0},
+        "pbr_channel_count": {"type": "integer", "minimum": 0},
+        "target_platform": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "verifier": {
+      "type": "object",
+      "required": ["kind", "status", "verifier_id", "method"],
+      "properties": {
+        "kind": {"const": "external-quality-verifier"},
+        "status": {"const": "PASS"},
+        "verifier_id": {"type": "string", "minLength": 1},
+        "method": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "notes": {"type": "string"},
+    "receipt_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

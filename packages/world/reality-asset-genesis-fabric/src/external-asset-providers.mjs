@@ -355,6 +355,7 @@ function runCommand(command, request, timeout = 60000) {
     timeout,
     maxBuffer: 128 * 1024 * 1024
   });
+  if (result.error?.code === 'ETIMEDOUT') throw new GenesisError('ASSET_PROVIDER_TIMEOUT', `timeout_ms=${timeout}`);
   if (result.error) throw new GenesisError('ASSET_PROVIDER_EXECUTION_FAILED', result.error.message);
   if (result.status !== 0) throw new GenesisError('ASSET_PROVIDER_NONZERO', String(result.stderr ?? '').slice(0, 2000));
   try {
@@ -432,6 +433,9 @@ export class AssetProviderAdapter {
         provider: this.manifest,
         stage: input.stage ?? operation
       });
+      if (raw && typeof raw === 'object' && raw.result_root !== undefined && raw.result_root !== result.result_root) {
+        throw new GenesisError('ASSET_PROVIDER_RESULT_ROOT_MISMATCH', String(raw.result_root));
+      }
       job.complete(result);
       return {status: 'COMPLETED', provider: clone(this.manifest), job: job.snapshot(), result, failure: null};
     } catch (error) {

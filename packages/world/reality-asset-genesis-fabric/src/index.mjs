@@ -18,6 +18,11 @@ export * from './production-session.mjs';
 export * from './society-genesis.mjs';
 export * from './asset-provider-contract.mjs';
 export * from './external-asset-providers.mjs';
+export * from './trellis2-local-provider.mjs';
+export * from './vfx-reference-provider.mjs';
+// RAGF consumes the RNCS-owned reference contract; expose the verifier as a
+// facade without moving canonical representation semantics out of RNCS.
+export {createRepresentationRef, verifyRepresentationRef} from '@taowind/rncs-core-contract';
 export * from './production-court.mjs';
 export * from './asset-requirements.mjs';
 export * from './asset-evidence-ledger.mjs';

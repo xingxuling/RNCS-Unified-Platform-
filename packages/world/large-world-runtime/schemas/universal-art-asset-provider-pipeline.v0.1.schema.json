@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/urrf/universal-art-asset-provider-pipeline.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Provider Pipeline Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "plan_id",
+    "source",
+    "asset_id",
+    "asset_profile",
+    "quality_tier",
+    "genome_root",
+    "resolution_root",
+    "provider_registry_root",
+    "stage_count",
+    "required_stage_count",
+    "stages",
+    "summary",
+    "required_stage_blockers",
+    "checks",
+    "status",
+    "runtime_ready",
+    "execution_performed",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "aaa_ready",
+    "release_ready",
+    "authority",
+    "pipeline_root"
+  ],
+  "$defs": {
+    "root": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nullableRoot": {
+      "anyOf": [
+        {"$ref": "#/$defs/root"},
+        {"type": "null"}
+      ]
+    },
+    "profile": {
+      "type": "string",
+      "enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]
+    },
+    "qualityTier": {
+      "type": "string",
+      "enum": ["PREVIEW", "PRODUCTION", "AAA"]
+    },
+    "providerSource": {
+      "anyOf": [
+        {"enum": ["ragf-reference-provider", "external-provider-contract", "injected-provider"]},
+        {"type": "null"}
+      ]
+    },
+    "runtimeBinding": {
+      "anyOf": [
+        {"enum": ["BUILTIN_REFERENCE", "CONTRACT_ONLY", "EXECUTOR_INJECTED", "EXTERNAL_PROCESS", "UNRESOLVED"]},
+        {"type": "null"}
+      ]
+    },
+    "nullableText": {
+      "anyOf": [
+        {"type": "string", "minLength": 1},
+        {"type": "null"}
+      ]
+    },
+    "stageChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider_binding", "capability_binding", "artifact_contract_binding", "runtime_truthfulness", "no_silent_fallback", "authority_boundary"],
+      "properties": {
+        "provider_binding": {"type": "boolean"},
+        "capability_binding": {"type": "boolean"},
+        "artifact_contract_binding": {"type": "boolean"},
+        "runtime_truthfulness": {"type": "boolean"},
+        "no_silent_fallback": {"type": "boolean"},
+        "authority_boundary": {"type": "boolean"}
+      }
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "index",
+        "stage_id",
+        "stage_kind",
+        "required",
+        "input_stage_id",
+        "required_capabilities",
+        "capability_aliases",
+        "required_outputs",
+        "candidate_provider_ids",
+        "selected_provider_id",
+        "selected_provider_root",
+        "provider_source",
+        "runtime_status",
+        "runtime_binding",
+        "runner_supplied",
+        "command_configured",
+        "declared_outputs",
+        "unresolved_capabilities",
+        "failure_reasons",
+        "route_status",
+        "runtime_ready",
+        "execution_performed",
+        "candidate_only",
+        "authoritative",
+        "checks",
+        "stage_root"
+      ],
+      "properties": {
+        "index": {"type": "integer", "minimum": 0},
+        "stage_id": {"type": "string", "minLength": 1},
+        "stage_kind": {"enum": ["BASE_GENERATION", "RIGGING_ANIMATION", "GEOMETRY_REFINEMENT", "VFX_GENERATION"]},
+        "required": {"type": "boolean"},
+        "input_stage_id": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+        "required_capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "capability_aliases": {"type": "object", "additionalProperties": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}},
+        "required_outputs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "candidate_provider_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "selected_provider_id": {"$ref": "#/$defs/nullableText"},
+        "selected_provider_root": {"$ref": "#/$defs/nullableRoot"},
+        "provider_source": {"$ref": "#/$defs/providerSource"},
+        "runtime_status": {"$ref": "#/$defs/nullableText"},
+        "runtime_binding": {"$ref": "#/$defs/runtimeBinding"},
+        "runner_supplied": {"type": "boolean"},
+        "command_configured": {"type": "boolean"},
+        "declared_outputs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "unresolved_capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "failure_reasons": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "route_status": {"enum": ["BUILTIN_REFERENCE", "EXTERNAL_CONTRACT_ONLY", "EXTERNAL_RUNTIME_BOUND", "INJECTED_CONTRACT_ONLY", "INJECTED_RUNTIME_BOUND", "UNRESOLVED"]},
+        "runtime_ready": {"type": "boolean"},
+        "execution_performed": {"const": false},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false},
+        "checks": {"$ref": "#/$defs/stageChecks"},
+        "stage_root": {"$ref": "#/$defs/root"}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_count", "required_stage_count", "resolved_stage_count", "required_stage_coverage_count", "runtime_ready_required_stage_count", "contract_only_stage_count", "unresolved_stage_count", "blocker_count"],
+      "properties": {
+        "stage_count": {"type": "integer", "minimum": 0},
+        "required_stage_count": {"type": "integer", "minimum": 0},
+        "resolved_stage_count": {"type": "integer", "minimum": 0},
+        "required_stage_coverage_count": {"type": "integer", "minimum": 0},
+        "runtime_ready_required_stage_count": {"type": "integer", "minimum": 0},
+        "contract_only_stage_count": {"type": "integer", "minimum": 0},
+        "unresolved_stage_count": {"type": "integer", "minimum": 0},
+        "blocker_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_id", "route_status", "reasons"],
+      "properties": {
+        "stage_id": {"type": "string", "minLength": 1},
+        "route_status": {"enum": ["BUILTIN_REFERENCE", "EXTERNAL_CONTRACT_ONLY", "EXTERNAL_RUNTIME_BOUND", "INJECTED_CONTRACT_ONLY", "INJECTED_RUNTIME_BOUND", "UNRESOLVED"]},
+        "reasons": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["genome_binding", "resolution_binding", "stage_count", "unique_stage_ids", "required_stage_coverage", "runtime_truthfulness", "no_silent_fallback", "no_execution_during_planning", "authority_boundary"],
+      "properties": {
+        "genome_binding": {"type": "boolean"},
+        "resolution_binding": {"type": "boolean"},
+        "stage_count": {"type": "boolean"},
+        "unique_stage_ids": {"type": "boolean"},
+        "required_stage_coverage": {"type": "boolean"},
+        "runtime_truthfulness": {"type": "boolean"},
+        "no_silent_fallback": {"type": "boolean"},
+        "no_execution_during_planning": {"type": "boolean"},
+        "authority_boundary": {"type": "boolean"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "acceptance_can_commit", "rncs_authority_required"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      }
+    }
+  },
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-provider-pipeline.v0.1"},
+    "version": {"const": "0.1.0"},
+    "plan_id": {"type": "string", "minLength": 1},
+    "source": {"const": "urrf-provider-pipeline-planner"},
+    "asset_id": {"type": "string", "minLength": 1},
+    "asset_profile": {"$ref": "#/$defs/profile"},
+    "quality_tier": {"$ref": "#/$defs/qualityTier"},
+    "genome_root": {"$ref": "#/$defs/root"},
+    "resolution_root": {"$ref": "#/$defs/root"},
+    "provider_registry_root": {"$ref": "#/$defs/root"},
+    "stage_count": {"type": "integer", "minimum": 1},
+    "required_stage_count": {"type": "integer", "minimum": 1},
+    "stages": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/stage"}},
+    "summary": {"$ref": "#/$defs/summary"},
+    "required_stage_blockers": {"type": "array", "items": {"$ref": "#/$defs/blocker"}},
+    "checks": {"$ref": "#/$defs/checks"},
+    "status": {"enum": ["CANDIDATE_PROVIDER_PIPELINE_PLANNED", "CANDIDATE_PROVIDER_PIPELINE_BLOCKED"]},
+    "runtime_ready": {"type": "boolean"},
+    "execution_performed": {"const": false},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "aaa_ready": {"const": false},
+    "release_ready": {"const": false},
+    "authority": {"$ref": "#/$defs/authority"},
+    "pipeline_root": {"$ref": "#/$defs/root"}
+  }
+}

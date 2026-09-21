@@ -1,0 +1,39 @@
+{
+  "format": "urrf.universal-art-asset-vsr-webgpu-report.v0.1",
+  "version": "0.1.0",
+  "source_reality_root": "16078c2e15b3bea8603f924ba15b09ca51e26a83bc33717cb1b866c5fc7f4602",
+  "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+  "projection_root": "75aa544ca194f3f4878689a87194e5e15a67b03803775ddd0762192fae0c49f9",
+  "materialization_root": "ba67dacadd91a77437ad43478047131b03e5368fb57d019f3ec2a84a73933657",
+  "scene_id": "urrf-universal-art-asset-vsr-aggregate-v01",
+  "world_id": "world:urrf-universal-art-assembly-integration",
+  "asset_count": 2,
+  "mesh_count": 2,
+  "texture_count": 8,
+  "material_count": 2,
+  "material_texture_bindings": 10,
+  "triangle_count": 1444,
+  "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+  "pixel_root": "2a207e9fac64f62eee5eebcc8fce2cc5d43711b3339fc82e6287b2ae56286d96",
+  "render_width": 640,
+  "render_height": 420,
+  "browser_execution": "NOT_EXECUTED_IN_NODE",
+  "actual_gpu_execution": false,
+  "artifacts": {
+    "scene_json": "universal-art-asset-vsr-aggregate-scene.json",
+    "cpu_reference_png": "universal-art-asset-vsr-aggregate-cpu-reference.png",
+    "browser_html": "universal-art-asset-vsr-webgpu.html",
+    "browser_receipt": "universal-art-asset-vsr-webgpu-browser-receipt.json",
+    "browser_performance": "universal-art-asset-vsr-webgpu-performance.json",
+    "browser_png": "universal-art-asset-vsr-webgpu-browser.png"
+  },
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "execution_owner": "VSR",
+    "candidate_only": true,
+    "authoritative": false
+  },
+  "notes": "Candidate-only local browser execution seam for the dependency-complete universal art assembly. Node produced the aggregate scene and CPU reference; browser GPU submission and the 12-frame performance budget sample are independently run and recorded, and neither proves target-device performance or AAA art quality.",
+  "report_root": "653d3ed63d9e63b000ce943f2acd4b3009e435ef3ba36bbc64574dde3cb02430"
+}

@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.universal-art-asset-component-execution.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Component Graph Execution v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "execution_id",
+    "source",
+    "component_graph_root",
+    "source_reality_root",
+    "asset_id",
+    "asset_profile",
+    "quality_tier",
+    "component_count",
+    "components",
+    "summary",
+    "checks",
+    "status",
+    "execution_attempted",
+    "execution_performed",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "aaa_ready",
+    "release_ready",
+    "authority",
+    "component_execution_root"
+  ],
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-component-execution.v0.1"},
+    "version": {"const": "0.1.0"},
+    "execution_id": {"type": "string", "minLength": 1},
+    "source": {"const": "urrf-component-graph-executor"},
+    "component_graph_root": {"$ref": "#/$defs/root"},
+    "source_reality_root": {"$ref": "#/$defs/nullableRoot"},
+    "asset_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "asset_profile": {"$ref": "#/$defs/profile"},
+    "quality_tier": {"$ref": "#/$defs/qualityTier"},
+    "component_count": {"type": "integer", "minimum": 1, "maximum": 128},
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {"$ref": "#/$defs/component"}
+    },
+    "summary": {
+      "type": "object",
+      "required": ["component_count", "completed_count", "failed_count", "blocked_count", "not_run_count", "planned_count", "artifact_count"],
+      "properties": {
+        "component_count": {"type": "integer", "minimum": 1, "maximum": 128},
+        "completed_count": {"type": "integer", "minimum": 0, "maximum": 128},
+        "failed_count": {"type": "integer", "minimum": 0, "maximum": 128},
+        "blocked_count": {"type": "integer", "minimum": 0, "maximum": 128},
+        "not_run_count": {"type": "integer", "minimum": 0, "maximum": 128},
+        "planned_count": {"type": "integer", "minimum": 0, "maximum": 128},
+        "artifact_count": {"type": "integer", "minimum": 0, "maximum": 128}
+      },
+      "additionalProperties": false
+    },
+    "checks": {
+      "type": "object",
+      "required": ["graph_binding", "topological_order", "dependency_binding", "execution_truthfulness", "authority_boundary"],
+      "properties": {
+        "graph_binding": {"type": "boolean"},
+        "topological_order": {"type": "boolean"},
+        "dependency_binding": {"type": "boolean"},
+        "execution_truthfulness": {"type": "boolean"},
+        "authority_boundary": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "status": {"enum": ["CANDIDATE_COMPONENT_GRAPH_EXECUTED", "CANDIDATE_COMPONENT_GRAPH_FAILED", "CANDIDATE_COMPONENT_GRAPH_BLOCKED", "CANDIDATE_COMPONENT_GRAPH_NOT_RUN"]},
+    "execution_attempted": {"type": "boolean"},
+    "execution_performed": {"type": "boolean"},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "aaa_ready": {"const": false},
+    "release_ready": {"const": false},
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "composition_can_commit", "rncs_authority_required"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "composition_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "component_execution_root": {"$ref": "#/$defs/root"}
+  },
+  "$defs": {
+    "root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "nullableRoot": {"anyOf": [{"$ref": "#/$defs/root"}, {"type": "null"}]},
+    "nullableText": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+    "profile": {"enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]},
+    "qualityTier": {"enum": ["PREVIEW", "PRODUCTION", "AAA"]},
+    "component": {
+      "type": "object",
+      "required": [
+        "index",
+        "component_id",
+        "role",
+        "asset_id",
+        "asset_profile",
+        "quality_tier",
+        "genome_root",
+        "depends_on",
+        "dependency_bindings",
+        "parent_component_id",
+        "context_root",
+        "plan_root",
+        "execution_root",
+        "artifact_root",
+        "output_root",
+        "result_root",
+        "pipeline_status",
+        "execution_attempted",
+        "execution_performed",
+        "status",
+        "failure_code",
+        "output_directory",
+        "candidate_only",
+        "authoritative",
+        "canonical_write_authorized",
+        "graph_root"
+      ],
+      "properties": {
+        "index": {"type": "integer", "minimum": 0, "maximum": 127},
+        "component_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}$"},
+        "role": {"type": "string", "minLength": 1, "maxLength": 96},
+        "asset_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "asset_profile": {"$ref": "#/$defs/profile"},
+        "quality_tier": {"$ref": "#/$defs/qualityTier"},
+        "genome_root": {"$ref": "#/$defs/root"},
+        "depends_on": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "dependency_bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["component_id", "status", "execution_root", "output_root", "result_root"],
+            "properties": {
+              "component_id": {"type": "string", "minLength": 1},
+              "status": {"enum": ["COMPLETED", "FAILED", "BLOCKED", "NOT_RUN"]},
+              "execution_root": {"$ref": "#/$defs/nullableRoot"},
+              "output_root": {"$ref": "#/$defs/nullableRoot"},
+              "result_root": {"$ref": "#/$defs/nullableRoot"}
+            },
+            "additionalProperties": false
+          }
+        },
+        "parent_component_id": {"$ref": "#/$defs/nullableText"},
+        "context_root": {"$ref": "#/$defs/root"},
+        "plan_root": {"$ref": "#/$defs/nullableRoot"},
+        "execution_root": {"$ref": "#/$defs/nullableRoot"},
+        "artifact_root": {"$ref": "#/$defs/nullableRoot"},
+        "output_root": {"$ref": "#/$defs/nullableRoot"},
+        "result_root": {"$ref": "#/$defs/nullableRoot"},
+        "pipeline_status": {"type": "string", "minLength": 1},
+        "execution_attempted": {"type": "boolean"},
+        "execution_performed": {"type": "boolean"},
+        "status": {"enum": ["COMPLETED", "FAILED", "BLOCKED", "NOT_RUN"]},
+        "failure_code": {"$ref": "#/$defs/nullableText"},
+        "output_directory": {"$ref": "#/$defs/nullableText"},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false},
+        "canonical_write_authorized": {"const": false},
+        "graph_root": {"$ref": "#/$defs/root"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

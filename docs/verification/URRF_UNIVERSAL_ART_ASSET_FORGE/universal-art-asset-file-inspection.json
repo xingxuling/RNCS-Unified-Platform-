@@ -1,0 +1,776 @@
+{
+  "format": "urrf.universal-art-asset-file-inspection.v0.1",
+  "version": "0.1.0",
+  "source": "local-glb-inspector",
+  "method": "urrf.glb-structural-inspector.v0.1",
+  "status": "PASS",
+  "files": [
+    {
+      "path": "candidates/mobile/mesh/lod0.glb",
+      "role": "mesh-glb",
+      "lod": 0,
+      "exists": true,
+      "byte_length": 59880,
+      "file_root": "b21b483ae0f8df76711b6ae53e6bb515ce86e905fe52bd66713aeeafbae49a4a",
+      "glb_valid": true,
+      "valid": true,
+      "errors": [],
+      "mesh_count": 1,
+      "primitive_count": 1,
+      "vertex_count": 686,
+      "triangle_count": 904,
+      "geometry": {
+        "status": "PASS",
+        "method": "GLB_ACCESSOR_STRUCTURE_V1"
+      },
+      "topology": {
+        "status": "PASS",
+        "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1",
+        "primitives": [
+          {
+            "status": "PASS",
+            "manifold": true,
+            "finite_positions": true,
+            "indexed_triangle_list": true,
+            "vertex_count": 686,
+            "welded_vertex_count": 348,
+            "triangle_count": 904,
+            "non_degenerate_triangle_count": 620,
+            "degenerate_triangle_count": 284,
+            "degenerate_triangle_ratio": 0.3141592920353982,
+            "invalid_index_count": 0,
+            "repeated_index_triangle_count": 0,
+            "edge_count": 930,
+            "boundary_edge_count": 0,
+            "non_manifold_edge_count": 0,
+            "weld_tolerance": 0.0000027300000190734863,
+            "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+            "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+          }
+        ]
+      },
+      "uv": {
+        "status": "PASS",
+        "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1",
+        "primitives": [
+          {
+            "status": "PASS",
+            "finite": true,
+            "min": [
+              0,
+              0.019999999552965164
+            ],
+            "max": [
+              1,
+              1
+            ],
+            "span": [
+              1,
+              0.9800000004470348
+            ],
+            "non_constant": true,
+            "out_of_unit_range_count": 0,
+            "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+          }
+        ]
+      },
+      "normals": {
+        "status": "PASS",
+        "method": "FINITE_NONZERO_UNIT_NORMALS_V1",
+        "primitives": [
+          {
+            "status": "PASS",
+            "finite": true,
+            "non_zero": true,
+            "unit_like": true,
+            "min_length": 0.9999999597534908,
+            "max_length": 1.0000000379107032,
+            "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+          }
+        ]
+      },
+      "pbr": {
+        "status": "PASS",
+        "binding": "external-pbr-pack",
+        "external_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+        "material_count": 1,
+        "texture_count": 4,
+        "embedded_image_count": 0,
+        "channels": [
+          {
+            "role": "base-color",
+            "path": "candidates/mobile/pbr/base-color.png",
+            "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf"
+          },
+          {
+            "role": "normal",
+            "path": "candidates/mobile/pbr/normal.png",
+            "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386"
+          },
+          {
+            "role": "occlusion-roughness-metallic",
+            "path": "candidates/mobile/pbr/orm.png",
+            "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da"
+          },
+          {
+            "role": "emissive",
+            "path": "candidates/mobile/pbr/emissive.png",
+            "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658"
+          }
+        ],
+        "materials": [
+          {
+            "status": "PASS",
+            "material_index": 0,
+            "material_name": "ice-stylized-pbr",
+            "base_color_factor": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "metallic_factor": 0.18,
+            "roughness_factor": 0.72,
+            "emissive_factor": [
+              0,
+              0,
+              0,
+              1
+            ],
+            "errors": [],
+            "method": "GLB_PBR_MATERIAL_FACTOR_STRUCTURE_V1"
+          }
+        ],
+        "errors": [],
+        "method": "GLB_MATERIAL_WITH_EXTERNAL_PBR_PACK_BINDING_V1"
+      },
+      "primitives": [
+        {
+          "mesh_index": 0,
+          "primitive_index": 0,
+          "mode": 4,
+          "valid": true,
+          "errors": [],
+          "geometry": {
+            "status": "PASS",
+            "vertex_count": 686,
+            "triangle_count": 904,
+            "attribute_counts_match": true,
+            "attributes": [
+              "JOINTS_0",
+              "NORMAL",
+              "POSITION",
+              "TEXCOORD_0",
+              "WEIGHTS_0"
+            ],
+            "method": "GLB_ACCESSOR_STRUCTURE_V1"
+          },
+          "topology": {
+            "status": "PASS",
+            "manifold": true,
+            "finite_positions": true,
+            "indexed_triangle_list": true,
+            "vertex_count": 686,
+            "welded_vertex_count": 348,
+            "triangle_count": 904,
+            "non_degenerate_triangle_count": 620,
+            "degenerate_triangle_count": 284,
+            "degenerate_triangle_ratio": 0.3141592920353982,
+            "invalid_index_count": 0,
+            "repeated_index_triangle_count": 0,
+            "edge_count": 930,
+            "boundary_edge_count": 0,
+            "non_manifold_edge_count": 0,
+            "weld_tolerance": 0.0000027300000190734863,
+            "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+            "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+          },
+          "uv": {
+            "status": "PASS",
+            "finite": true,
+            "min": [
+              0,
+              0.019999999552965164
+            ],
+            "max": [
+              1,
+              1
+            ],
+            "span": [
+              1,
+              0.9800000004470348
+            ],
+            "non_constant": true,
+            "out_of_unit_range_count": 0,
+            "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+          },
+          "normals": {
+            "status": "PASS",
+            "finite": true,
+            "non_zero": true,
+            "unit_like": true,
+            "min_length": 0.9999999597534908,
+            "max_length": 1.0000000379107032,
+            "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+          }
+        }
+      ]
+    },
+    {
+      "path": "candidates/mobile/mesh/lod1.glb",
+      "role": "mesh-lod1-glb",
+      "lod": 1,
+      "exists": true,
+      "byte_length": 44536,
+      "file_root": "73fbaf0f2a3d6d927942a473bcd7ac8988ee5c11e64ecddbdbfcde7cd28da4ef",
+      "glb_valid": true,
+      "valid": true,
+      "errors": [],
+      "mesh_count": 1,
+      "primitive_count": 1,
+      "vertex_count": 484,
+      "triangle_count": 636,
+      "geometry": {
+        "status": "PASS",
+        "method": "GLB_ACCESSOR_STRUCTURE_V1"
+      },
+      "topology": {
+        "status": "PASS",
+        "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1",
+        "primitives": [
+          {
+            "status": "PASS",
+            "manifold": true,
+            "finite_positions": true,
+            "indexed_triangle_list": true,
+            "vertex_count": 484,
+            "welded_vertex_count": 242,
+            "triangle_count": 636,
+            "non_degenerate_triangle_count": 424,
+            "degenerate_triangle_count": 212,
+            "degenerate_triangle_ratio": 0.3333333333333333,
+            "invalid_index_count": 0,
+            "repeated_index_triangle_count": 0,
+            "edge_count": 636,
+            "boundary_edge_count": 0,
+            "non_manifold_edge_count": 0,
+            "weld_tolerance": 0.0000027300000190734863,
+            "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+            "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+          }
+        ]
+      },
+      "uv": {
+        "status": "PASS",
+        "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1",
+        "primitives": [
+          {
+            "status": "PASS",
+            "finite": true,
+            "min": [
+              0,
+              0.019999999552965164
+            ],
+            "max": [
+              1,
+              1
+            ],
+            "span": [
+              1,
+              0.9800000004470348
+            ],
+            "non_constant": true,
+            "out_of_unit_range_count": 0,
+            "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+          }
+        ]
+      },
+      "normals": {
+        "status": "PASS",
+        "method": "FINITE_NONZERO_UNIT_NORMALS_V1",
+        "primitives": [
+          {
+            "status": "PASS",
+            "finite": true,
+            "non_zero": true,
+            "unit_like": true,
+            "min_length": 0.9999999690449232,
+            "max_length": 1.0000000329932732,
+            "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+          }
+        ]
+      },
+      "pbr": {
+        "status": "PASS",
+        "binding": "external-pbr-pack",
+        "external_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+        "material_count": 1,
+        "texture_count": 4,
+        "embedded_image_count": 0,
+        "channels": [
+          {
+            "role": "base-color",
+            "path": "candidates/mobile/pbr/base-color.png",
+            "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf"
+          },
+          {
+            "role": "normal",
+            "path": "candidates/mobile/pbr/normal.png",
+            "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386"
+          },
+          {
+            "role": "occlusion-roughness-metallic",
+            "path": "candidates/mobile/pbr/orm.png",
+            "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da"
+          },
+          {
+            "role": "emissive",
+            "path": "candidates/mobile/pbr/emissive.png",
+            "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658"
+          }
+        ],
+        "materials": [
+          {
+            "status": "PASS",
+            "material_index": 0,
+            "material_name": "ice-stylized-pbr",
+            "base_color_factor": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "metallic_factor": 0.18,
+            "roughness_factor": 0.72,
+            "emissive_factor": [
+              0,
+              0,
+              0,
+              1
+            ],
+            "errors": [],
+            "method": "GLB_PBR_MATERIAL_FACTOR_STRUCTURE_V1"
+          }
+        ],
+        "errors": [],
+        "method": "GLB_MATERIAL_WITH_EXTERNAL_PBR_PACK_BINDING_V1"
+      },
+      "primitives": [
+        {
+          "mesh_index": 0,
+          "primitive_index": 0,
+          "mode": 4,
+          "valid": true,
+          "errors": [],
+          "geometry": {
+            "status": "PASS",
+            "vertex_count": 484,
+            "triangle_count": 636,
+            "attribute_counts_match": true,
+            "attributes": [
+              "JOINTS_0",
+              "NORMAL",
+              "POSITION",
+              "TEXCOORD_0",
+              "WEIGHTS_0"
+            ],
+            "method": "GLB_ACCESSOR_STRUCTURE_V1"
+          },
+          "topology": {
+            "status": "PASS",
+            "manifold": true,
+            "finite_positions": true,
+            "indexed_triangle_list": true,
+            "vertex_count": 484,
+            "welded_vertex_count": 242,
+            "triangle_count": 636,
+            "non_degenerate_triangle_count": 424,
+            "degenerate_triangle_count": 212,
+            "degenerate_triangle_ratio": 0.3333333333333333,
+            "invalid_index_count": 0,
+            "repeated_index_triangle_count": 0,
+            "edge_count": 636,
+            "boundary_edge_count": 0,
+            "non_manifold_edge_count": 0,
+            "weld_tolerance": 0.0000027300000190734863,
+            "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+            "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+          },
+          "uv": {
+            "status": "PASS",
+            "finite": true,
+            "min": [
+              0,
+              0.019999999552965164
+            ],
+            "max": [
+              1,
+              1
+            ],
+            "span": [
+              1,
+              0.9800000004470348
+            ],
+            "non_constant": true,
+            "out_of_unit_range_count": 0,
+            "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+          },
+          "normals": {
+            "status": "PASS",
+            "finite": true,
+            "non_zero": true,
+            "unit_like": true,
+            "min_length": 0.9999999690449232,
+            "max_length": 1.0000000329932732,
+            "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+          }
+        }
+      ]
+    },
+    {
+      "path": "candidates/mobile/mesh/lod2.glb",
+      "role": "mesh-lod2-glb",
+      "lod": 2,
+      "exists": true,
+      "byte_length": 29008,
+      "file_root": "3a97d060d2a8011bbaadbf80a05c10a4baa6c4ee0ae42462023cfe46c26767fe",
+      "glb_valid": true,
+      "valid": true,
+      "errors": [],
+      "mesh_count": 1,
+      "primitive_count": 1,
+      "vertex_count": 280,
+      "triangle_count": 360,
+      "geometry": {
+        "status": "PASS",
+        "method": "GLB_ACCESSOR_STRUCTURE_V1"
+      },
+      "topology": {
+        "status": "PASS",
+        "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1",
+        "primitives": [
+          {
+            "status": "PASS",
+            "manifold": true,
+            "finite_positions": true,
+            "indexed_triangle_list": true,
+            "vertex_count": 280,
+            "welded_vertex_count": 140,
+            "triangle_count": 360,
+            "non_degenerate_triangle_count": 240,
+            "degenerate_triangle_count": 120,
+            "degenerate_triangle_ratio": 0.3333333333333333,
+            "invalid_index_count": 0,
+            "repeated_index_triangle_count": 0,
+            "edge_count": 360,
+            "boundary_edge_count": 0,
+            "non_manifold_edge_count": 0,
+            "weld_tolerance": 0.0000026400001049041747,
+            "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+            "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+          }
+        ]
+      },
+      "uv": {
+        "status": "PASS",
+        "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1",
+        "primitives": [
+          {
+            "status": "PASS",
+            "finite": true,
+            "min": [
+              0,
+              0.019999999552965164
+            ],
+            "max": [
+              1,
+              1
+            ],
+            "span": [
+              1,
+              0.9800000004470348
+            ],
+            "non_constant": true,
+            "out_of_unit_range_count": 0,
+            "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+          }
+        ]
+      },
+      "normals": {
+        "status": "PASS",
+        "method": "FINITE_NONZERO_UNIT_NORMALS_V1",
+        "primitives": [
+          {
+            "status": "PASS",
+            "finite": true,
+            "non_zero": true,
+            "unit_like": true,
+            "min_length": 0.9999999690769985,
+            "max_length": 1.0000000157396551,
+            "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+          }
+        ]
+      },
+      "pbr": {
+        "status": "PASS",
+        "binding": "external-pbr-pack",
+        "external_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+        "material_count": 1,
+        "texture_count": 4,
+        "embedded_image_count": 0,
+        "channels": [
+          {
+            "role": "base-color",
+            "path": "candidates/mobile/pbr/base-color.png",
+            "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf"
+          },
+          {
+            "role": "normal",
+            "path": "candidates/mobile/pbr/normal.png",
+            "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386"
+          },
+          {
+            "role": "occlusion-roughness-metallic",
+            "path": "candidates/mobile/pbr/orm.png",
+            "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da"
+          },
+          {
+            "role": "emissive",
+            "path": "candidates/mobile/pbr/emissive.png",
+            "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658"
+          }
+        ],
+        "materials": [
+          {
+            "status": "PASS",
+            "material_index": 0,
+            "material_name": "ice-stylized-pbr",
+            "base_color_factor": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "metallic_factor": 0.18,
+            "roughness_factor": 0.72,
+            "emissive_factor": [
+              0,
+              0,
+              0,
+              1
+            ],
+            "errors": [],
+            "method": "GLB_PBR_MATERIAL_FACTOR_STRUCTURE_V1"
+          }
+        ],
+        "errors": [],
+        "method": "GLB_MATERIAL_WITH_EXTERNAL_PBR_PACK_BINDING_V1"
+      },
+      "primitives": [
+        {
+          "mesh_index": 0,
+          "primitive_index": 0,
+          "mode": 4,
+          "valid": true,
+          "errors": [],
+          "geometry": {
+            "status": "PASS",
+            "vertex_count": 280,
+            "triangle_count": 360,
+            "attribute_counts_match": true,
+            "attributes": [
+              "JOINTS_0",
+              "NORMAL",
+              "POSITION",
+              "TEXCOORD_0",
+              "WEIGHTS_0"
+            ],
+            "method": "GLB_ACCESSOR_STRUCTURE_V1"
+          },
+          "topology": {
+            "status": "PASS",
+            "manifold": true,
+            "finite_positions": true,
+            "indexed_triangle_list": true,
+            "vertex_count": 280,
+            "welded_vertex_count": 140,
+            "triangle_count": 360,
+            "non_degenerate_triangle_count": 240,
+            "degenerate_triangle_count": 120,
+            "degenerate_triangle_ratio": 0.3333333333333333,
+            "invalid_index_count": 0,
+            "repeated_index_triangle_count": 0,
+            "edge_count": 360,
+            "boundary_edge_count": 0,
+            "non_manifold_edge_count": 0,
+            "weld_tolerance": 0.0000026400001049041747,
+            "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+            "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+          },
+          "uv": {
+            "status": "PASS",
+            "finite": true,
+            "min": [
+              0,
+              0.019999999552965164
+            ],
+            "max": [
+              1,
+              1
+            ],
+            "span": [
+              1,
+              0.9800000004470348
+            ],
+            "non_constant": true,
+            "out_of_unit_range_count": 0,
+            "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+          },
+          "normals": {
+            "status": "PASS",
+            "finite": true,
+            "non_zero": true,
+            "unit_like": true,
+            "min_length": 0.9999999690769985,
+            "max_length": 1.0000000157396551,
+            "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+          }
+        }
+      ]
+    }
+  ],
+  "lod": {
+    "status": "PASS",
+    "method": "LOD_LEVEL_SEQUENCE_TRIANGLE_REDUCTION_AUDIT_V1",
+    "count": 3,
+    "levels": [
+      0,
+      1,
+      2
+    ],
+    "triangle_counts": [
+      904,
+      636,
+      360
+    ],
+    "reduction_ratios": [
+      0.7035398230088495,
+      0.5660377358490566
+    ],
+    "errors": []
+  },
+  "pbr_pack": {
+    "status": "PASS",
+    "source": "local-pbr-pack-inspector",
+    "pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+    "material_model": "stylized-pbr-v0.4",
+    "texture_count": 4,
+    "channels": [
+      {
+        "role": "base-color",
+        "path": "candidates/mobile/pbr/base-color.png",
+        "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf"
+      },
+      {
+        "role": "normal",
+        "path": "candidates/mobile/pbr/normal.png",
+        "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386"
+      },
+      {
+        "role": "occlusion-roughness-metallic",
+        "path": "candidates/mobile/pbr/orm.png",
+        "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da"
+      },
+      {
+        "role": "emissive",
+        "path": "candidates/mobile/pbr/emissive.png",
+        "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658"
+      }
+    ],
+    "files": [
+      {
+        "path": "candidates/mobile/pbr/base-color.png",
+        "role": "base-color",
+        "exists": true,
+        "status": "PASS",
+        "format": "image/png",
+        "width": 128,
+        "height": 128,
+        "byte_length": 15231,
+        "sha256": "c12c9fdc8e32629097af8e4fcf6ca914d113d8526e76d2426321c18332982d6d",
+        "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf",
+        "errors": [],
+        "method": "PNG_HEADER_STRUCTURE_V1"
+      },
+      {
+        "path": "candidates/mobile/pbr/normal.png",
+        "role": "normal",
+        "exists": true,
+        "status": "PASS",
+        "format": "image/png",
+        "width": 128,
+        "height": 128,
+        "byte_length": 9039,
+        "sha256": "a65e9ddc641d0902fdb46a353342491be37fb7ae26060113debc128fc452b4f9",
+        "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386",
+        "errors": [],
+        "method": "PNG_HEADER_STRUCTURE_V1"
+      },
+      {
+        "path": "candidates/mobile/pbr/orm.png",
+        "role": "occlusion-roughness-metallic",
+        "exists": true,
+        "status": "PASS",
+        "format": "image/png",
+        "width": 128,
+        "height": 128,
+        "byte_length": 19020,
+        "sha256": "433510ddf77121b4c622bd64a8d0fae01d56d8c1e56546af8f47bd0e77948b70",
+        "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da",
+        "errors": [],
+        "method": "PNG_HEADER_STRUCTURE_V1"
+      },
+      {
+        "path": "candidates/mobile/pbr/emissive.png",
+        "role": "emissive",
+        "exists": true,
+        "status": "PASS",
+        "format": "image/png",
+        "width": 128,
+        "height": 128,
+        "byte_length": 428,
+        "sha256": "31cc57591b6b059d0186f9554328e46fffa86bb47797790fc62306ab1735f8de",
+        "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658",
+        "errors": [],
+        "method": "PNG_HEADER_STRUCTURE_V1"
+      }
+    ],
+    "errors": [],
+    "method": "PBR_PACK_FILE_ROLE_ROOT_AUDIT_V1"
+  },
+  "aggregates": {
+    "geometry_status": "PASS",
+    "topology_status": "PASS",
+    "uv_status": "PASS",
+    "normal_status": "PASS",
+    "pbr_status": "PASS",
+    "lod_status": "PASS",
+    "lod_count": 3,
+    "lod_levels": [
+      0,
+      1,
+      2
+    ],
+    "lod_triangle_counts": [
+      904,
+      636,
+      360
+    ],
+    "triangle_count": 1900,
+    "vertex_count": 1450,
+    "file_count": 3,
+    "valid_file_count": 3
+  },
+  "errors": [],
+  "inspection_root": "70c831a94250e93f747a1d8320901dbc6253d1e9b014bf0eb11dcbeb0c11b253"
+}

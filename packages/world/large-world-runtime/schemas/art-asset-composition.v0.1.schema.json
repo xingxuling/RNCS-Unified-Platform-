@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.large-world-art-asset-composition.v0.1.schema.json",
+  "title": "URRF Large World Art Asset Composition v0.1",
+  "type": "object",
+  "required": ["format", "version", "recipe", "axes", "candidate_only", "authoritative", "canonical_write_authorized", "authority", "asset_id", "composition_root"],
+  "properties": {
+    "format": {"const": "urrf.large-world-art-asset-composition.v0.1"},
+    "version": {"const": "0.1.0"},
+    "recipe": {
+      "type": "object",
+      "required": ["name", "asset_key", "seed", "semantic_kind", "biome", "style_id", "quality_profile", "parts"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "maxLength": 160},
+        "asset_key": {"type": "string", "maxLength": 160},
+        "seed": {"type": "string", "minLength": 1, "maxLength": 256},
+        "semantic_kind": {"enum": ["structure", "resource", "hybrid"]},
+        "biome": {"enum": ["coast", "desert", "forest", "grassland", "tundra", "wetland"]},
+        "style_id": {"enum": ["natural", "ancient", "industrial", "arcane"]},
+        "quality_profile": {"enum": ["PROXY", "MOBILE", "STANDARD", "CINEMATIC"]},
+        "parts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": ["part_id", "role", "domain", "primitive_kind", "geometry_kind", "offset_mm", "scale_milli", "rotation_deg", "variant"],
+            "properties": {
+              "part_id": {"type": "string", "minLength": 1, "maxLength": 96},
+              "role": {"type": "string", "minLength": 1, "maxLength": 96},
+              "domain": {"enum": ["structure", "resource"]},
+              "primitive_kind": {"enum": ["ruin", "grove", "mine", "shrine", "watchtower", "crystal", "iron", "salt", "timber", "water"]},
+              "geometry_kind": {"type": "string", "pattern": "^(structure|resource):[a-z-]+$"},
+              "offset_mm": {"$ref": "#/$defs/vector"},
+              "scale_milli": {"$ref": "#/$defs/positiveVector"},
+              "rotation_deg": {"$ref": "#/$defs/vector"},
+              "variant": {"type": "integer", "minimum": 0, "maximum": 255}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "axes": {
+      "type": "object",
+      "required": ["semantic", "geometry", "material", "style", "quality", "composition"],
+      "properties": {
+        "semantic": {"type": "string"},
+        "geometry": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "material": {"type": "string"},
+        "style": {"type": "string"},
+        "quality": {"type": "string"},
+        "composition": {"enum": ["single-part", "multi-part"]}
+      },
+      "additionalProperties": false
+    },
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "authority": {
+      "type": "object",
+      "required": ["provider_can_write_authoritative_world_state", "rncs_authority_required"],
+      "properties": {
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "rncs_authority_required": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "asset_id": {"type": "string", "pattern": "^art-asset:[0-9a-f]{24}$"},
+    "composition_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "vector": {"type": "array", "prefixItems": [{"type": "integer"}, {"type": "integer"}, {"type": "integer"}], "minItems": 3, "maxItems": 3},
+    "positiveVector": {"type": "array", "prefixItems": [{"type": "integer", "minimum": 1}, {"type": "integer", "minimum": 1}, {"type": "integer", "minimum": 1}], "minItems": 3, "maxItems": 3}
+  },
+  "additionalProperties": false
+}

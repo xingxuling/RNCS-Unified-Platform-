@@ -1,0 +1,254 @@
+{
+  "format": "rncs.urrf-gap-ledger.v0.1",
+  "version": "0.1.0",
+  "ledger_id": "urrf-gap-ledger-integration-v01",
+  "purpose": "rcl-gap-provider-gap-boundary-and-candidate-absorption-evidence",
+  "entries": [
+    {
+      "gap_id": "gap:mixed-aaa",
+      "task_refs": [
+        "URRF-26"
+      ],
+      "gap_type": "MIXED",
+      "missing_capability": "missing capability for gap:mixed-aaa",
+      "provider_id": "provider:external-aaa",
+      "workaround": {
+        "owner_layer": "candidate URRF/RAGF seam",
+        "language": "JavaScript runtime",
+        "semantic_owner": "RCL",
+        "canonical_owner": "RNCS",
+        "candidate_only": true,
+        "description": "The workaround is bounded candidate evidence and cannot promote RCL or RNCS truth."
+      },
+      "donor": {
+        "donor_id": "donor:gap:mixed-aaa",
+        "owner_layer": "RAGF",
+        "advantage": "Existing contract, provider boundary and rooted evidence can be reused.",
+        "source_refs": [
+          "packages/world/reality-asset-genesis-fabric/src/external-asset-providers.mjs"
+        ],
+        "evidence_refs": [
+          "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md"
+        ]
+      },
+      "generality": "CROSS_PROJECT",
+      "candidate_absorption": {
+        "status": "PENDING",
+        "primitive_candidates": [
+          "candidate primitive for gap:mixed-aaa"
+        ],
+        "regression_cases": [
+          "negative case for gap:mixed-aaa"
+        ]
+      },
+      "affected_k400_cells": [
+        "K400:URRF-26:EVIDENCE"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json",
+        "docs/verification/URRF_V03_COVERAGE_MATRIX/urrf-v03-coverage-matrix.json"
+      ],
+      "authority": {
+        "canonical_owner": "RNCS",
+        "semantic_owner": "RCL",
+        "representation_owner": "URRF",
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "rcl_promotion_authorized": false,
+        "canonical_write_authorized": false,
+        "candidate_only": true
+      },
+      "entry_root": "836b43542ee954f0e3bb553900a97676510e913ad3b732ddbb058a0010d32f73"
+    },
+    {
+      "gap_id": "gap:provider-sensor",
+      "task_refs": [
+        "URRF-24"
+      ],
+      "gap_type": "PROVIDER_GAP",
+      "missing_capability": "missing capability for gap:provider-sensor",
+      "provider_id": "provider:physical-sensor",
+      "workaround": {
+        "owner_layer": "candidate URRF/RAGF seam",
+        "language": "JavaScript runtime",
+        "semantic_owner": "RCL",
+        "canonical_owner": "RNCS",
+        "candidate_only": true,
+        "description": "The workaround is bounded candidate evidence and cannot promote RCL or RNCS truth."
+      },
+      "donor": {
+        "donor_id": "donor:gap:provider-sensor",
+        "owner_layer": "RAGF",
+        "advantage": "Existing contract, provider boundary and rooted evidence can be reused.",
+        "source_refs": [
+          "packages/world/reality-asset-genesis-fabric/src/external-asset-providers.mjs"
+        ],
+        "evidence_refs": [
+          "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md"
+        ]
+      },
+      "generality": "HOST_LOCAL",
+      "candidate_absorption": {
+        "status": "NOT_APPLICABLE",
+        "primitive_candidates": [],
+        "regression_cases": [
+          "negative case for gap:provider-sensor"
+        ]
+      },
+      "affected_k400_cells": [
+        "K400:URRF-24:EVIDENCE"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json",
+        "docs/verification/URRF_V03_COVERAGE_MATRIX/urrf-v03-coverage-matrix.json"
+      ],
+      "authority": {
+        "canonical_owner": "RNCS",
+        "semantic_owner": "RCL",
+        "representation_owner": "URRF",
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "rcl_promotion_authorized": false,
+        "canonical_write_authorized": false,
+        "candidate_only": true
+      },
+      "entry_root": "cc40f65c51c350de8c2696decef9c8d06513f26264952064e7b4e954a1ca5b5b"
+    },
+    {
+      "gap_id": "gap:provider-transport",
+      "task_refs": [
+        "URRF-11",
+        "URRF-12",
+        "URRF-13",
+        "URRF-14",
+        "URRF-15"
+      ],
+      "gap_type": "PROVIDER_GAP",
+      "missing_capability": "missing capability for gap:provider-transport",
+      "provider_id": "provider:physical-transport",
+      "workaround": {
+        "owner_layer": "candidate URRF/RAGF seam",
+        "language": "JavaScript runtime",
+        "semantic_owner": "RCL",
+        "canonical_owner": "RNCS",
+        "candidate_only": true,
+        "description": "The workaround is bounded candidate evidence and cannot promote RCL or RNCS truth."
+      },
+      "donor": {
+        "donor_id": "donor:gap:provider-transport",
+        "owner_layer": "RAGF",
+        "advantage": "Existing contract, provider boundary and rooted evidence can be reused.",
+        "source_refs": [
+          "packages/world/reality-asset-genesis-fabric/src/external-asset-providers.mjs"
+        ],
+        "evidence_refs": [
+          "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md"
+        ]
+      },
+      "generality": "CROSS_PROJECT",
+      "candidate_absorption": {
+        "status": "NOT_APPLICABLE",
+        "primitive_candidates": [],
+        "regression_cases": [
+          "negative case for gap:provider-transport"
+        ]
+      },
+      "affected_k400_cells": [
+        "K400:URRF-11:EVIDENCE",
+        "K400:URRF-12:EVIDENCE",
+        "K400:URRF-13:EVIDENCE",
+        "K400:URRF-14:EVIDENCE",
+        "K400:URRF-15:EVIDENCE"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json",
+        "docs/verification/URRF_V03_COVERAGE_MATRIX/urrf-v03-coverage-matrix.json"
+      ],
+      "authority": {
+        "canonical_owner": "RNCS",
+        "semantic_owner": "RCL",
+        "representation_owner": "URRF",
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "rcl_promotion_authorized": false,
+        "canonical_write_authorized": false,
+        "candidate_only": true
+      },
+      "entry_root": "cb90672f514f428e4c0562d42a750d9795c4956ad4fa96f723d1ec3b35f00fb7"
+    },
+    {
+      "gap_id": "gap:rcl-art-profile",
+      "task_refs": [
+        "URRF-25"
+      ],
+      "gap_type": "RCL_GAP",
+      "missing_capability": "missing capability for gap:rcl-art-profile",
+      "provider_id": null,
+      "workaround": {
+        "owner_layer": "candidate URRF/RAGF seam",
+        "language": "JavaScript runtime",
+        "semantic_owner": "RCL",
+        "canonical_owner": "RNCS",
+        "candidate_only": true,
+        "description": "The workaround is bounded candidate evidence and cannot promote RCL or RNCS truth."
+      },
+      "donor": {
+        "donor_id": "donor:gap:rcl-art-profile",
+        "owner_layer": "RAGF",
+        "advantage": "Existing contract, provider boundary and rooted evidence can be reused.",
+        "source_refs": [
+          "packages/world/reality-asset-genesis-fabric/src/external-asset-providers.mjs"
+        ],
+        "evidence_refs": [
+          "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md"
+        ]
+      },
+      "generality": "CROSS_PROJECT",
+      "candidate_absorption": {
+        "status": "PENDING",
+        "primitive_candidates": [
+          "candidate primitive for gap:rcl-art-profile"
+        ],
+        "regression_cases": [
+          "negative case for gap:rcl-art-profile"
+        ]
+      },
+      "affected_k400_cells": [
+        "K400:URRF-25:EVIDENCE"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json",
+        "docs/verification/URRF_V03_COVERAGE_MATRIX/urrf-v03-coverage-matrix.json"
+      ],
+      "authority": {
+        "canonical_owner": "RNCS",
+        "semantic_owner": "RCL",
+        "representation_owner": "URRF",
+        "provider_can_write_authoritative_world_state": false,
+        "provider_can_commit": false,
+        "rcl_promotion_authorized": false,
+        "canonical_write_authorized": false,
+        "candidate_only": true
+      },
+      "entry_root": "00976e4dab74ce98e48522effc71e83ed92dc5cff60ef3662b37fb3c37966198"
+    }
+  ],
+  "summary": {
+    "entry_count": 4,
+    "rcl_gap_count": 1,
+    "provider_gap_count": 2,
+    "mixed_gap_count": 1,
+    "candidate_only": true
+  },
+  "authority": {
+    "canonical_owner": "RNCS",
+    "semantic_owner": "RCL",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "rcl_promotion_authorized": false,
+    "canonical_write_authorized": false,
+    "candidate_only": true
+  },
+  "ledger_root": "41feedb3492cd46f43650ff088c0199def51fad675731afc42ea23c707443f4c"
+}

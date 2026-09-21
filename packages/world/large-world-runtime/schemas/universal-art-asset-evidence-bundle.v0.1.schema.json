@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.universal-art-asset-evidence-bundle.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Independent Evidence Bundle v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "source",
+    "status",
+    "decision",
+    "genome_root",
+    "candidate_root",
+    "file_inspection_root",
+    "artifact_roots",
+    "receipt_roots",
+    "receipts",
+    "coverage",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "authority",
+    "bundle_root"
+  ],
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-evidence-bundle.v0.1"},
+    "version": {"const": "0.1.0"},
+    "source": {"const": "independent-evidence-bundle"},
+    "status": {"enum": ["VERIFIED", "INCOMPLETE"]},
+    "decision": {"enum": ["PASS", "BLOCKED"]},
+    "genome_root": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "candidate_root": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "file_inspection_root": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "artifact_roots": {
+      "type": "object",
+      "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+    },
+    "receipt_roots": {
+      "type": "object",
+      "required": ["provenance_license", "art_direction", "quality", "human_review"],
+      "properties": {
+        "provenance_license": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "art_direction": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "quality": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "human_review": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "receipts": {
+      "type": "object",
+      "required": ["provenance_license", "art_direction", "quality", "human_review"],
+      "properties": {
+        "provenance_license": {"type": ["object", "null"]},
+        "art_direction": {"type": ["object", "null"]},
+        "quality": {"type": ["object", "null"]},
+        "human_review": {"type": ["object", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["required_receipts", "present_receipts", "complete"],
+      "properties": {
+        "required_receipts": {"type": "array", "minItems": 4, "items": {"enum": ["provenance_license", "art_direction", "quality", "human_review"]}},
+        "present_receipts": {"type": "array", "items": {"enum": ["provenance_license", "art_direction", "quality", "human_review"]}},
+        "complete": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "authority": {
+      "type": "object",
+      "required": ["provider_can_commit", "acceptance_can_commit", "rncs_authority_required", "candidate_only", "authoritative"],
+      "properties": {
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "notes": {"type": "string"},
+    "bundle_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,178 @@
+{
+  "format": "urrf.universal-art-asset-provider-pipeline.v0.1",
+  "version": "0.1.0",
+  "plan_id": "urrf-universal-art-asset-provider-pipeline:51ef4d84385d9dde2f3822af",
+  "source": "urrf-provider-pipeline-planner",
+  "asset_id": "asset:cf644862f780b86ae2bd9e94",
+  "asset_profile": "character",
+  "quality_tier": "AAA",
+  "genome_root": "6af9eacaaaae30d65296d00f0acdc93d7eae27d843d25d80cea045eafd4fd297",
+  "resolution_root": "316d253d671be86fa25327cfe9af334c0f808915dc742ffd60bd3773fbefc9b7",
+  "provider_registry_root": "a80cf0bd036c8586f65a4863194e527962a4d3f8481352311c13fa8d6637d8f8",
+  "stage_count": 2,
+  "required_stage_count": 2,
+  "stages": [
+    {
+      "index": 0,
+      "stage_id": "base_generation",
+      "stage_kind": "BASE_GENERATION",
+      "required": true,
+      "input_stage_id": null,
+      "required_capabilities": [
+        "asset.generate.3d.production",
+        "asset.generate.mesh",
+        "asset.generate.pbr"
+      ],
+      "capability_aliases": {},
+      "required_outputs": [
+        "mesh-glb",
+        "pbr-texture-pack"
+      ],
+      "candidate_provider_ids": [
+        "provider:taowind:procedural-3d"
+      ],
+      "selected_provider_id": "provider:taowind:procedural-3d",
+      "selected_provider_root": "82bf355a8b42fab295e1e96258e645703292ec27b20f119276e9e161cbb4b006",
+      "provider_source": "ragf-reference-provider",
+      "runtime_status": "READY_REFERENCE",
+      "runtime_binding": "BUILTIN_REFERENCE",
+      "runner_supplied": false,
+      "command_configured": false,
+      "declared_outputs": [
+        "animation-clips",
+        "dependency-graph",
+        "lod-manifest",
+        "mesh-glb",
+        "mesh-lod1-glb",
+        "mesh-lod2-glb",
+        "pbr-texture-pack",
+        "prefab-blueprint",
+        "projection-manifest",
+        "retarget-profile",
+        "rsr-embodiment-profile",
+        "skeleton-rig",
+        "vsr-spatial-asset"
+      ],
+      "unresolved_capabilities": [],
+      "failure_reasons": [],
+      "route_status": "BUILTIN_REFERENCE",
+      "runtime_ready": true,
+      "execution_performed": false,
+      "candidate_only": true,
+      "authoritative": false,
+      "checks": {
+        "provider_binding": true,
+        "capability_binding": true,
+        "artifact_contract_binding": true,
+        "runtime_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "stage_root": "8596b2876d8cc4942549bb7df49f63141e3edf8713fcd38af2fecbc34582cc3e"
+    },
+    {
+      "index": 1,
+      "stage_id": "rigging_animation",
+      "stage_kind": "RIGGING_ANIMATION",
+      "required": true,
+      "input_stage_id": "base_generation",
+      "required_capabilities": [
+        "asset.rig.predict",
+        "asset.pose.initial"
+      ],
+      "capability_aliases": {
+        "asset.rig.predict": [
+          "asset.generate.skeleton-rig"
+        ],
+        "asset.pose.initial": [
+          "asset.generate.animation-clips"
+        ]
+      },
+      "required_outputs": [
+        "rig-candidate",
+        "animation-clips"
+      ],
+      "candidate_provider_ids": [
+        "provider:taowind:procedural-3d",
+        "provider:external:make-it-animatable"
+      ],
+      "selected_provider_id": "provider:taowind:procedural-3d",
+      "selected_provider_root": "82bf355a8b42fab295e1e96258e645703292ec27b20f119276e9e161cbb4b006",
+      "provider_source": "ragf-reference-provider",
+      "runtime_status": "READY_REFERENCE",
+      "runtime_binding": "BUILTIN_REFERENCE",
+      "runner_supplied": false,
+      "command_configured": false,
+      "declared_outputs": [
+        "animation-clips",
+        "dependency-graph",
+        "lod-manifest",
+        "mesh-glb",
+        "mesh-lod1-glb",
+        "mesh-lod2-glb",
+        "pbr-texture-pack",
+        "prefab-blueprint",
+        "projection-manifest",
+        "retarget-profile",
+        "rsr-embodiment-profile",
+        "skeleton-rig",
+        "vsr-spatial-asset"
+      ],
+      "unresolved_capabilities": [],
+      "failure_reasons": [],
+      "route_status": "BUILTIN_REFERENCE",
+      "runtime_ready": true,
+      "execution_performed": false,
+      "candidate_only": true,
+      "authoritative": false,
+      "checks": {
+        "provider_binding": true,
+        "capability_binding": true,
+        "artifact_contract_binding": true,
+        "runtime_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "stage_root": "05d5d15e5b22294959061d1f359632390698b672a0ecd52bd06a36ff48299ca7"
+    }
+  ],
+  "summary": {
+    "stage_count": 2,
+    "required_stage_count": 2,
+    "resolved_stage_count": 2,
+    "required_stage_coverage_count": 2,
+    "runtime_ready_required_stage_count": 2,
+    "contract_only_stage_count": 0,
+    "unresolved_stage_count": 0,
+    "blocker_count": 0
+  },
+  "required_stage_blockers": [],
+  "checks": {
+    "genome_binding": true,
+    "resolution_binding": true,
+    "stage_count": true,
+    "unique_stage_ids": true,
+    "required_stage_coverage": true,
+    "runtime_truthfulness": true,
+    "no_silent_fallback": true,
+    "no_execution_during_planning": true,
+    "authority_boundary": true
+  },
+  "status": "CANDIDATE_PROVIDER_PIPELINE_PLANNED",
+  "runtime_ready": true,
+  "execution_performed": false,
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "aaa_ready": false,
+  "release_ready": false,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true
+  },
+  "pipeline_root": "4eb1b0590b2ffd79f99c75e9a285a420de6b3e10fe167b647930eacf6c4bac66"
+}

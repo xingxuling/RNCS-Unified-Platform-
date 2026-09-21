@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-non-mesh-representation-manifest.v0.1.schema.json",
+  "title": "VSR Non-Mesh Representation Manifest v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "component_id",
+    "asset_id",
+    "representation_kind",
+    "profile_id",
+    "payload_asset_ids",
+    "payload_format",
+    "payload_byte_length",
+    "element_count",
+    "bounds",
+    "content_root",
+    "candidate_only",
+    "authoritative",
+    "manifest_root"
+  ],
+  "properties": {
+    "format": {"const": "vsr.non-mesh-representation-manifest.v0.1"},
+    "version": {"const": "0.1.0"},
+    "component_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "asset_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "representation_kind": {
+      "enum": ["sdf", "voxel", "point-cloud", "point-clouds", "gaussian-splat", "gaussian-splats", "neural-field", "curve", "material"]
+    },
+    "profile_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "payload_asset_ids": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4096,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 256}
+    },
+    "payload_format": {"type": "string", "minLength": 1, "maxLength": 256},
+    "payload_byte_length": {"type": "integer", "minimum": 1},
+    "element_count": {"type": "integer", "minimum": 1},
+    "bounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min", "max"],
+      "properties": {
+        "min": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+        "max": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}}
+      }
+    },
+    "content_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "manifest_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

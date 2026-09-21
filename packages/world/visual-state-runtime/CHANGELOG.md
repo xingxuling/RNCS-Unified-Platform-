@@ -13,6 +13,7 @@
 - glTF skin import now transposes inverse-bind MAT4 accessors from glTF column-major storage into the VSR row-major transform contract, preserving RAGF rig geometry during CPU/GPU deformation;
 - glTF asset import now parses GLB v2 JSON/BIN chunks and seals the binary payload into the imported scene root; `parseGlb` and `importGlbToSpatialScene` are exported for host integrations;
 - glTF import now exposes async embedded/external image bytes, a browser `createImageBitmap` decoder, and a `VSRGltfAsset` browser bundle so PNG/JPEG/WebP pixels can enter the RGBA texture contract instead of remaining a warning;
+- glTF import now exports `bindExternalPbrChannelsToGltf`, a pure four-channel external-pack adapter that preserves channel bytes for the async host decoder and binds Base Color, Normal, ORM and Emissive without mutating the source glTF;
 - glTF texture import now resolves `KHR_texture_basisu` and `EXT_texture_webp` alternative image sources before standard `texture.source` for both synchronous imports and asynchronous host decoding; actual KTX2/BasisU transcoding remains outside the runtime;
 - glTF image decoding now parses native KTX2 RGBA8 UNORM/SRGB mip containers and routes `image/ktx2` through the host decoder without browser bitmap APIs; BasisU supercompression remains an explicit transcoder boundary;
 - glTF material import now maps `KHR_materials_clearcoat`, `KHR_materials_ior`, and `KHR_materials_emissive_strength` scalar extensions into VSR's clearcoat, IOR, and emissive-strength PBR channels;

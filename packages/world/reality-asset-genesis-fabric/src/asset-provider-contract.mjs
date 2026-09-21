@@ -310,6 +310,13 @@ export function normalizeAssetProviderResult(raw = {}, {job, provider, stage = n
   const files = rawFiles.map((file, index) => {
     const content = file.content ?? file.base64 ?? null;
     const size = Number(file.size ?? (content ? Buffer.from(content, 'base64').byteLength : 0));
+    const sourceAssetId = file.source_asset_id === undefined || file.source_asset_id === null
+      ? null
+      : typeof file.source_asset_id === 'string' ? file.source_asset_id.trim() : null;
+    if (file.source_asset_id !== undefined && file.source_asset_id !== null
+      && (typeof file.source_asset_id !== 'string' || !sourceAssetId || sourceAssetId.length > 256)) {
+      throw new GenesisError('ASSET_RESULT_SOURCE_ASSET_ID_INVALID');
+    }
     return {
       path: nonEmpty(file.path ?? file.name, 'asset/file-' + index),
       name: nonEmpty(file.name ?? file.path, 'file-' + index),
@@ -319,7 +326,8 @@ export function normalizeAssetProviderResult(raw = {}, {job, provider, stage = n
       size,
       sha256: file.sha256 ?? rootHash({path: file.path ?? file.name, content, size}),
       content,
-      uri: file.uri ?? null
+      uri: file.uri ?? null,
+      ...(sourceAssetId ? {source_asset_id: sourceAssetId} : {})
     };
   });
   const license = asLicenseRecord(raw.license ?? provider?.license);

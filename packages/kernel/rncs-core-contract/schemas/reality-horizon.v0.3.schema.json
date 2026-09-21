@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.reality-horizon.v0.3",
+  "title": "RNCS Subject Reality Horizon v0.3",
+  "type": "object",
+  "required": ["format", "version", "subject_id", "axes", "permission_scope", "authority", "candidate_only", "authoritative", "commit_status", "horizon_root"],
+  "$defs": {
+    "scalar": {"anyOf": [{"type": "integer"}, {"type": "number"}, {"type": "string", "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"}]},
+    "axis": {
+      "type": "object",
+      "required": ["mode", "radius", "unit", "tags", "scopes", "max_results", "max_depth", "risk_multiplier", "permission_required"],
+      "properties": {
+        "mode": {"type": "string", "minLength": 1},
+        "radius": {"anyOf": [{"$ref": "#/$defs/scalar"}, {"type": "null"}]},
+        "unit": {"type": "string", "minLength": 1},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "scopes": {"type": "array", "items": {"type": "string"}},
+        "max_results": {"anyOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]},
+        "max_depth": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+        "risk_multiplier": {"anyOf": [{"$ref": "#/$defs/scalar"}, {"type": "null"}]},
+        "permission_required": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "properties": {
+    "format": {"const": "rncs.reality-horizon.v0.3"},
+    "version": {"const": "0.3.0"},
+    "subject_id": {"type": "string", "minLength": 1},
+    "axes": {
+      "type": "object",
+      "required": ["visual", "auditory", "spatial", "semantic", "social", "temporal", "causal", "cognitive", "actionable"],
+      "properties": {
+        "visual": {"$ref": "#/$defs/axis"},
+        "auditory": {"$ref": "#/$defs/axis"},
+        "spatial": {"$ref": "#/$defs/axis"},
+        "semantic": {"$ref": "#/$defs/axis"},
+        "social": {"$ref": "#/$defs/axis"},
+        "temporal": {"$ref": "#/$defs/axis"},
+        "causal": {"$ref": "#/$defs/axis"},
+        "cognitive": {"$ref": "#/$defs/axis"},
+        "actionable": {"$ref": "#/$defs/axis"}
+      },
+      "additionalProperties": true
+    },
+    "permission_scope": {"type": "array", "items": {"type": "string"}},
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "permission_filter_required", "subject_scope_only"],
+      "properties": {"canonical_owner": {"const": "RNCS"}, "permission_filter_required": {"const": true}, "subject_scope_only": {"const": true}},
+      "additionalProperties": true
+    },
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "horizon_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.reality-quantity.v0.3",
+  "title": "RNCS Reality Quantity v0.3",
+  "type": "object",
+  "required": ["format", "version", "value", "unit", "dimension", "dimension_vector", "uncertainty", "reference_frame", "validity_interval", "provenance_ref", "authority_ref", "evidence_refs", "status", "candidate_only", "authoritative", "commit_status", "quantity_root"],
+  "properties": {
+    "format": {"const": "rncs.reality-quantity.v0.3"},
+    "version": {"const": "0.3.0"},
+    "value": {"oneOf": [{"type": "integer"}, {"type": "string", "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"}]},
+    "unit": {"type": "string", "minLength": 1},
+    "dimension": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "object", "additionalProperties": {"type": "integer"}}]},
+    "dimension_vector": {"type": "object", "additionalProperties": {"type": "integer"}},
+    "uncertainty": {"oneOf": [{"type": "null"}, {"type": "integer"}, {"type": "string", "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"}]},
+    "reference_frame": {"type": "string", "minLength": 1},
+    "validity_interval": {"type": "object", "properties": {"start": {}, "end": {}}, "additionalProperties": false},
+    "provenance_ref": {"type": "string", "minLength": 1},
+    "authority_ref": {"type": "string", "minLength": 1},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "status": {"enum": ["CANONICAL", "CANDIDATE", "REJECTED"]},
+    "candidate_only": {"type": "boolean"},
+    "authoritative": {"type": "boolean"},
+    "commit_status": {"enum": ["COMMITTED", "NOT_COMMITTED"]},
+    "quantity_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "CANONICAL"}}}, "then": {"properties": {"candidate_only": {"const": false}, "authoritative": {"const": true}, "commit_status": {"const": "COMMITTED"}}}},
+    {"if": {"properties": {"status": {"const": "CANDIDATE"}}}, "then": {"properties": {"candidate_only": {"const": true}, "authoritative": {"const": false}, "commit_status": {"const": "NOT_COMMITTED"}}}},
+    {"if": {"properties": {"status": {"const": "REJECTED"}}}, "then": {"properties": {"candidate_only": {"const": false}, "authoritative": {"const": false}, "commit_status": {"const": "NOT_COMMITTED"}}}}
+  ],
+  "additionalProperties": true
+}

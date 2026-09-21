@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/urrf/universal-art-asset-provider-replay.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Provider Replay Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "replay_id",
+    "source",
+    "asset_id",
+    "asset_profile",
+    "quality_tier",
+    "original_execution_root",
+    "replay_execution_root",
+    "original_request_root",
+    "replay_request_root",
+    "original_output_root",
+    "replay_output_root",
+    "provider_id",
+    "provider_root",
+    "provider_source",
+    "execution_mode",
+    "replay_attempted",
+    "replay_execution_performed",
+    "provider_runtime_performed",
+    "provider_runtime_replay_required",
+    "comparison",
+    "checks",
+    "deterministic_claim",
+    "replay_status",
+    "status",
+    "errors",
+    "failure",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "aaa_ready",
+    "release_ready",
+    "authority",
+    "replay_root"
+  ],
+  "$defs": {
+    "root": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nullableRoot": {
+      "anyOf": [
+        {"$ref": "#/$defs/root"},
+        {"type": "null"}
+      ]
+    },
+    "profile": {
+      "type": "string",
+      "enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]
+    },
+    "qualityTier": {
+      "type": "string",
+      "enum": ["PREVIEW", "PRODUCTION", "AAA"]
+    },
+    "providerSource": {
+      "anyOf": [
+        {"enum": ["ragf-reference-provider", "external-provider-contract", "injected-provider"]},
+        {"type": "null"}
+      ]
+    },
+    "nullableText": {
+      "anyOf": [
+        {"type": "string", "minLength": 1},
+        {"type": "null"}
+      ]
+    },
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["request_root_match", "provider_binding_match", "mode_match", "candidate_root_match", "materialization_root_match", "output_root_match"],
+      "properties": {
+        "request_root_match": {"type": "boolean"},
+        "provider_binding_match": {"type": "boolean"},
+        "mode_match": {"type": "boolean"},
+        "candidate_root_match": {"type": "boolean"},
+        "materialization_root_match": {"type": "boolean"},
+        "output_root_match": {"type": "boolean"}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["initial_receipt_valid", "genome_binding", "request_binding", "provider_binding", "mode_binding", "replay_receipt_valid", "replay_runtime_performed", "provider_runtime_replay_satisfied", "output_root_comparable", "output_root_match", "authority_boundary"],
+      "properties": {
+        "initial_receipt_valid": {"type": "boolean"},
+        "genome_binding": {"type": "boolean"},
+        "request_binding": {"type": "boolean"},
+        "provider_binding": {"type": "boolean"},
+        "mode_binding": {"type": "boolean"},
+        "replay_receipt_valid": {"type": "boolean"},
+        "replay_runtime_performed": {"type": "boolean"},
+        "provider_runtime_replay_satisfied": {"type": "boolean"},
+        "output_root_comparable": {"type": "boolean"},
+        "output_root_match": {"type": "boolean"},
+        "authority_boundary": {"type": "boolean"}
+      }
+    },
+    "failure": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code", "name", "detail"],
+          "properties": {
+            "code": {"type": "string", "minLength": 1},
+            "name": {"type": "string", "minLength": 1},
+            "detail": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]}
+          }
+        }
+      ]
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "acceptance_can_commit", "rncs_authority_required"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      }
+    }
+  },
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-provider-replay.v0.1"},
+    "version": {"const": "0.1.0"},
+    "replay_id": {"type": "string", "minLength": 1},
+    "source": {"const": "urrf-provider-execution-replay-evaluator"},
+    "asset_id": {"type": "string", "minLength": 1},
+    "asset_profile": {"$ref": "#/$defs/profile"},
+    "quality_tier": {"$ref": "#/$defs/qualityTier"},
+    "original_execution_root": {"$ref": "#/$defs/root"},
+    "replay_execution_root": {"$ref": "#/$defs/nullableRoot"},
+    "original_request_root": {"$ref": "#/$defs/root"},
+    "replay_request_root": {"$ref": "#/$defs/nullableRoot"},
+    "original_output_root": {"$ref": "#/$defs/root"},
+    "replay_output_root": {"$ref": "#/$defs/nullableRoot"},
+    "provider_id": {"$ref": "#/$defs/nullableText"},
+    "provider_root": {"$ref": "#/$defs/nullableRoot"},
+    "provider_source": {"$ref": "#/$defs/providerSource"},
+    "execution_mode": {"enum": ["RAGF_REFERENCE_WORKSPACE", "RAGF_EXTERNAL_PROVIDER", "PROVIDER_RESOLUTION"]},
+    "replay_attempted": {"type": "boolean"},
+    "replay_execution_performed": {"type": "boolean"},
+    "provider_runtime_performed": {"type": "boolean"},
+    "provider_runtime_replay_required": {"type": "boolean"},
+    "comparison": {"$ref": "#/$defs/comparison"},
+    "checks": {"$ref": "#/$defs/checks"},
+    "deterministic_claim": {"enum": ["BOUNDED_OUTPUT_ROOT_EQUALITY", "NOT_PROVEN"]},
+    "replay_status": {"enum": ["NOT_RUN", "COMPLETED", "FAILED"]},
+    "status": {"enum": ["CANDIDATE_PROVIDER_REPLAY_PASS", "CANDIDATE_PROVIDER_REPLAY_FAIL", "CANDIDATE_PROVIDER_REPLAY_NOT_RUN"]},
+    "errors": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "failure": {"$ref": "#/$defs/failure"},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "aaa_ready": {"const": false},
+    "release_ready": {"const": false},
+    "authority": {"$ref": "#/$defs/authority"},
+    "replay_root": {"$ref": "#/$defs/root"}
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.universal-art-asset-vsr-projection.v0.1.schema.json",
+  "title": "URRF Universal Art Asset VSR Projection v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "projection_id",
+    "assembly_root",
+    "batch_root",
+    "source_reality_root",
+    "placement_root",
+    "scene_id",
+    "world_id",
+    "status",
+    "runtime_consumer",
+    "asset_count",
+    "assets",
+    "dependency_count",
+    "dependencies",
+    "streaming",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "authority",
+    "projection_root"
+  ],
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-vsr-projection.v0.1"},
+    "version": {"const": "0.1.0"},
+    "projection_id": {"type": "string", "minLength": 1},
+    "assembly_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "batch_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "source_reality_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "placement_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "scene_id": {"type": "string", "minLength": 1},
+    "world_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["BLOCKED", "READY_FOR_HUMAN_REVIEW"]},
+    "runtime_consumer": {"const": "VSR_GLTF_IMPORT"},
+    "asset_count": {"type": "integer", "minimum": 1, "maximum": 64},
+    "assets": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+          "required": ["id", "uri", "format", "sha256", "byteLength", "kind", "dependencies", "cellIds", "priority", "transform", "metadata"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "uri": {"type": "string", "minLength": 1},
+          "format": {"const": "model/gltf-binary"},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "byteLength": {"type": "integer", "minimum": 1},
+          "kind": {"const": "mesh"},
+          "dependencies": {"type": "array", "minItems": 4, "items": {"type": "string", "minLength": 1}},
+          "cellIds": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "priority": {"type": "integer", "minimum": 1},
+          "transform": {
+            "type": "object",
+            "required": ["translation", "translation_mm"],
+            "properties": {
+              "translation": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+              "translation_mm": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "integer", "minimum": -1000000, "maximum": 1000000}}
+            },
+            "additionalProperties": false
+          },
+          "metadata": {
+            "type": "object",
+            "required": ["assembly_root", "batch_root", "asset_key", "asset_id", "candidate_root", "candidate_artifact_root", "candidate_file_root", "file_root", "relative_path", "output_directory", "selected_lod", "quality_tier", "candidate_only", "authoritative"],
+            "properties": {
+              "assembly_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "batch_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "asset_key": {"type": "string", "minLength": 1},
+              "asset_id": {"type": "string", "minLength": 1},
+              "candidate_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "candidate_artifact_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "candidate_file_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "file_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "relative_path": {"type": "string", "minLength": 1},
+              "output_directory": {"type": "string", "minLength": 1},
+              "selected_lod": {"type": "integer", "minimum": 0, "maximum": 32},
+              "quality_tier": {"enum": ["PREVIEW", "PRODUCTION", "AAA"]},
+              "pbr_pack_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "pbr_channel_count": {"type": "integer", "minimum": 4, "maximum": 64},
+              "candidate_only": {"const": true},
+              "authoritative": {"const": false}
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "dependency_count": {"type": "integer", "minimum": 4, "maximum": 256},
+    "dependencies": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "required": ["id", "uri", "format", "sha256", "byteLength", "kind", "cellIds", "priority", "metadata"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "uri": {"type": "string", "minLength": 1},
+          "format": {"type": "string", "pattern": "^image/[^\\s]+$"},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "byteLength": {"type": "integer", "minimum": 1},
+          "kind": {"const": "texture"},
+          "cellIds": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "priority": {"type": "integer", "minimum": 1},
+          "metadata": {
+            "type": "object",
+            "required": ["assembly_root", "batch_root", "asset_key", "asset_id", "candidate_root", "pbr_pack_root", "pbr_role", "file_root", "relative_path", "output_directory", "candidate_only", "authoritative"],
+            "properties": {
+              "assembly_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "batch_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "asset_key": {"type": "string", "minLength": 1},
+              "asset_id": {"type": "string", "minLength": 1},
+              "candidate_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "pbr_pack_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "pbr_role": {"enum": ["base-color", "normal", "occlusion-roughness-metallic", "emissive"]},
+              "file_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "relative_path": {"type": "string", "minLength": 1},
+              "output_directory": {"type": "string", "minLength": 1},
+              "candidate_only": {"const": true},
+              "authoritative": {"const": false}
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "streaming": {
+      "type": "object",
+      "required": ["world_id", "cells", "persistentAssetIds"],
+      "properties": {
+        "world_id": {"type": "string", "minLength": 1},
+        "cells": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "required": ["id", "center", "radius", "assetIds", "loadRadius", "unloadRadius", "priority"],
+            "properties": {
+              "id": {"type": "string", "minLength": 1},
+              "center": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+              "radius": {"type": "number", "minimum": 0},
+              "assetIds": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+              "loadRadius": {"type": "number", "minimum": 0},
+              "unloadRadius": {"type": "number", "minimum": 0},
+              "priority": {"type": "integer", "minimum": 1}
+            },
+            "additionalProperties": false
+          }
+        },
+        "persistentAssetIds": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      },
+      "additionalProperties": false
+    },
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "acceptance_can_commit", "rncs_authority_required"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "notes": {"type": "string"},
+    "projection_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

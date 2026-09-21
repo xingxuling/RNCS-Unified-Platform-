@@ -5,6 +5,7 @@ export const WORLD_EVENT_FORMAT = 'rncs.world-event.v0.3';
 export const WORLD_EVENT_LOG_FORMAT = 'rncs.canonical-event-log.v0.3';
 export const WORLD_FACT_FORMAT = 'rncs.world-fact.v0.3';
 export const FACT_WORLD_TREE_FORMAT = 'rncs.fact-world-tree.v0.3';
+export const FACT_WORLD_TREE_REF_FORMAT = 'rncs.fact-world-tree-ref.v0.3';
 export const WORLD_TRUTH_VERSION = '0.3.0';
 export const WORLD_TIME_STATUSES = Object.freeze(['running', 'paused', 'resuming', 'stopped']);
 export const WORLD_FACT_CONFIDENCE = Object.freeze(['canonical', 'candidate', 'disputed']);
@@ -546,4 +547,81 @@ export function verifyFactWorldTree(tree) {
     errors.push(`FACT_TREE_VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, tree_root: tree.tree_root ?? null};
+}
+
+export function createFactWorldTreeRef(input = {}) {
+  const value = record(input);
+  const tree = value.tree ?? value.fact_world_tree ?? value.factWorldTree ?? null;
+  let world_id;
+  let branch_id;
+  let reality_root;
+  let tree_root;
+  let head_event_root;
+  let event_count;
+  let fact_count;
+  if (tree !== null) {
+    const verification = verifyFactWorldTree(tree);
+    fail(verification.valid, `FACT_TREE_REF_TREE_INVALID:${verification.errors.join(',')}`);
+    world_id = tree.world_id;
+    branch_id = tree.branch_id;
+    reality_root = tree.reality_root;
+    tree_root = tree.tree_root;
+    head_event_root = tree.accepted_events.at(-1)?.event_root ?? null;
+    event_count = tree.accepted_events.length;
+    fact_count = tree.facts.length;
+  } else {
+    world_id = String(value.world_id ?? value.worldId ?? '');
+    branch_id = String(value.branch_id ?? value.branchId ?? 'main');
+    reality_root = root(value.reality_root ?? value.realityRoot, 'FACT_TREE_REF_REALITY_ROOT_INVALID', '');
+    tree_root = root(value.tree_root ?? value.treeRoot, 'FACT_TREE_REF_TREE_ROOT_INVALID', '');
+    head_event_root = value.head_event_root ?? value.headEventRoot ?? null;
+    if (head_event_root !== null) head_event_root = root(head_event_root, 'FACT_TREE_REF_HEAD_EVENT_ROOT_INVALID');
+    event_count = integer(value.event_count ?? value.eventCount, 'FACT_TREE_REF_EVENT_COUNT_INVALID');
+    fact_count = integer(value.fact_count ?? value.factCount, 'FACT_TREE_REF_FACT_COUNT_INVALID');
+  }
+  fail(world_id, 'FACT_TREE_REF_WORLD_ID_REQUIRED');
+  fail(branch_id, 'FACT_TREE_REF_BRANCH_ID_REQUIRED');
+  const base = {
+    format: FACT_WORLD_TREE_REF_FORMAT,
+    version: WORLD_TRUTH_VERSION,
+    world_id,
+    branch_id,
+    reality_root,
+    tree_root,
+    head_event_root,
+    event_count,
+    fact_count,
+    evidence_refs: strings(value.evidence_refs ?? value.evidenceRefs),
+    candidate_only: true,
+    authoritative: false,
+    commit_status: 'NOT_COMMITTED'
+  };
+  return {...base, reference_root: rootHash(base)};
+}
+
+export function verifyFactWorldTreeRef(reference) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!reference || typeof reference !== 'object') return {valid: false, errors: ['FACT_TREE_REF_NOT_OBJECT']};
+  try {
+    const copy = clone(reference);
+    const referenceRoot = copy.reference_root;
+    delete copy.reference_root;
+    check(reference.format === FACT_WORLD_TREE_REF_FORMAT, 'FACT_TREE_REF_FORMAT_INVALID');
+    check(reference.version === WORLD_TRUTH_VERSION, 'FACT_TREE_REF_VERSION_INVALID');
+    check(typeof reference.world_id === 'string' && reference.world_id.length > 0, 'FACT_TREE_REF_WORLD_ID_REQUIRED');
+    check(typeof reference.branch_id === 'string' && reference.branch_id.length > 0, 'FACT_TREE_REF_BRANCH_ID_REQUIRED');
+    check(hex64(reference.reality_root), 'FACT_TREE_REF_REALITY_ROOT_INVALID');
+    check(hex64(reference.tree_root), 'FACT_TREE_REF_TREE_ROOT_INVALID');
+    check(reference.head_event_root === null || hex64(reference.head_event_root), 'FACT_TREE_REF_HEAD_EVENT_ROOT_INVALID');
+    check(Number.isSafeInteger(reference.event_count) && reference.event_count >= 0, 'FACT_TREE_REF_EVENT_COUNT_INVALID');
+    check(Number.isSafeInteger(reference.fact_count) && reference.fact_count >= 0, 'FACT_TREE_REF_FACT_COUNT_INVALID');
+    check(Array.isArray(reference.evidence_refs), 'FACT_TREE_REF_EVIDENCE_REFS_INVALID');
+    check(reference.candidate_only === true && reference.authoritative === false, 'FACT_TREE_REF_CANDIDATE_REQUIRED');
+    check(reference.commit_status === 'NOT_COMMITTED', 'FACT_TREE_REF_COMMIT_STATUS_INVALID');
+    check(hex64(referenceRoot) && rootHash(copy) === referenceRoot, 'FACT_TREE_REF_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`FACT_TREE_REF_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, reference_root: reference.reference_root ?? null};
 }
