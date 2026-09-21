@@ -1,0 +1,58 @@
+name: Verify RCL Upstream Contract Candidate
+
+on:
+  push:
+    branches: [fix/rcl-upstream-authority-contract-v0.1]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout candidate branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/rcl-upstream-authority-contract-v0.1
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install workspace lockfile
+        run: npm ci --ignore-scripts
+      - name: Verify upstream authority contract directly
+        run: node --test packages/languages/reality-computation-language/tests/rcl-upstream-authority-contract.test.mjs
+      - name: Verify embedded RCL full package suite with exact failure extraction
+        shell: bash
+        run: |
+          set +e
+          npm test --workspace @taowind/reality-computation-language > /tmp/rcl-package-suite.log 2>&1
+          status=$?
+          if [ "$status" -ne 0 ]; then
+            echo '--- Exact TAP failure headings ---'
+            grep -n '^not ok ' /tmp/rcl-package-suite.log || true
+            echo '--- Exact TAP failure blocks ---'
+            while IFS=: read -r line rest; do
+              [ -n "$line" ] || continue
+              start=$((line > 8 ? line - 8 : 1))
+              end=$((line + 45))
+              echo "--- failure around line $line ---"
+              sed -n "${start},${end}p" /tmp/rcl-package-suite.log
+            done < <(grep -n '^not ok ' /tmp/rcl-package-suite.log || true)
+            echo '--- Suite summary ---'
+            grep -E '^# (tests|pass|fail|cancelled|skipped|todo|duration_ms)' /tmp/rcl-package-suite.log | tail -n 10 || true
+            exit "$status"
+          fi
+          tail -n 80 /tmp/rcl-package-suite.log
+      - name: Remove one-shot verifier and commit evidence closure
+        run: |
+          rm .github/workflows/verify-rcl-upstream-contract-candidate.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/verify-rcl-upstream-contract-candidate.yml
+          git commit -m 'test(rcl): close upstream contract candidate verification'
+          git push origin HEAD:fix/rcl-upstream-authority-contract-v0.1

@@ -1,0 +1,59 @@
+{
+  "format": "rncs.rcl-upstream-contract.v1",
+  "consumer": {
+    "repository": "xingxuling/RNCS-Unified-Platform-",
+    "branch": "main-95",
+    "path": "packages/languages/reality-computation-language",
+    "package": "@taowind/reality-computation-language",
+    "packageVersion": "0.94.0-alpha.1"
+  },
+  "upstream": {
+    "repository": "xingxuling/RCL",
+    "branch": "main",
+    "package": "@taowind/rcl-reality-forge",
+    "packageVersion": "0.94.0-alpha.1",
+    "auditedCommit": "0895f6d8b196fbcf475c1cf69dd458b1b630c09a",
+    "auditedCommitRole": "historical synchronization anchor; resolve and verify current canonical head before import"
+  },
+  "relation": "embedded-extension-delta",
+  "authority": {
+    "canonicalLanguageSource": "upstream",
+    "consumerMayExtend": true,
+    "consumerMayRelabelCanonicalClaims": false,
+    "byteIdentityAllowed": false,
+    "nativeArtifactReuseAllowed": false
+  },
+  "classification": {
+    "status": "partial-audit",
+    "upstreamSnapshot": "files imported from xingxuling/RCL and proven by a future path/hash manifest",
+    "rncsExtensionDelta": [
+      "FOUNDATION-NATIVE-BRIDGE-SOURCE.json",
+      "src/rncs-*.mjs",
+      "docs/rncs-*.md",
+      "scripts/*rncs*.mjs",
+      "tests/*rncs*.test.mjs"
+    ],
+    "generatedEvidence": [
+      "evidence-*.json",
+      "output/**"
+    ],
+    "nativeArtifacts": [
+      "native/*.exe",
+      "native/*.dll",
+      "native/*.lib",
+      "native/*.a"
+    ]
+  },
+  "synchronization": {
+    "status": "audit-required",
+    "syncRequired": true,
+    "requiredBeforeSync": [
+      "resolve current upstream main commit",
+      "generate path and SHA-256 classification manifest",
+      "preserve RNCS extension delta",
+      "rebuild native artifacts from synchronized sources",
+      "run the embedded RCL test suite and RNCS bridge integration tests"
+    ],
+    "promotionGate": "no byte-identity, native-artifact or canonical-ceiling claim before all required evidence passes"
+  }
+}
