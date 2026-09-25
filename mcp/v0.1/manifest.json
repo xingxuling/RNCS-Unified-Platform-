@@ -1,0 +1,38 @@
+{
+  "format": "taowind.reality-mcp.release.v0.1",
+  "name": "TaoWind Reality MCP",
+  "version": "0.1.0-alpha.1",
+  "suite_version": "0.12.0-alpha.1",
+  "base_release": "0.11.0-alpha.1",
+  "transport": "streamable-http",
+  "sdk": "@modelcontextprotocol/sdk@1.29.0",
+  "runtime_gateway": "@taowind/reality-one-gateway@0.3.1-unified.1",
+  "runtime_count": 14,
+  "tool_count": 15,
+  "authority_boundary": {
+    "read": true,
+    "candidate_branch_write": true,
+    "authorize": false,
+    "merge": false,
+    "rollback": false,
+    "publish": false,
+    "shell": false,
+    "arbitrary_file_read": false
+  },
+  "verification": {
+    "mcp_tests": "13/13 PASS",
+    "smoke": "PASS",
+    "gateway_tests": "12/12 PASS",
+    "native_bridge_tests": "14/14 PASS",
+    "root_integration_tests": "19/19 PASS",
+    "runtime_health": "14/14 healthy",
+    "release_structure": "PASS (29 modules)",
+    "npm_audit": "0 vulnerabilities",
+    "clean_install": "PASS"
+  },
+  "known_limits": [
+    "OAuth 2.1 not implemented",
+    "No hosted HTTPS endpoint included",
+    "Docker image not built in the development environment"
+  ]
+}
