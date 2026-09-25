@@ -1,0 +1,13 @@
+{
+  "name": "@taowind/execution-worker",
+  "version": "0.3.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "description": "Persistent isolated engineering execution worker for TaoWind Reality MCP v0.3.",
+  "scripts": {
+    "start": "node src/cli.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "engines": {"node": ">=22"},
+  "dependencies": {"jose": "^6.1.0"}
+}
