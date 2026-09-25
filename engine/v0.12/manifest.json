@@ -1,0 +1,42 @@
+{
+  "format": "rncs.engine-release.v0.12",
+  "suiteVersion": "0.12.0-alpha.1",
+  "vsr": {
+    "version": "0.9.0-alpha.1",
+    "tests": "201/201",
+    "features": [
+      "gltf-glb-skins",
+      "quaternion-animation",
+      "clip-blending",
+      "additive-layers",
+      "bone-masks",
+      "animation-events",
+      "two-bone-ik",
+      "look-at",
+      "viseme-morph",
+      "cpu-skinning",
+      "animation-graph",
+      "snapshot-restore"
+    ]
+  },
+  "realityStudio": {
+    "version": "1.7.0-alpha.1",
+    "tests": "217/217",
+    "features": [
+      "character-animation-session",
+      "sequencer-animation-track",
+      "animation-api",
+      "browser-workbench",
+      "pose-frame-pixel-authority-evidence"
+    ]
+  },
+  "verticalAcceptance": "10/10",
+  "currentRunTests": "1002/1002",
+  "hnacHnafSourceBound": true,
+  "assetId": "asset:84ced5cb95562c6a8bebfce1",
+  "animatedPoseRoot": "bbdff58ffb357e53ad2f18af4401f4200a088c063c772bf75e2eeaa7c0e1cc4d",
+  "animatedGeometryRoot": "7bd6c0fd5bf994b193aef0dc8228faebff1e08908c2db2aa98eb0565c271e58e",
+  "animatedFrameRoot": "b654e0dd72e7aaa4ced16a57a59c0bf803db13bf3dc910e98e54fdec8de96323",
+  "animatedPixelRoot": "7733144daf09fa79d10d9fe4c8e605976cb16a0dbdc8b8df57ca559c9f5e6f5d",
+  "authorityRealityRoot": "87b6689e9603c829518ff40cc7b06de06175ce8ebaab585b6e1348964b230b79"
+}
