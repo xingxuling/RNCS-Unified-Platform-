@@ -1,0 +1,20 @@
+{
+  "format": "rncs.engine-release.v0.8",
+  "suiteVersion": "0.8.0-alpha.1",
+  "rsr": {
+    "version": "0.8.0-alpha.1",
+    "features": ["spatial-hash-broad-phase", "persistent-contact-warm-start", "step-climb", "ground-snap", "moving-platform-inheritance", "one-way-platform"],
+    "tests": "177/177"
+  },
+  "vsr": {
+    "version": "0.7.0-alpha.1",
+    "features": ["gltf-2-import", "texture-projection", "transform-animation", "presentation-root-separation"],
+    "tests": "175/175"
+  },
+  "network": {"version": "0.2.0-alpha.1", "tests": "22/22", "protocolChanged": false},
+  "directTests": "1283/1283",
+  "authorityRoot": "fnv1a64:d0b0f3fcfa1eae36",
+  "assetPresentationRoot": "02608d2d1785eb6c100323d6b785605d8803144519a5834ff1a79abf3cf40369",
+  "pixelRoot": "75740c4da9aa261b1c27a02e8014ce9800280ac846a2ce7fb2cb3ba211efae7f",
+  "baselineCommit": "a340a2839786f0409616645fe0aa5cd612e9892c"
+}
