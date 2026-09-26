@@ -1,0 +1,23 @@
+{
+  "name": "@taowind/aether-rncs-bridge",
+  "version": "0.2.0-alpha.1",
+  "type": "module",
+  "description": "Executable Aetherworld to RNCS native runtime bridge",
+  "license": "Apache-2.0",
+  "exports": {".": "./src/index.mjs"},
+  "files": ["src", "schemas", "examples", "README.md", "rncs.module.json"],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "demo": "node examples/aether-island-demo.mjs"
+  },
+  "dependencies": {
+    "@taowind/agent-authority-fabric": "0.1.0",
+    "@taowind/reality-behavior-fabric": "0.1.0-alpha.1",
+    "@taowind/reality-branch-fabric": "0.2.0-alpha.1",
+    "@taowind/reality-network-runtime": "0.2.0-alpha.1",
+    "@taowind/reality-simulation-runtime": "0.7.0-alpha.1",
+    "@taowind/rfe-core-sdk": "0.1.0",
+    "@taowind/visual-state-runtime": "0.6.0-alpha.1"
+  },
+  "engines": {"node": ">=20"}
+}

@@ -1,0 +1,22 @@
+{
+  "format":"reality-one.runtime-manifest.v0.3",
+  "gateway_protocol_versions":["0.3.0"],
+  "runtime_id":"rncs.aetherworld-native",
+  "runtime_version":"0.2.0-alpha.1",
+  "display_name":"Aetherworld RNCS Native Runtime Bridge",
+  "transport":{"kind":"node-module","package":"@taowind/aether-rncs-bridge"},
+  "bridge":"../src/bridges/aetherworld-native.bridge.mjs",
+  "actions":["health","compile","validatePlan","migratePlan","createCandidate","getCandidate","diffCandidate","simulateCandidate","authorizeCandidate","rejectCandidate","registerBehavior","setBehaviorEnabled","updateBehavior","mergeCandidate","materializeRSR","runLoopback","history","rollbackGeneration","replayGeneration","worldStatus","runEndToEnd"],
+  "protocols":["rncs.aetherworld-native-runtime.v0.2","rncs.compilation-plan.v0.2","rsr.authoritative-state.v0.7","rncs.network-runtime.v0.2","vsr.temporal-presentation.v0.6"],
+  "requires":[
+    {"runtime_id":"rncs.rbf","version_range":"^0.2.0-alpha.1","optional":false},
+    {"runtime_id":"rncs.aaf","version_range":"^0.1.0","optional":false},
+    {"runtime_id":"rncs.behavior","version_range":"^0.1.0-alpha.1","optional":false},
+    {"runtime_id":"rncs.rfe","version_range":"^0.1.0","optional":false},
+    {"runtime_id":"rncs.rsr","version_range":"^0.7.0-alpha.1","optional":false},
+    {"runtime_id":"rncs.network","version_range":"^0.2.0-alpha.1","optional":false},
+    {"runtime_id":"rncs.vsr","version_range":"^0.6.0-alpha.1","optional":false}
+  ],
+  "priority":100,
+  "health_timeout_ms":10000
+}
