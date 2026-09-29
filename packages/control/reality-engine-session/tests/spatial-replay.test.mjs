@@ -4,8 +4,10 @@ import {
   compareSpatialReplayBranches,
   createSpatialReplayBranch,
   createSpatialReplayBundle,
+  createSpatialReplayHistoryWitness,
   replaySpatialReplayBundle,
   verifySpatialReplayBundle,
+  verifySpatialReplayHistoryWitness,
 } from '../src/spatial-replay.mjs';
 import {
   createEngineProposalInput,
@@ -69,8 +71,14 @@ test('spatial replay bundle verifies RSR, VSR and causal roots by replaying the 
   assert.equal(verification.deterministic, true);
   assert.equal(value.checkpoints.length, 2);
 
+  const historyWitness = createSpatialReplayHistoryWitness(value);
+  const historyVerification = verifySpatialReplayHistoryWitness(value, historyWitness);
+  assert.equal(historyVerification.valid, true, historyVerification.errors.join(','));
+
   const replay = replaySpatialReplayBundle(value);
   assert.equal(replay.deterministic, true);
+  assert.equal(replay.history_root, historyWitness.history_root);
+  assert.equal(replay.history_witness_root, historyWitness.witness_root);
   assert.equal(replay.final_state_root, value.final_snapshot.stateRoot);
   assert.equal(replay.final_frame_root, value.final_projection.frame_root);
   assert.equal(replay.checkpoints.length, value.checkpoints.length);
@@ -118,6 +126,38 @@ test('branches fork from a verified checkpoint and compare as counterfactual wor
   assert.equal(comparison.same_state, false);
   assert.equal(comparison.same_frame, false);
   assert.ok(comparison.changed_body_ids.includes('avatar'));
+});
+
+test('spatial replay history witness fails closed on history tampering', () => {
+  const value = bundle({ checkpointEvery: 1 });
+  const witness = createSpatialReplayHistoryWitness(value);
+  witness.entries[0].state_root = 'f'.repeat(64);
+  const verification = verifySpatialReplayHistoryWitness(value, witness);
+  assert.equal(verification.valid, false);
+  assert.ok(verification.errors.some(error => error.includes('HISTORY_ENTRY')));
+});
+
+test('history witness distinguishes branch ancestry even when final state converges', () => {
+  const parent = bundle({ checkpointEvery: 1 });
+  const left = createSpatialReplayBranch(parent, {
+    fromCheckpoint: 1,
+    branchId: 'branch:history-left',
+    ticks: 1,
+    commands: [],
+  });
+  const right = createSpatialReplayBranch(parent, {
+    fromCheckpoint: 1,
+    branchId: 'branch:history-right',
+    ticks: 1,
+    commands: [],
+  });
+  assert.equal(left.final_snapshot.stateRoot, right.final_snapshot.stateRoot);
+  assert.equal(left.final_projection.frame_root, right.final_projection.frame_root);
+  const leftHistory = createSpatialReplayHistoryWitness(left);
+  const rightHistory = createSpatialReplayHistoryWitness(right);
+  assert.notEqual(left.bundle_root, right.bundle_root);
+  assert.notEqual(leftHistory.history_root, rightHistory.history_root);
+  assert.notEqual(leftHistory.witness_root, rightHistory.witness_root);
 });
 
 test('committed RNCS spatial sessions can export a verified replay branch without mutating authority', async () => {

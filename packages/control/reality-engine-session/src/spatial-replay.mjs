@@ -16,6 +16,9 @@ import {
 export const SPATIAL_REPLAY_BUNDLE_FORMAT = 'rncs.spatial-replay-bundle.v0.1';
 export const SPATIAL_REPLAY_CHECKPOINT_FORMAT = 'rncs.spatial-replay-checkpoint.v0.1';
 export const SPATIAL_REPLAY_RESULT_FORMAT = 'rncs.spatial-replay-result.v0.1';
+export const SPATIAL_REPLAY_HISTORY_WITNESS_FORMAT = 'rncs.spatial-replay-history-witness.v0.1';
+export const SPATIAL_REPLAY_HISTORY_ENTRY_FORMAT = 'rncs.spatial-replay-history-entry.v0.1';
+export const SPATIAL_REPLAY_HISTORY_SEED_FORMAT = 'rncs.spatial-replay-history-seed.v0.1';
 export const SPATIAL_REPLAY_VERSION = '0.1.0';
 
 const clone = value => value === undefined ? undefined : structuredClone(value);
@@ -386,14 +389,149 @@ export function verifySpatialReplayBundle(bundle, { replay = true } = {}) {
   };
 }
 
+function historySeedPayload(bundle) {
+  return {
+    format: SPATIAL_REPLAY_HISTORY_SEED_FORMAT,
+    version: SPATIAL_REPLAY_VERSION,
+    bundle_root: bundle.bundle_root,
+    branch_id: bundle.branch_id,
+    parent_bundle_root: bundle.parent_bundle_root,
+    base_checkpoint_root: bundle.base_checkpoint_root,
+    initial_state_root: bundle.initial_snapshot.stateRoot,
+    initial_frame_root: bundle.initial_projection.frame_root,
+    command_root: bundle.command_root,
+  };
+}
+
+function historyEntryPayload(entry) {
+  const value = entry ?? {};
+  return {
+    format: SPATIAL_REPLAY_HISTORY_ENTRY_FORMAT,
+    version: SPATIAL_REPLAY_VERSION,
+    index: value.index,
+    tick: value.tick,
+    checkpoint_root: value.checkpoint_root,
+    state_root: value.state_root,
+    frame_root: value.frame_root,
+    causal_delta_root: value.causal_delta_root,
+    command_root: value.command_root,
+    cumulative_command_root: value.cumulative_command_root,
+    previous_history_root: value.previous_history_root,
+  };
+}
+
+function historyWitnessRootPayload(witness) {
+  const value = witness ?? {};
+  return {
+    format: SPATIAL_REPLAY_HISTORY_WITNESS_FORMAT,
+    version: SPATIAL_REPLAY_VERSION,
+    bundle_root: value.bundle_root,
+    seed_root: value.seed_root,
+    history_root: value.history_root,
+    entry_history_roots: Array.isArray(value.entries)
+      ? value.entries.map(entry => entry?.history_root ?? null)
+      : [],
+  };
+}
+
+function buildSpatialReplayHistoryWitness(bundle) {
+  const seedRoot = canonicalRoot(historySeedPayload(bundle));
+  let previousHistoryRoot = seedRoot;
+  const entries = bundle.checkpoints.map(checkpoint => {
+    const entry = {
+      format: SPATIAL_REPLAY_HISTORY_ENTRY_FORMAT,
+      version: SPATIAL_REPLAY_VERSION,
+      index: checkpoint.index,
+      tick: checkpoint.tick,
+      checkpoint_root: checkpoint.checkpoint_root,
+      state_root: checkpoint.state_root,
+      frame_root: checkpoint.frame_root,
+      causal_delta_root: checkpoint.causal_delta_root,
+      command_root: checkpoint.command_root,
+      cumulative_command_root: checkpoint.cumulative_command_root,
+      previous_history_root: previousHistoryRoot,
+    };
+    entry.history_root = canonicalRoot(historyEntryPayload(entry));
+    previousHistoryRoot = entry.history_root;
+    return entry;
+  });
+  const witness = {
+    format: SPATIAL_REPLAY_HISTORY_WITNESS_FORMAT,
+    version: SPATIAL_REPLAY_VERSION,
+    bundle_root: bundle.bundle_root,
+    branch_id: bundle.branch_id,
+    parent_bundle_root: bundle.parent_bundle_root,
+    base_checkpoint_root: bundle.base_checkpoint_root,
+    seed_root: seedRoot,
+    entries,
+    history_root: previousHistoryRoot,
+  };
+  witness.witness_root = canonicalRoot(historyWitnessRootPayload(witness));
+  return witness;
+}
+
+export function createSpatialReplayHistoryWitness(bundle) {
+  const verification = verifySpatialReplayBundle(bundle);
+  requireCondition(verification.valid, 'SPATIAL_REPLAY_HISTORY_BUNDLE_INVALID', verification);
+  return buildSpatialReplayHistoryWitness(bundle);
+}
+
+export function verifySpatialReplayHistoryWitness(bundle, witness, { replay = true } = {}) {
+  const errors = [];
+  const bundleVerification = verifySpatialReplayBundle(bundle, { replay });
+  if (!bundleVerification.valid) {
+    errors.push(...bundleVerification.errors.map(error => `SPATIAL_REPLAY_HISTORY_BUNDLE_INVALID:${error}`));
+    return {
+      valid: false,
+      deterministic: false,
+      errors,
+      bundle_root: bundle?.bundle_root ?? null,
+      history_root: witness?.history_root ?? null,
+      witness_root: witness?.witness_root ?? null,
+    };
+  }
+
+  const expected = buildSpatialReplayHistoryWitness(bundle);
+  if (witness?.format !== SPATIAL_REPLAY_HISTORY_WITNESS_FORMAT) errors.push('SPATIAL_REPLAY_HISTORY_FORMAT_INVALID');
+  if (witness?.version !== SPATIAL_REPLAY_VERSION) errors.push('SPATIAL_REPLAY_HISTORY_VERSION_INVALID');
+  if (witness?.bundle_root !== bundle.bundle_root) errors.push('SPATIAL_REPLAY_HISTORY_BUNDLE_ROOT_MISMATCH');
+  if (witness?.seed_root !== expected.seed_root) errors.push('SPATIAL_REPLAY_HISTORY_SEED_ROOT_MISMATCH');
+  if (!Array.isArray(witness?.entries) || witness.entries.length !== expected.entries.length) {
+    errors.push('SPATIAL_REPLAY_HISTORY_ENTRIES_MISMATCH');
+  } else {
+    for (let index = 0; index < expected.entries.length; index += 1) {
+      const actual = witness.entries[index];
+      const wanted = expected.entries[index];
+      if (canonicalRoot(historyEntryPayload(actual)) !== actual?.history_root) errors.push(`SPATIAL_REPLAY_HISTORY_ENTRY_ROOT_MISMATCH:${index}`);
+      if (actual?.history_root !== wanted.history_root) errors.push(`SPATIAL_REPLAY_HISTORY_ENTRY_CONTENT_MISMATCH:${index}`);
+      if (actual?.previous_history_root !== wanted.previous_history_root) errors.push(`SPATIAL_REPLAY_HISTORY_CHAIN_MISMATCH:${index}`);
+    }
+  }
+  if (witness?.history_root !== expected.history_root) errors.push('SPATIAL_REPLAY_HISTORY_ROOT_MISMATCH');
+  if (canonicalRoot(historyWitnessRootPayload(witness)) !== witness?.witness_root) errors.push('SPATIAL_REPLAY_HISTORY_WITNESS_ROOT_MISMATCH');
+  if (witness?.witness_root !== expected.witness_root) errors.push('SPATIAL_REPLAY_HISTORY_WITNESS_CONTENT_MISMATCH');
+  return {
+    valid: errors.length === 0,
+    deterministic: errors.length === 0 && bundleVerification.deterministic,
+    errors,
+    bundle_root: bundle.bundle_root,
+    history_root: witness?.history_root ?? null,
+    witness_root: witness?.witness_root ?? null,
+    entry_count: witness?.entries?.length ?? 0,
+  };
+}
+
 export function replaySpatialReplayBundle(bundle) {
   const verification = verifySpatialReplayBundle(bundle);
   requireCondition(verification.valid, 'SPATIAL_REPLAY_BUNDLE_INVALID', verification);
   const replayed = replayBundleInternal(bundle);
+  const historyWitness = buildSpatialReplayHistoryWitness(bundle);
   const replayPayload = {
     format: SPATIAL_REPLAY_RESULT_FORMAT,
     version: SPATIAL_REPLAY_VERSION,
     bundle_root: bundle.bundle_root,
+    history_root: historyWitness.history_root,
+    history_witness_root: historyWitness.witness_root,
     final_state_root: replayed.finalSnapshot.stateRoot,
     final_frame_root: replayed.finalProjection.frameRoot,
     checkpoint_roots: replayed.checkpoints.map(item => item.expected.checkpoint_root),

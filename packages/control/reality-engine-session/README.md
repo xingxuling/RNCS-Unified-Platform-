@@ -78,3 +78,10 @@ const comparison = compareSpatialReplayBranches(bundle, branch);
 The replay bundle is a simulation artifact, not authority. Committing a
 selected branch still goes through the RNCS proposal, simulation, authority
 and commit gates.
+
+A replay bundle can also derive an explicit `rncs.spatial-replay-history-witness.v0.1`.
+The witness chains every verified checkpoint through its state, frame, causal-delta,
+command and checkpoint roots, seeded by the bundle and branch ancestry. This keeps
+history identity distinct from final-state equality: two branches may converge on the
+same state/frame roots while still retaining different history roots. The witness is
+derived evidence only and never grants commit authority.
